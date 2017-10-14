@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: pharm-controller-manager
+  labels:
+    app: pharm-controller-manager
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pharm-controller-manager
+    spec:
+      containers:
+        - image: appscode/pharm-controller-manager:canary
+          name: pharm-controller-manager
+          ports:
+            - containerPort: 9844
+              name: web
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pharm-controller-manager
+  labels:
+    app: pharm-controller-manager
+spec:
+  ports:
+  - port: 9844
+    protocol: TCP
+    targetPort: web
+  selector:
+    app: pharm-controller-manager

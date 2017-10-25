@@ -28,11 +28,11 @@ func init() {
 	cloudprovider.RegisterCloudProvider(
 		ProviderName,
 		func(config io.Reader) (cloudprovider.Interface, error) {
-			return newDO(config)
+			return newCloud(config)
 		})
 }
 
-func newDO(config io.Reader) (*Cloud, error) {
+func newCloud(config io.Reader) (*Cloud, error) {
 	var do Cloud
 	contents, err := ioutil.ReadAll(config)
 	if err != nil {

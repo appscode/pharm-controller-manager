@@ -1,12 +1,12 @@
 package digitalocean
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 
 	"github.com/digitalocean/godo"
+	"github.com/ghodss/yaml"
 	"golang.org/x/oauth2"
 	"k8s.io/kubernetes/pkg/cloudprovider"
 	"k8s.io/kubernetes/pkg/controller"
@@ -19,9 +19,9 @@ const (
 type Config struct {
 	Token string `json:"token" yaml:"token"`
 }
-type DO struct {
+type Cloud struct {
 	Config
-	Client *godo.Client
+	client *godo.Client
 }
 
 func init() {
@@ -32,15 +32,15 @@ func init() {
 		})
 }
 
-func newDO(config io.Reader) (*DO, error) {
-	var do DO
+func newDO(config io.Reader) (*Cloud, error) {
+	var do Cloud
 	contents, err := ioutil.ReadAll(config)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println(string(contents))
 
-	err = json.Unmarshal(contents, &do)
+	err = yaml.Unmarshal(contents, &do)
 	if err != nil {
 		return nil, err
 	}
@@ -48,40 +48,40 @@ func newDO(config io.Reader) (*DO, error) {
 	oauthClient := oauth2.NewClient(oauth2.NoContext, oauth2.StaticTokenSource(&oauth2.Token{
 		AccessToken: do.Token,
 	}))
-	do.Client = godo.NewClient(oauthClient)
+	do.client = godo.NewClient(oauthClient)
 	return &do, nil
 }
 
-func (d *DO) Initialize(clientBuilder controller.ControllerClientBuilder) {}
+func (c *Cloud) Initialize(clientBuilder controller.ControllerClientBuilder) {}
 
-func (d *DO) LoadBalancer() (cloudprovider.LoadBalancer, bool) {
+func (c *Cloud) LoadBalancer() (cloudprovider.LoadBalancer, bool) {
 	return nil, false
 }
 
-func (d *DO) Instances() (cloudprovider.Instances, bool) {
-	return d, true
+func (c *Cloud) Instances() (cloudprovider.Instances, bool) {
+	return c, true
 }
 
-func (d *DO) Zones() (cloudprovider.Zones, bool) {
-	return d, true
+func (c *Cloud) Zones() (cloudprovider.Zones, bool) {
+	return c, true
 }
 
-func (d *DO) Clusters() (cloudprovider.Clusters, bool) {
+func (c *Cloud) Clusters() (cloudprovider.Clusters, bool) {
 	return nil, false
 }
 
-func (d *DO) Routes() (cloudprovider.Routes, bool) {
+func (c *Cloud) Routes() (cloudprovider.Routes, bool) {
 	return nil, false
 }
 
-func (d *DO) ProviderName() string {
+func (c *Cloud) ProviderName() string {
 	return ProviderName
 }
 
-func (d *DO) ScrubDNS(nameservers, searches []string) (nsOut, srchOut []string) {
+func (c *Cloud) ScrubDNS(nameservers, searches []string) (nsOut, srchOut []string) {
 	return nameservers, searches
 }
 
-func (d *DO) HasClusterID() bool {
+func (c *Cloud) HasClusterID() bool {
 	return false
 }

@@ -11,28 +11,28 @@ import (
 	"k8s.io/kubernetes/pkg/cloudprovider"
 )
 
-func (d *DO) NodeAddresses(name types.NodeName) ([]v1.NodeAddress, error) {
-	droplet, err := d.getDroplet(name)
+func (c *Cloud) NodeAddresses(name types.NodeName) ([]v1.NodeAddress, error) {
+	droplet, err := c.getDroplet(name)
 	if err != nil {
 		return []v1.NodeAddress{}, err
 	}
 
-	return d.getNodeAddress(&droplet)
+	return c.getNodeAddress(&droplet)
 }
 
-func (d *DO) NodeAddressesByProviderID(providerID string) ([]v1.NodeAddress, error) {
+func (c *Cloud) NodeAddressesByProviderID(providerID string) ([]v1.NodeAddress, error) {
 	return []v1.NodeAddress{}, errors.New("unimplemented:" + providerID)
 
-	droplet, err := d.getDropletByID(providerID)
+	droplet, err := c.getDropletByID(providerID)
 	if err != nil {
 		return []v1.NodeAddress{}, err
 	}
 
-	return d.getNodeAddress(droplet)
+	return c.getNodeAddress(droplet)
 }
 
-func (d *DO) ExternalID(nodeName types.NodeName) (string, error) {
-	droplet, err := d.getDroplet(nodeName)
+func (c *Cloud) ExternalID(nodeName types.NodeName) (string, error) {
+	droplet, err := c.getDroplet(nodeName)
 	if err != nil {
 		return "", err
 	}
@@ -40,40 +40,40 @@ func (d *DO) ExternalID(nodeName types.NodeName) (string, error) {
 	return strconv.Itoa(droplet.ID), nil
 }
 
-func (d *DO) InstanceID(nodeName types.NodeName) (string, error) {
-	return d.ExternalID(nodeName)
+func (c *Cloud) InstanceID(nodeName types.NodeName) (string, error) {
+	return c.ExternalID(nodeName)
 }
 
-func (d *DO) InstanceType(nodeName types.NodeName) (string, error) {
-	droplet, err := d.getDroplet(nodeName)
+func (c *Cloud) InstanceType(nodeName types.NodeName) (string, error) {
+	droplet, err := c.getDroplet(nodeName)
 	if err != nil {
 		return "", err
 	}
 	return droplet.SizeSlug, nil
 }
 
-func (d *DO) InstanceTypeByProviderID(providerID string) (string, error) {
+func (c *Cloud) InstanceTypeByProviderID(providerID string) (string, error) {
 	return "", errors.New("unimplemented:" + providerID)
-	droplet, err := d.getDropletByID(providerID)
+	droplet, err := c.getDropletByID(providerID)
 	if err != nil {
 		return "", err
 	}
 	return droplet.SizeSlug, nil
 }
 
-func (d *DO) AddSSHKeyToAllInstances(user string, keyData []byte) error {
+func (c *Cloud) AddSSHKeyToAllInstances(user string, keyData []byte) error {
 	return errors.New("unimplemented")
 }
 
-func (d *DO) CurrentNodeName(hostname string) (types.NodeName, error) {
+func (c *Cloud) CurrentNodeName(hostname string) (types.NodeName, error) {
 	return types.NodeName(hostname), nil
 }
 
-func (d *DO) InstanceExistsByProviderID(providerID string) (bool, error) {
+func (c *Cloud) InstanceExistsByProviderID(providerID string) (bool, error) {
 	return false, nil
 }
 
-func (d *DO) getNodeAddress(droplet *godo.Droplet) ([]v1.NodeAddress, error) {
+func (c *Cloud) getNodeAddress(droplet *godo.Droplet) ([]v1.NodeAddress, error) {
 	privateIP, err := droplet.PrivateIPv4()
 	if err != nil {
 		return []v1.NodeAddress{}, err
@@ -89,8 +89,8 @@ func (d *DO) getNodeAddress(droplet *godo.Droplet) ([]v1.NodeAddress, error) {
 	}, nil
 }
 
-func (d *DO) getDroplet(name types.NodeName) (godo.Droplet, error) {
-	droplets, _, err := d.Client.Droplets.List(context.TODO(), &godo.ListOptions{})
+func (c *Cloud) getDroplet(name types.NodeName) (godo.Droplet, error) {
+	droplets, _, err := c.client.Droplets.List(context.TODO(), &godo.ListOptions{})
 	if err != nil {
 		return godo.Droplet{}, err
 	}
@@ -103,12 +103,12 @@ func (d *DO) getDroplet(name types.NodeName) (godo.Droplet, error) {
 	return godo.Droplet{}, cloudprovider.InstanceNotFound
 }
 
-func (d *DO) getDropletByID(providerID string) (*godo.Droplet, error) {
+func (c *Cloud) getDropletByID(providerID string) (*godo.Droplet, error) {
 	id, err := strconv.Atoi(providerID)
 	if err != nil {
 		return &godo.Droplet{}, err
 	}
-	droplet, _, err := d.Client.Droplets.Get(context.TODO(), id)
+	droplet, _, err := c.client.Droplets.Get(context.TODO(), id)
 	if err != nil {
 		return &godo.Droplet{}, err
 	}

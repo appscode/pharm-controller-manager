@@ -13,7 +13,7 @@ var faultMutex = &sync.Mutex{}
 
 const instanceInfoURL = "http://169.254.169.254/metadata/v1"
 
-func (d *DO) GetZone() (cloudprovider.Zone, error) {
+func (c *Cloud) GetZone() (cloudprovider.Zone, error) {
 	faultMutex.Lock()
 	region, err := fetchRegion()
 	if err != nil {
@@ -28,11 +28,11 @@ func (d *DO) GetZone() (cloudprovider.Zone, error) {
 
 }
 
-func (d *DO) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error) {
+func (c *Cloud) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error) {
 	return cloudprovider.Zone{}, nil
 }
 
-func (d *DO) GetZoneByNodeName(nodeName types.NodeName) (cloudprovider.Zone, error) {
+func (c *Cloud) GetZoneByNodeName(nodeName types.NodeName) (cloudprovider.Zone, error) {
 	return cloudprovider.Zone{}, nil
 }
 

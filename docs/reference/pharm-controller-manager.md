@@ -11,6 +11,7 @@ Pharm Controller Manager by Appscode - Start farms
 
 ```
       --alsologtostderr                         log to standard error as well as files
+      --analytics                               Send analytical events to Google Analytics (default true)
       --cloud-provider-gce-lb-src-cidrs cidrs   CIDRS opened in GCE firewall for LB traffic proxy & health checks (default 130.211.0.0/22,35.191.0.0/16,209.85.152.0/22,209.85.204.0/22)
   -h, --help                                    help for pharm-controller-manager
       --log_backtrace_at traceLocation          when logging hits line file:N, emit a stack trace (default :0)

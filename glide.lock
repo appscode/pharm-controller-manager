@@ -1,5 +1,5 @@
-hash: ba20c4e14dd662d6243b92326612a78de90ff0ecb8b3c89975fa9371b3f098b1
-updated: 2017-10-25T15:25:11.082066774-07:00
+hash: a9d38af1bdc7b1ec73fdbf66b2c879f89ce3225959c89845c4c5745bb0e4dbe2
+updated: 2017-10-25T16:28:26.976983582-07:00
 imports:
 - name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
@@ -236,6 +236,8 @@ imports:
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/jmespath/go-jmespath
   version: 3433f3ea46d9f8019119e7dd41274e112a2359a9
+- name: github.com/jpillora/go-ogle-analytics
+  version: 14b04e0594ef6a9fd943363b135656f0ec8c9d0e
 - name: github.com/json-iterator/go
   version: 36b14963da70d11297d313183d7e6388c8510e1e
 - name: github.com/juju/ratelimit

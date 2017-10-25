@@ -1,5 +1,7 @@
 package cloud
 
-type KubeStarter interface {
-	// Run(req *api.ClusterStartupConfig) error
-}
+import "errors"
+
+var (
+	ErrNotImplemented = errors.New("not implemented")
+)

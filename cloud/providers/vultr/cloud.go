@@ -1,25 +1,27 @@
 package vultr
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 
-	"github.com/appscode/pharm-controller-manager/cloud"
 	"github.com/ghodss/yaml"
 	"k8s.io/kubernetes/pkg/cloudprovider"
 	"k8s.io/kubernetes/pkg/controller"
+	gv "github.com/JamesClonk/vultr/lib"
 )
 
 const (
 	ProviderName = "vultr"
 )
 
-type Config struct {
+type tokenSource struct {
 	Token string `json:"token" yaml:"token"`
 }
+
 type Cloud struct {
-	Config
+	client  *gv.Client
+	instances     cloudprovider.Instances
+	zones         cloudprovider.Zones
 }
 
 func init() {
@@ -30,34 +32,39 @@ func init() {
 		})
 }
 
-func newCloud(config io.Reader) (*Cloud, error) {
-	var do Cloud
+func newCloud(config io.Reader) (cloudprovider.Interface, error) {
+	tokenSource := &tokenSource{}
 	contents, err := ioutil.ReadAll(config)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(string(contents))
 
-	err = yaml.Unmarshal(contents, &do)
+	err = yaml.Unmarshal(contents, tokenSource)
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, cloud.ErrNotImplemented
+	vultrClient := gv.NewClient(tokenSource.Token, &gv.Options{})
+	return &Cloud{
+		client:        vultrClient,
+		instances:     newInstances(vultrClient),
+		zones:         newZones(vultrClient),
+	}, nil
 }
 
-func (c *Cloud) Initialize(clientBuilder controller.ControllerClientBuilder) {}
+func (c *Cloud) Initialize(clientBuilder controller.ControllerClientBuilder) {
+}
 
 func (c *Cloud) LoadBalancer() (cloudprovider.LoadBalancer, bool) {
-	return nil, false
+	return nil, true
 }
 
 func (c *Cloud) Instances() (cloudprovider.Instances, bool) {
-	return c, true
+	return c.instances, true
 }
 
 func (c *Cloud) Zones() (cloudprovider.Zones, bool) {
-	return c, true
+	return c.zones, true
 }
 
 func (c *Cloud) Clusters() (cloudprovider.Clusters, bool) {
@@ -73,7 +80,7 @@ func (c *Cloud) ProviderName() string {
 }
 
 func (c *Cloud) ScrubDNS(nameservers, searches []string) (nsOut, srchOut []string) {
-	return nameservers, searches
+	return nil, nil
 }
 
 func (c *Cloud) HasClusterID() bool {

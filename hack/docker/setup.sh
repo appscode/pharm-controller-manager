@@ -51,7 +51,7 @@ COPY pharm-controller-manager /usr/bin/pharm-controller-manager
 
 ENTRYPOINT ["pharm-controller-manager"]
 EOL
-    local cmd="sudo docker build -t appscode/$IMG:$TAG ."
+    local cmd="docker build -t appscode/$IMG:$TAG ."
     echo $cmd; $cmd
 
     rm pharm-controller-manager Dockerfile

@@ -4,10 +4,10 @@ import (
 	"io"
 	"io/ioutil"
 
+	gv "github.com/JamesClonk/vultr/lib"
 	"github.com/ghodss/yaml"
 	"k8s.io/kubernetes/pkg/cloudprovider"
 	"k8s.io/kubernetes/pkg/controller"
-	gv "github.com/JamesClonk/vultr/lib"
 )
 
 const (
@@ -19,9 +19,10 @@ type tokenSource struct {
 }
 
 type Cloud struct {
-	client  *gv.Client
+	client        *gv.Client
 	instances     cloudprovider.Instances
 	zones         cloudprovider.Zones
+	loadbalancers cloudprovider.LoadBalancer
 }
 
 func init() {
@@ -49,6 +50,7 @@ func newCloud(config io.Reader) (cloudprovider.Interface, error) {
 		client:        vultrClient,
 		instances:     newInstances(vultrClient),
 		zones:         newZones(vultrClient),
+		loadbalancers: newLoadbalancers(vultrClient),
 	}, nil
 }
 
@@ -56,7 +58,7 @@ func (c *Cloud) Initialize(clientBuilder controller.ControllerClientBuilder) {
 }
 
 func (c *Cloud) LoadBalancer() (cloudprovider.LoadBalancer, bool) {
-	return nil, true
+	return c.loadbalancers, true
 }
 
 func (c *Cloud) Instances() (cloudprovider.Instances, bool) {

@@ -1,15 +1,16 @@
 package vultr
 
 import (
+	"errors"
+	"fmt"
+	"strconv"
+	"strings"
+
 	gv "github.com/JamesClonk/vultr/lib"
+	"github.com/appscode/pharm-controller-manager/cloud"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/kubernetes/pkg/cloudprovider"
-	"github.com/appscode/pharm-controller-manager/cloud"
-	"fmt"
-	"errors"
-	"strings"
-	"strconv"
 )
 
 type instances struct {
@@ -41,7 +42,7 @@ func (i *instances) NodeAddressesByProviderID(providerID string) ([]v1.NodeAddre
 	return nodeAddresses(&server)
 }
 
-func nodeAddresses(server *gv.Server) ([]v1.NodeAddress, error)  {
+func nodeAddresses(server *gv.Server) ([]v1.NodeAddress, error) {
 	var addresses []v1.NodeAddress
 	addresses = append(addresses, v1.NodeAddress{Type: v1.NodeHostName, Address: server.Name})
 
@@ -111,11 +112,11 @@ func (i *instances) InstanceExistsByProviderID(providerID string) (bool, error) 
 	return false, nil
 }
 
-func serverByID(client *gv.Client, id string) (gv.Server, error)  {
+func serverByID(client *gv.Client, id string) (gv.Server, error) {
 	return client.GetServer(id)
 }
 
-func serverByName(client *gv.Client, nodeName types.NodeName)(*gv.Server, error)  {
+func serverByName(client *gv.Client, nodeName types.NodeName) (*gv.Server, error) {
 	servers, err := client.GetServers()
 	if err != nil {
 		return nil, err
@@ -128,7 +129,6 @@ func serverByName(client *gv.Client, nodeName types.NodeName)(*gv.Server, error)
 	}
 	return nil, cloudprovider.InstanceNotFound
 }
-
 
 // serverIDFromProviderID returns a server's ID from providerID.
 //

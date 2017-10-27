@@ -1,5 +1,5 @@
 hash: a9d38af1bdc7b1ec73fdbf66b2c879f89ce3225959c89845c4c5745bb0e4dbe2
-updated: 2017-10-25T16:28:26.976983582-07:00
+updated: 2017-10-27T17:14:53.771196214+06:00
 imports:
 - name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
@@ -176,7 +176,7 @@ imports:
 - name: github.com/google/btree
   version: 7d79101e329e5a3adf994758c578dab82b90c017
 - name: github.com/google/go-querystring
-  version: 53e6ce116135b80d037921a7fdd5138cf32d7a8a
+  version: 547ef5ac979778feb2f760cdb5f4eae1a2207b86
   subpackages:
   - query
 - name: github.com/google/gofuzz
@@ -234,6 +234,10 @@ imports:
   version: 6633656539c1639d9d78127b7d47c622b5d7b6dc
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
+- name: github.com/JamesClonk/vultr
+  version: e5dad9a80e61623e1da10706f486596f77469049
+  subpackages:
+  - lib
 - name: github.com/jmespath/go-jmespath
   version: 3433f3ea46d9f8019119e7dd41274e112a2359a9
 - name: github.com/jpillora/go-ogle-analytics
@@ -434,7 +438,7 @@ imports:
   - monitoring/v3
   - pubsub/v1
 - name: google.golang.org/appengine
-  version: 12d5545dc1cfa6047a286d5e853841b6471f4c19
+  version: 4f7eeb5305a4ba1966344836ba4af9996b7b4e05
   subpackages:
   - internal
   - internal/app_identity
@@ -490,7 +494,7 @@ imports:
   - storage/v1
   - storage/v1beta1
 - name: k8s.io/apiextensions-apiserver
-  version: 89b2a556a65053a90552eaed26f810df4a266367
+  version: c2936650b88ffe917bb35fb6f3cb1a86cd73cfe6
   subpackages:
   - pkg/features
 - name: k8s.io/apimachinery

@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	serverIDURL   = "http://169.254.169.254/latest/meta-data/SUBID"
+	serverIDURL   = "http://169.254.169.254/v1/instanceid"
 	serverListURL = "https://api.vultr.com/v1/server/list"
 )
 
@@ -55,32 +55,6 @@ func (z zones) GetZoneByNodeName(nodeName types.NodeName) (cloudprovider.Zone, e
 		return cloudprovider.Zone{}, err
 	}
 	return cloudprovider.Zone{Region: strconv.Itoa(server.RegionID)}, nil
-}
-
-func fetchRegion(token string) (string, error) {
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", serverListURL, nil)
-	if err != nil {
-		return "", err
-	}
-	req.Header.Set("API-Key", token)
-
-	subid, err := fetchServerID()
-	if err != nil {
-		return "", err
-	}
-	q := req.URL.Query()
-	q.Add("SUBID", subid)
-	req.URL.RawQuery = q.Encode()
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	return string(body), err
 }
 
 func fetchServerID() (string, error) {

@@ -153,15 +153,15 @@ docker_release() {
 
 docker_check() {
 	name=$IMG-$(date +%s | sha256sum | base64 | head -c 8 ; echo)
-	local cmd="sudo docker run -d -P -it --name=$name $DOCKER_REGISTRY/$IMG:$TAG"
+	local cmd="docker run -d -P -it --name=$name $DOCKER_REGISTRY/$IMG:$TAG"
 	echo $cmd; $cmd
-	cmd="sudo docker exec -it $name ps aux"
+	cmd="docker exec -it $name ps aux"
 	echo $cmd; $cmd
 	cmd="sleep 5"
 	echo $cmd; $cmd
-	cmd="sudo docker exec -it $name ps aux"
+	cmd="docker exec -it $name ps aux"
 	echo $cmd; $cmd
-	cmd="sudo docker stop $name && docker rm $name"
+	cmd="docker stop $name && docker rm $name"
 	echo $cmd; $cmd
 }
 
@@ -177,7 +177,7 @@ docker_run() {
 	docker_cmd="${DOCKER_CMD:-}"
 	echo pv > .gitignore
 	mkdir -p pv
-	local cmd="sudo docker run -d -P -it $privileged $net $extra_opts --name=$name $DOCKER_REGISTRY/$img:$TAG $docker_cmd"
+	local cmd="docker run -d -P -it $privileged $net $extra_opts --name=$name $DOCKER_REGISTRY/$img:$TAG $docker_cmd"
 	echo $cmd; $cmd
 }
 
@@ -190,9 +190,9 @@ docker_sh() {
 	privileged="${PRIVILEGED_CONTAINER:-}"
 	net="${DOCKER_NETWORK:-}"
 	extra_opts="${EXTRA_DOCKER_OPTS:-}"
-	local cmd="sudo docker run -d -P -it $privileged $net $extra_opts --name=$name $DOCKER_REGISTRY/$img:$TAG"
+	local cmd="docker run -d -P -it $privileged $net $extra_opts --name=$name $DOCKER_REGISTRY/$img:$TAG"
 	echo $cmd; $cmd
-	cmd="sudo docker exec -it $name bash"
+	cmd="docker exec -it $name bash"
 	echo $cmd; $cmd
 }
 

@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/appscode/log"
-	"github.com/appscode/pharm-controller-manager/cloud/providers/vultr"
 	"github.com/golang/glog"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -39,8 +38,8 @@ func NewCmdUp() *cobra.Command {
 				log.Fatalln("Failed to resolve DNS. Reason: %v", err)
 			}
 
-			fmt.Println(vultr.ProviderName)
-			cloud, err := cloudprovider.InitCloudProvider(vultr.ProviderName, s.CloudConfigFile)
+			fmt.Println(s.CloudProvider, "*****************")
+			cloud, err := cloudprovider.InitCloudProvider(s.CloudProvider, s.CloudConfigFile)
 			fmt.Println(s.CloudConfigFile, "----")
 			if err != nil {
 				glog.Fatalf("Cloud provider could not be initialized: %v", err)

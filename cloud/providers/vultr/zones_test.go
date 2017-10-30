@@ -7,7 +7,7 @@ import (
 )
 
 func TestZone(t *testing.T) {
-	fmt.Println(fetchRegion(""))
+	//.Println(fetchRegion(""))
 }
 
 func TestToken(t *testing.T) {

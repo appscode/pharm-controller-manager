@@ -100,12 +100,13 @@ func (i *instances) CurrentNodeName(hostname string) (types.NodeName, error) {
 }
 
 func (i *instances) InstanceExistsByProviderID(providerID string) (bool, error) {
+	//TODO(sanjid): check provider id here
 	id, err := serverIDFromProviderID(providerID)
 	if err != nil {
 		return false, err
 	}
 	_, err = serverByID(i.client, id)
-	if err != nil {
+	if err == nil {
 		return true, nil
 	}
 

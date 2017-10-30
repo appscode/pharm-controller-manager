@@ -3,12 +3,13 @@ package cmds
 import (
 	"flag"
 	"log"
-	_ "k8s.io/kubernetes/pkg/cloudprovider/providers"
+	"strings"
+
 	v "github.com/appscode/go/version"
+	"github.com/jpillora/go-ogle-analytics"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"github.com/jpillora/go-ogle-analytics"
-	"strings"
+	_ "k8s.io/kubernetes/pkg/cloudprovider/providers"
 )
 
 const (

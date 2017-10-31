@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/appscode/log"
+	_ "github.com/appscode/pharm-controller-manager/cloud/providers/softlayer"
+	_ "github.com/appscode/pharm-controller-manager/cloud/providers/vultr"
 	"github.com/golang/glog"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -39,6 +41,7 @@ func NewCmdUp() *cobra.Command {
 			}
 
 			fmt.Println(s.CloudProvider, "*****************")
+
 			cloud, err := cloudprovider.InitCloudProvider(s.CloudProvider, s.CloudConfigFile)
 			fmt.Println(s.CloudConfigFile, "----")
 			if err != nil {

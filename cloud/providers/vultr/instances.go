@@ -146,9 +146,9 @@ func serverIDFromProviderID(providerID string) (string, error) {
 		return "", fmt.Errorf("unexpected providerID format: %s, format should be: vultr://12345", providerID)
 	}
 
-	// since split[0] is actually "digitalocean:"
+	// since split[0] is actually "vultr:"
 	if strings.TrimSuffix(split[0], ":") != ProviderName {
-		return "", fmt.Errorf("provider name from providerID should be digitalocean: %s", providerID)
+		return "", fmt.Errorf("provider name from providerID should be vultr: %s", providerID)
 	}
 
 	return split[2], nil

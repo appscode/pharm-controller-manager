@@ -30,7 +30,7 @@ func (i *instances) NodeAddresses(name types.NodeName) ([]v1.NodeAddress, error)
 	if err != nil {
 		return nil, err
 	}
-	return nodeAddresses(i.virtualServiceClient, *vGuest)
+	return nodeAddresses(i.virtualServiceClient, vGuest)
 }
 
 func (i *instances) NodeAddressesByProviderID(providerID string) ([]v1.NodeAddress, error) {
@@ -44,7 +44,7 @@ func (i *instances) NodeAddressesByProviderID(providerID string) ([]v1.NodeAddre
 		return nil, err
 	}
 
-	return nodeAddresses(i.virtualServiceClient, *vGuest)
+	return nodeAddresses(i.virtualServiceClient, vGuest)
 }
 
 func nodeAddresses(virtualServiceClient services.Virtual_Guest, vGuest datatypes.Virtual_Guest) ([]v1.NodeAddress, error) {
@@ -86,7 +86,7 @@ func (i *instances) InstanceType(nodeName types.NodeName) (string, error) {
 		return "", err
 	}
 
-	return guestInstanceType(*vGuest)
+	return guestInstanceType(vGuest)
 }
 
 func (i *instances) InstanceTypeByProviderID(providerID string) (string, error) {
@@ -100,7 +100,7 @@ func (i *instances) InstanceTypeByProviderID(providerID string) (string, error) 
 		return "", err
 	}
 
-	return guestInstanceType(*vGuest)
+	return guestInstanceType(vGuest)
 }
 
 func guestInstanceType(vGuest datatypes.Virtual_Guest) (string, error) {
@@ -131,30 +131,30 @@ func (i *instances) InstanceExistsByProviderID(providerID string) (bool, error) 
 	return false, nil
 }
 
-func guestByID(virtualServiceClient services.Virtual_Guest, id string) (*datatypes.Virtual_Guest, error) {
+func guestByID(virtualServiceClient services.Virtual_Guest, id string) (datatypes.Virtual_Guest, error) {
 	guestID, err := strconv.Atoi(id)
 	if err != nil {
-		return nil, err
+		return datatypes.Virtual_Guest{}, err
 	}
 
 	vGuest, err := virtualServiceClient.Id(guestID).GetObject()
 	if err != nil {
-		return nil, err
+		return datatypes.Virtual_Guest{}, err
 	}
-	return &vGuest, nil
+	return vGuest, nil
 }
 
-func guestByName(accountServiceClient services.Account, nodeName types.NodeName) (*datatypes.Virtual_Guest, error) {
+func guestByName(accountServiceClient services.Account, nodeName types.NodeName) (datatypes.Virtual_Guest, error) {
 	guests, err := accountServiceClient.GetVirtualGuests()
 	if err != nil {
-		return nil, err
+		return datatypes.Virtual_Guest{}, err
 	}
 	for _, guest := range guests {
 		if *guest.Hostname == string(nodeName) {
-			return &guest, err
+			return guest, err
 		}
 	}
-	return nil, cloudprovider.InstanceNotFound
+	return datatypes.Virtual_Guest{}, cloudprovider.InstanceNotFound
 }
 
 // serverIDFromProviderID returns a server's ID from providerID.
@@ -169,12 +169,12 @@ func guestIDFromProviderID(providerID string) (string, error) {
 
 	split := strings.Split(providerID, "/")
 	if len(split) != 3 {
-		return "", fmt.Errorf("unexpected providerID format: %s, format should be: vultr://12345", providerID)
+		return "", fmt.Errorf("unexpected providerID format: %s, format should be: softlayer://12345", providerID)
 	}
 
-	// since split[0] is actually "digitalocean:"
+	// since split[0] is actually "softlayer:"
 	if strings.TrimSuffix(split[0], ":") != ProviderName {
-		return "", fmt.Errorf("provider name from providerID should be digitalocean: %s", providerID)
+		return "", fmt.Errorf("provider name from providerID should be softlayer: %s", providerID)
 	}
 
 	return split[2], nil

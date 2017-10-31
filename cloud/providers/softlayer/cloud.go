@@ -19,7 +19,7 @@ const (
 type Credential struct {
 	UserName string `json:"username" yaml:"username"`
 	ApiKey   string `json:"apiKey" yaml:"apiKey"`
-	Region   string `json:"region" yaml:"region"`
+	Zone   string `json:"zone" yaml:"zone"`
 }
 
 type Cloud struct {
@@ -61,7 +61,7 @@ func newCloud(config io.Reader) (*Cloud, error) {
 		accountServiceClient: accountServiceClient,
 
 		instances:     newInstances(virtualServiceClient, accountServiceClient),
-		zones:         newZones(virtualServiceClient, accountServiceClient, cred.Region),
+		zones:         newZones(virtualServiceClient, accountServiceClient, cred.Zone),
 		loadbalancers: newLoadbalancers(virtualServiceClient, accountServiceClient),
 	}, nil
 }

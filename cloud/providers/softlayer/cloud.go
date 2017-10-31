@@ -19,7 +19,7 @@ const (
 type Credential struct {
 	UserName string `json:"username" yaml:"username"`
 	ApiKey   string `json:"apiKey" yaml:"apiKey"`
-	Zone   string `json:"zone" yaml:"zone"`
+	Zone     string `json:"zone" yaml:"zone"`
 }
 
 type Cloud struct {

@@ -1,5 +1,5 @@
-hash: a9d38af1bdc7b1ec73fdbf66b2c879f89ce3225959c89845c4c5745bb0e4dbe2
-updated: 2017-10-31T12:38:36.943718077+06:00
+hash: 9a89c38d78a5d41c1eaee502f8779dc2c8326fda1182bb8908f99d848c0e5126
+updated: 2017-11-01T14:31:58.325925973+06:00
 imports:
 - name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
@@ -90,8 +90,6 @@ imports:
   version: 01aeca54ebda6e0fbfafd0a524d234159c05ec20
 - name: github.com/digitalocean/godo
   version: 77ea48de76a7b31b234d854f15d003c68bb2fb90
-  subpackages:
-  - context
 - name: github.com/docker/distribution
   version: edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c
   subpackages:
@@ -175,10 +173,6 @@ imports:
   - ptypes/timestamp
 - name: github.com/google/btree
   version: 7d79101e329e5a3adf994758c578dab82b90c017
-- name: github.com/google/go-querystring
-  version: 547ef5ac979778feb2f760cdb5f4eae1a2207b86
-  subpackages:
-  - query
 - name: github.com/google/gofuzz
   version: 44d81051d367757e1c7c6a5a86423ece9afcf63c
 - name: github.com/googleapis/gnostic
@@ -335,6 +329,8 @@ imports:
   version: 5bf94b69c6b68ee1b541973bb8e1144db23a194b
 - name: github.com/shurcooL/sanitized_anchor_name
   version: 10ef21a441db47d8b13ebcc5fd2310f636973c77
+- name: github.com/sirupsen/logrus
+  version: 89742aefa4b206dcf400792f3bd35b542998eb3b
 - name: github.com/softlayer/softlayer-go
   version: 17470076bfd71eee8ed8e592c72a8b305826f809
   subpackages:
@@ -349,8 +345,10 @@ imports:
   - doc
 - name: github.com/spf13/pflag
   version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
-- name: github.com/tent/http-link-go
-  version: ac974c61c2f990f4115b119354b5e0b47550e888
+- name: github.com/taoh/linodego
+  version: 53e0016231c0625e3049e64d3071ba3021e6da7c
+  repo: https://github.com/appscode/linodego.git
+  vcs: git
 - name: github.com/vmware/govmomi
   version: b8b228cfbad7f0a69ed90393ca9aee085d3c6ef1
   subpackages:

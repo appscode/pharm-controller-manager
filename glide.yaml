@@ -21,3 +21,7 @@ import:
   version: v5.0.0
 - package: k8s.io/kubernetes
   version: v1.8.0
+- package: github.com/taoh/linodego
+  repo: https://github.com/appscode/linodego.git
+  version: master
+  vcs: git

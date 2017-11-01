@@ -20,23 +20,23 @@ subjects:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: cloud-controller-manager
+  name: pharm-controller-manager
   labels:
-    app: cloud-controller-manager
+    app: pharm-controller-manager
   namespace: kube-system
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: cloud-controller-manager
+        app: pharm-controller-manager
     spec:
       serviceAccountName: cloud-controller-manager
       nodeSelector:
         node-role.kubernetes.io/master: ""
       tolerations:
       # this taint is set by all kubelets running `--cloud-provider=external`
-      # so we should tolerate it to schedule the digitalocean ccm
+      # so we should tolerate it to schedule the softlayer ccm
       - key: "node.cloudprovider.kubernetes.io/uninitialized"
         value: "true"
         effect: "NoSchedule"
@@ -48,11 +48,11 @@ spec:
       containers:
         - image: appscode/pharm-controller-manager:softlayer
           imagePullPolicy: Always
-          name: ccm
+          name: pharm-controller-manager
           args:
           - up
           - --cloud-config=/etc/kubernetes/cloud-config
-          - --cloud-provider=vultr
+          - --cloud-provider=softlayer
           - --v=3
           volumeMounts:
           - mountPath: /etc/kubernetes

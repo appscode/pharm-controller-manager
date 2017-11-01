@@ -1,19 +1,66 @@
 package softlayer
 
 import (
-	"github.com/appscode/pharm-controller-manager/cloud"
+	"strconv"
+
+	"github.com/softlayer/softlayer-go/services"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/kubernetes/pkg/cloudprovider"
 )
 
-func (c *Cloud) GetZone() (cloudprovider.Zone, error) {
-	return cloudprovider.Zone{}, cloud.ErrNotImplemented
+type zones struct {
+	virtualServiceClient services.Virtual_Guest
+	accountServiceClient services.Account
+
+	zone string
 }
 
-func (c *Cloud) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error) {
-	return cloudprovider.Zone{}, cloud.ErrNotImplemented
+func newZones(virtualServiceClient services.Virtual_Guest,
+	accountServiceClient services.Account, region string) cloudprovider.Zones {
+	return &zones{virtualServiceClient: virtualServiceClient,
+		accountServiceClient: accountServiceClient, zone: region}
 }
 
-func (c *Cloud) GetZoneByNodeName(nodeName types.NodeName) (cloudprovider.Zone, error) {
-	return cloudprovider.Zone{}, cloud.ErrNotImplemented
+func (z zones) GetZone() (cloudprovider.Zone, error) {
+	return cloudprovider.Zone{Region: z.zone}, nil
+}
+
+func (z zones) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error) {
+	id, err := guestIDFromProviderID(providerID)
+	if err != nil {
+		return cloudprovider.Zone{}, err
+	}
+
+	location, err := fetchDatacenterLocation(z.virtualServiceClient, id)
+	if err != nil {
+		return cloudprovider.Zone{}, err
+	}
+
+	return cloudprovider.Zone{Region: location}, nil
+
+}
+
+func (z zones) GetZoneByNodeName(nodeName types.NodeName) (cloudprovider.Zone, error) {
+	vGuest, err := guestByName(z.accountServiceClient, nodeName)
+	if err != nil {
+		return cloudprovider.Zone{}, err
+	}
+	location, err := fetchDatacenterLocation(z.virtualServiceClient, strconv.Itoa(*vGuest.Id))
+	if err != nil {
+		return cloudprovider.Zone{}, err
+	}
+	return cloudprovider.Zone{Region: location}, nil
+}
+
+func fetchDatacenterLocation(virtualServiceClient services.Virtual_Guest, id string) (string, error) {
+	guestID, err := strconv.Atoi(id)
+	if err != nil {
+		return "", err
+	}
+
+	datacenter, err := virtualServiceClient.Id(guestID).GetDatacenter()
+	if err != nil {
+		return "", err
+	}
+	return *datacenter.Name, nil
 }

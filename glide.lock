@@ -1,5 +1,5 @@
 hash: a9d38af1bdc7b1ec73fdbf66b2c879f89ce3225959c89845c4c5745bb0e4dbe2
-updated: 2017-10-27T17:14:53.771196214+06:00
+updated: 2017-10-31T12:38:36.943718077+06:00
 imports:
 - name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
@@ -323,6 +323,8 @@ imports:
   - rackspace/identity/v2/tokens
   - testhelper
   - testhelper/client
+- name: github.com/renier/xmlrpc
+  version: ce4a1a486c03a3c6e1816df25b8c559d1879d380
 - name: github.com/rubiojr/go-vhd
   version: 0bfd3b39853cdde5762efda92289f14b0ac0491b
   subpackages:
@@ -333,8 +335,16 @@ imports:
   version: 5bf94b69c6b68ee1b541973bb8e1144db23a194b
 - name: github.com/shurcooL/sanitized_anchor_name
   version: 10ef21a441db47d8b13ebcc5fd2310f636973c77
+- name: github.com/softlayer/softlayer-go
+  version: 17470076bfd71eee8ed8e592c72a8b305826f809
+  subpackages:
+  - config
+  - datatypes
+  - services
+  - session
+  - sl
 - name: github.com/spf13/cobra
-  version: 7b2c5ac9fc04fc5efafb60700713d4fa609b777b
+  version: b3426bbac13d7110c4d8fce456ea0012f79f3b8b
   subpackages:
   - doc
 - name: github.com/spf13/pflag
@@ -411,6 +421,10 @@ imports:
   version: b19bf474d317b857955b12035d2c5acb57ce8b01
   subpackages:
   - cases
+  - encoding
+  - encoding/charmap
+  - encoding/internal
+  - encoding/internal/identifier
   - internal
   - internal/tag
   - language
@@ -494,7 +508,7 @@ imports:
   - storage/v1
   - storage/v1beta1
 - name: k8s.io/apiextensions-apiserver
-  version: c2936650b88ffe917bb35fb6f3cb1a86cd73cfe6
+  version: 51a1910459f074162eb4e25233e461fe91e99405
   subpackages:
   - pkg/features
 - name: k8s.io/apimachinery

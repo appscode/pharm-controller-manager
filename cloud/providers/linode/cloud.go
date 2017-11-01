@@ -5,8 +5,8 @@ import (
 	"io"
 	"io/ioutil"
 
-	"github.com/appscode/pharm-controller-manager/cloud"
 	"github.com/ghodss/yaml"
+	"github.com/taoh/linodego"
 	"k8s.io/kubernetes/pkg/cloudprovider"
 	"k8s.io/kubernetes/pkg/controller"
 )
@@ -15,11 +15,15 @@ const (
 	ProviderName = "linode"
 )
 
-type Config struct {
+type Credential struct {
 	Token string `json:"token" yaml:"token"`
+	Zone  string `json:"zone" yaml:"zone"`
 }
 type Cloud struct {
-	Config
+	client        *linodego.Client
+	instances     cloudprovider.Instances
+	zones         cloudprovider.Zones
+	loadbalancers cloudprovider.LoadBalancer
 }
 
 func init() {
@@ -31,33 +35,39 @@ func init() {
 }
 
 func newCloud(config io.Reader) (*Cloud, error) {
-	var do Cloud
+	cred := &Credential{}
 	contents, err := ioutil.ReadAll(config)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println(string(contents))
 
-	err = yaml.Unmarshal(contents, &do)
+	err = yaml.Unmarshal(contents, cred)
 	if err != nil {
 		return nil, err
 	}
-
-	return nil, cloud.ErrNotImplemented
+	linodeClient := linodego.NewClient(cred.Token, nil)
+	return &Cloud{
+		client:        linodeClient,
+		instances:     newInstances(linodeClient),
+		zones:         newZones(linodeClient, cred.Zone),
+		loadbalancers: newLoadbalancers(linodeClient),
+	}, nil
 }
 
-func (c *Cloud) Initialize(clientBuilder controller.ControllerClientBuilder) {}
+func (c *Cloud) Initialize(clientBuilder controller.ControllerClientBuilder) {
+}
 
 func (c *Cloud) LoadBalancer() (cloudprovider.LoadBalancer, bool) {
-	return nil, false
+	return c.loadbalancers, true
 }
 
 func (c *Cloud) Instances() (cloudprovider.Instances, bool) {
-	return c, true
+	return c.instances, true
 }
 
 func (c *Cloud) Zones() (cloudprovider.Zones, bool) {
-	return c, true
+	return c.zones, true
 }
 
 func (c *Cloud) Clusters() (cloudprovider.Clusters, bool) {
@@ -73,7 +83,7 @@ func (c *Cloud) ProviderName() string {
 }
 
 func (c *Cloud) ScrubDNS(nameservers, searches []string) (nsOut, srchOut []string) {
-	return nameservers, searches
+	return nil, nil
 }
 
 func (c *Cloud) HasClusterID() bool {

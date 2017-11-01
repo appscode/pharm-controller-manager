@@ -1,19 +1,43 @@
 package linode
 
 import (
-	"github.com/appscode/pharm-controller-manager/cloud"
+	"strconv"
+
+	"github.com/taoh/linodego"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/kubernetes/pkg/cloudprovider"
 )
 
-func (c *Cloud) GetZone() (cloudprovider.Zone, error) {
-	return cloudprovider.Zone{}, cloud.ErrNotImplemented
+type zones struct {
+	client *linodego.Client
+	zone   string
 }
 
-func (c *Cloud) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error) {
-	return cloudprovider.Zone{}, cloud.ErrNotImplemented
+func newZones(client *linodego.Client, zone string) cloudprovider.Zones {
+	return zones{client, zone}
 }
 
-func (c *Cloud) GetZoneByNodeName(nodeName types.NodeName) (cloudprovider.Zone, error) {
-	return cloudprovider.Zone{}, cloud.ErrNotImplemented
+func (z zones) GetZone() (cloudprovider.Zone, error) {
+	return cloudprovider.Zone{Region: z.zone}, nil
+}
+
+func (z zones) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error) {
+	id, err := serverIDFromProviderID(providerID)
+	if err != nil {
+		return cloudprovider.Zone{}, err
+	}
+	linode, err := linodeByID(z.client, id)
+	if err != nil {
+		return cloudprovider.Zone{}, err
+	}
+
+	return cloudprovider.Zone{Region: strconv.Itoa(linode.DataCenterId)}, nil
+}
+
+func (z zones) GetZoneByNodeName(nodeName types.NodeName) (cloudprovider.Zone, error) {
+	linode, err := linodeByName(z.client, nodeName)
+	if err != nil {
+		return cloudprovider.Zone{}, err
+	}
+	return cloudprovider.Zone{Region: strconv.Itoa(linode.DataCenterId)}, nil
 }

@@ -1,43 +1,176 @@
 package linode
 
 import (
+	"errors"
+	"fmt"
+	"strconv"
+	"strings"
+
 	"github.com/appscode/pharm-controller-manager/cloud"
+	"github.com/taoh/linodego"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/kubernetes/pkg/cloudprovider"
 )
 
-func (c *Cloud) NodeAddresses(name types.NodeName) ([]v1.NodeAddress, error) {
-	return nil, cloud.ErrNotImplemented
+type instances struct {
+	client *linodego.Client
 }
 
-func (c *Cloud) NodeAddressesByProviderID(providerID string) ([]v1.NodeAddress, error) {
-	return nil, cloud.ErrNotImplemented
+func newInstances(client *linodego.Client) cloudprovider.Instances {
+	return &instances{client}
 }
 
-func (c *Cloud) ExternalID(nodeName types.NodeName) (string, error) {
-	return "", cloud.ErrNotImplemented
+func (i *instances) NodeAddresses(name types.NodeName) ([]v1.NodeAddress, error) {
+	linode, err := linodeByName(i.client, name)
+	if err != nil {
+		return nil, err
+	}
+	return i.nodeAddresses(linode)
 }
 
-func (c *Cloud) InstanceID(nodeName types.NodeName) (string, error) {
-	return "", cloud.ErrNotImplemented
+func (i *instances) NodeAddressesByProviderID(providerID string) ([]v1.NodeAddress, error) {
+	id, err := serverIDFromProviderID(providerID)
+	if err != nil {
+		return nil, err
+	}
+
+	linode, err := linodeByID(i.client, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return i.nodeAddresses(linode)
 }
 
-func (c *Cloud) InstanceType(nodeName types.NodeName) (string, error) {
-	return "", cloud.ErrNotImplemented
+func (i *instances) nodeAddresses(linode *linodego.Linode) ([]v1.NodeAddress, error) {
+	var addresses []v1.NodeAddress
+	addresses = append(addresses, v1.NodeAddress{Type: v1.NodeHostName, Address: linode.Label.String()})
+
+	ips, err := i.client.Ip.List(linode.LinodeId, 0)
+	if err != nil {
+		return nil, err
+	}
+	var privateIP, publicIP string
+
+	for _, ip := range ips.FullIPAddresses {
+		if ip.IsPublic == 1 {
+			publicIP = ip.IPAddress
+		} else {
+			privateIP = ip.IPAddress
+		}
+	}
+	if privateIP == "" {
+		return nil, fmt.Errorf("could not get private ip")
+	}
+	addresses = append(addresses, v1.NodeAddress{Type: v1.NodeInternalIP, Address: privateIP})
+
+	if publicIP == "" {
+		return nil, fmt.Errorf("could not get public ip")
+	}
+	addresses = append(addresses, v1.NodeAddress{Type: v1.NodeExternalIP, Address: publicIP})
+
+	return addresses, nil
 }
 
-func (c *Cloud) InstanceTypeByProviderID(providerID string) (string, error) {
-	return "", cloud.ErrNotImplemented
+func (i *instances) ExternalID(nodeName types.NodeName) (string, error) {
+	return i.InstanceID(nodeName)
 }
 
-func (c *Cloud) AddSSHKeyToAllInstances(user string, keyData []byte) error {
+func (i *instances) InstanceID(nodeName types.NodeName) (string, error) {
+	linode, err := linodeByName(i.client, nodeName)
+	if err != nil {
+		return "", err
+	}
+	return strconv.Itoa(linode.LinodeId), nil
+}
+
+func (i *instances) InstanceType(nodeName types.NodeName) (string, error) {
+	linode, err := linodeByName(i.client, nodeName)
+	if err != nil {
+		return "", err
+	}
+	return strconv.Itoa(linode.PlanId), nil
+}
+
+func (i *instances) InstanceTypeByProviderID(providerID string) (string, error) {
+	id, err := serverIDFromProviderID(providerID)
+	if err != nil {
+		return "", err
+	}
+	linode, err := linodeByID(i.client, id)
+	if err != nil {
+		return "", err
+	}
+	return strconv.Itoa(linode.PlanId), nil
+}
+
+func (i *instances) AddSSHKeyToAllInstances(user string, keyData []byte) error {
 	return cloud.ErrNotImplemented
 }
 
-func (c *Cloud) CurrentNodeName(hostname string) (types.NodeName, error) {
-	return "", cloud.ErrNotImplemented
+func (i *instances) CurrentNodeName(hostname string) (types.NodeName, error) {
+	return types.NodeName(hostname), nil
 }
 
-func (c *Cloud) InstanceExistsByProviderID(providerID string) (bool, error) {
-	return false, cloud.ErrNotImplemented
+func (i *instances) InstanceExistsByProviderID(providerID string) (bool, error) {
+	id, err := serverIDFromProviderID(providerID)
+	if err != nil {
+		return false, err
+	}
+	_, err = linodeByID(i.client, id)
+	if err == nil {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func linodeByID(client *linodego.Client, id string) (*linodego.Linode, error) {
+	linodeID, err := strconv.Atoi(id)
+	if err != nil {
+		return nil, err
+	}
+	linode, err := client.Linode.List(linodeID)
+	if err != nil {
+		return nil, err
+	}
+	return &linode.Linodes[0], nil
+
+}
+func linodeByName(client *linodego.Client, nodeName types.NodeName) (*linodego.Linode, error) {
+	linodes, err := client.Linode.List(0)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, linode := range linodes.Linodes {
+		if linode.Label.String() == string(nodeName) {
+			return &linode, nil
+		}
+	}
+	return nil, cloudprovider.InstanceNotFound
+}
+
+// serverIDFromProviderID returns a server's ID from providerID.
+//
+// The providerID spec should be retrievable from the Kubernetes
+// node object. The expected format is: linode://server-id
+
+func serverIDFromProviderID(providerID string) (string, error) {
+	if providerID == "" {
+		return "", errors.New("providerID cannot be empty string")
+	}
+
+	split := strings.Split(providerID, "/")
+	if len(split) != 3 {
+		return "", fmt.Errorf("unexpected providerID format: %s, format should be: linode://12345", providerID)
+	}
+
+	// since split[0] is actually "linode:"
+	if strings.TrimSuffix(split[0], ":") != ProviderName {
+		return "", fmt.Errorf("provider name from providerID should be linode: %s", providerID)
+	}
+
+	return split[2], nil
 }

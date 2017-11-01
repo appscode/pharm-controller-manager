@@ -45,7 +45,7 @@ build_docker() {
 FROM alpine
 
 RUN set -x \
-  && apk add --update --no-cache ca-certificates curl
+  && apk add --update --no-cache ca-certificates curl tzdata
 
 COPY pharm-controller-manager /usr/bin/pharm-controller-manager
 

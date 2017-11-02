@@ -1,25 +1,30 @@
 package packet
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 
-	"github.com/appscode/pharm-controller-manager/cloud"
 	"github.com/ghodss/yaml"
 	"k8s.io/kubernetes/pkg/cloudprovider"
 	"k8s.io/kubernetes/pkg/controller"
+	"github.com/packethost/packngo"
 )
 
 const (
 	ProviderName = "packet"
 )
 
-type Config struct {
-	Token string `json:"token" yaml:"token"`
+type credential struct {
+	Project string `json:"project" yaml:"project"`
+	ApiKey string `json:"apiKey" yaml:"apiKey"`
+	Zone     string `json:"zone" yaml:"zone"`
 }
+
 type Cloud struct {
-	Config
+	client  *packngo.Client
+	instances     cloudprovider.Instances
+	zones         cloudprovider.Zones
+	loadbalancers cloudprovider.LoadBalancer
 }
 
 func init() {
@@ -31,33 +36,40 @@ func init() {
 }
 
 func newCloud(config io.Reader) (*Cloud, error) {
-	var do Cloud
+	packet := &credential{}
 	contents, err := ioutil.ReadAll(config)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(string(contents))
 
-	err = yaml.Unmarshal(contents, &do)
+	err = yaml.Unmarshal(contents, packet)
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, cloud.ErrNotImplemented
+	packetClient :=  packngo.NewClient("", packet.ApiKey, nil)
+
+	return &Cloud{
+		client:        packetClient,
+		instances:     newInstances(packetClient, packet.Project),
+		zones:         newZones(packetClient, packet.Project, packet.Zone),
+		loadbalancers: newLoadbalancers(packetClient),
+	}, nil
 }
 
-func (c *Cloud) Initialize(clientBuilder controller.ControllerClientBuilder) {}
+func (c *Cloud) Initialize(clientBuilder controller.ControllerClientBuilder) {
+}
 
 func (c *Cloud) LoadBalancer() (cloudprovider.LoadBalancer, bool) {
-	return nil, false
+	return c.loadbalancers, true
 }
 
 func (c *Cloud) Instances() (cloudprovider.Instances, bool) {
-	return c, true
+	return c.instances, true
 }
 
 func (c *Cloud) Zones() (cloudprovider.Zones, bool) {
-	return c, true
+	return c.zones, true
 }
 
 func (c *Cloud) Clusters() (cloudprovider.Clusters, bool) {
@@ -73,7 +85,7 @@ func (c *Cloud) ProviderName() string {
 }
 
 func (c *Cloud) ScrubDNS(nameservers, searches []string) (nsOut, srchOut []string) {
-	return nameservers, searches
+	return nil, nil
 }
 
 func (c *Cloud) HasClusterID() bool {

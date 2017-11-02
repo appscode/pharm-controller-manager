@@ -33,3 +33,5 @@ import:
   version: master
   repo: https://github.com/tamalsaha/gotty-client.git
   vcs: git
+- package: github.com/gorilla/websocket
+  version: 2d1e4548da234d9cb742cc3628556fef86aafbac # 6eb6ad425a89d9da7a5549bc6da8f79ba5c17844

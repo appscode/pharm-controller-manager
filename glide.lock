@@ -1,5 +1,5 @@
-hash: 9a89c38d78a5d41c1eaee502f8779dc2c8326fda1182bb8908f99d848c0e5126
-updated: 2017-11-01T14:31:58.325925973+06:00
+hash: 7f9dd6fd311a047253fcad56f39fc18ddb64086630697dd4934a77a2b1aa5bf4
+updated: 2017-11-02T13:03:46.661535055+06:00
 imports:
 - name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
@@ -78,6 +78,8 @@ imports:
   version: 71acacd42f85e5e82f70a55327789582a5200a90
   subpackages:
   - md2man
+- name: github.com/creack/goselect
+  version: 40085cf5fd629ccd88dc328895f1f137d09a1de4
 - name: github.com/d2g/dhcp4
   version: a1d1b6c41b1ce8a71a5121a9cee31809c4707d9c
 - name: github.com/d2g/dhcp4client
@@ -120,6 +122,7 @@ imports:
   - pkg/jsonmessage
   - pkg/longpath
   - pkg/mount
+  - pkg/namesgenerator
   - pkg/stdcopy
   - pkg/symlink
   - pkg/system
@@ -134,6 +137,8 @@ imports:
   - tlsconfig
 - name: github.com/docker/go-units
   version: 9e638d38cf6977a37a8ea0078f3ee75a7cdb2dd1
+- name: github.com/dustin/go-humanize
+  version: f3565c9525600a911af3bd34f8b535ea81b2a9e0
 - name: github.com/emicklei/go-restful
   version: ff4f55a206334ef123e4f79bbf348980da81ca46
   subpackages:
@@ -214,6 +219,8 @@ imports:
   - openstack/networking/v2/ports
   - openstack/utils
   - pagination
+- name: github.com/gorilla/websocket
+  version: 2d1e4548da234d9cb742cc3628556fef86aafbac
 - name: github.com/gregjones/httpcache
   version: 787624de3eb7bd915c329cba748687a3b22666a6
   subpackages:
@@ -248,6 +255,8 @@ imports:
   - buffer
   - jlexer
   - jwriter
+- name: github.com/mattn/go-isatty
+  version: 56b76bdf51f7708750eac80fa38b952bb9f32639
 - name: github.com/matttproud/golang_protobuf_extensions
   version: fc2b8d3a73c4867e51861bbdd5ae3c1f0869dd6a
   subpackages:
@@ -260,6 +269,12 @@ imports:
   - signal
 - name: github.com/mitchellh/mapstructure
   version: 53818660ed4955e899c0bcafa97299a388bd7c8e
+- name: github.com/moul/anonuuid
+  version: 609b752a95effbbef26d134ac18ed6f57e01b98e
+- name: github.com/moul/gotty-client
+  version: 990fa23220655da4599785d2821e9e3f7488fd52
+  repo: https://github.com/tamalsaha/gotty-client.git
+  vcs: git
 - name: github.com/opencontainers/go-digest
   version: a6d0ee40d4207ea02364bd3b9e8e77b9159ba1eb
 - name: github.com/opencontainers/image-spec
@@ -319,6 +334,10 @@ imports:
   - testhelper/client
 - name: github.com/renier/xmlrpc
   version: ce4a1a486c03a3c6e1816df25b8c559d1879d380
+- name: github.com/renstrom/fuzzysearch
+  version: 2d205ac6ec17a839a94bdbfd16d2fa6c6dada2e0
+  subpackages:
+  - fuzzy
 - name: github.com/rubiojr/go-vhd
   version: 0bfd3b39853cdde5762efda92289f14b0ac0491b
   subpackages:
@@ -327,6 +346,14 @@ imports:
   version: 300106c228d52c8941d4b3de6054a6062a86dda3
 - name: github.com/satori/uuid
   version: 5bf94b69c6b68ee1b541973bb8e1144db23a194b
+- name: github.com/scaleway/scaleway-cli
+  version: 53e53aa5e3ecd18f49ec69471e82c80d288afacc
+  repo: https://github.com/tamalsaha/scaleway-cli.git
+  vcs: git
+  subpackages:
+  - pkg/api
+  - pkg/sshcommand
+  - pkg/utils
 - name: github.com/shurcooL/sanitized_anchor_name
   version: 10ef21a441db47d8b13ebcc5fd2310f636973c77
 - name: github.com/sirupsen/logrus
@@ -410,6 +437,10 @@ imports:
   - internal
   - jws
   - jwt
+- name: golang.org/x/sync
+  version: 316e794f7b5e3df4e95175a45a5fb8b12f85cb4f
+  subpackages:
+  - errgroup
 - name: golang.org/x/sys
   version: 7ddbeae9ae08c6a06a59597f0c9edbc5ff2444ce
   subpackages:

@@ -16,7 +16,7 @@ const (
 )
 
 type Credential struct {
-	Organization string `json:"token" yaml:"organization"`
+	Organization string `json:"organization" yaml:"organization"`
 	Token        string `json:"token" yaml:"token"`
 	Region       string `json:"region" yaml:"region"`
 }

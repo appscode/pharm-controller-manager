@@ -122,7 +122,7 @@ func serverByName(client *scw.ScalewayAPI, nodeName types.NodeName) (*scw.Scalew
 	}
 
 	for _, server := range *servers {
-		if server.Name == string(nodeName) {
+		if strings.ToLower(server.Name) == string(nodeName) {
 			return &server, nil
 		}
 	}

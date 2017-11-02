@@ -5,8 +5,8 @@ import (
 	"io"
 	"io/ioutil"
 
-	"github.com/appscode/pharm-controller-manager/cloud"
 	"github.com/ghodss/yaml"
+	scw "github.com/scaleway/scaleway-cli/pkg/api"
 	"k8s.io/kubernetes/pkg/cloudprovider"
 	"k8s.io/kubernetes/pkg/controller"
 )
@@ -15,11 +15,16 @@ const (
 	ProviderName = "scaleway"
 )
 
-type Config struct {
-	Token string `json:"token" yaml:"token"`
+type Credential struct {
+	Organization string `json:"organization" yaml:"organization"`
+	Token        string `json:"token" yaml:"token"`
+	Region       string `json:"region" yaml:"region"`
 }
 type Cloud struct {
-	Config
+	client        *scw.ScalewayAPI
+	instances     cloudprovider.Instances
+	zones         cloudprovider.Zones
+	loadbalancers cloudprovider.LoadBalancer
 }
 
 func init() {
@@ -31,33 +36,43 @@ func init() {
 }
 
 func newCloud(config io.Reader) (*Cloud, error) {
-	var do Cloud
+	cred := &Credential{}
 	contents, err := ioutil.ReadAll(config)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println(string(contents))
 
-	err = yaml.Unmarshal(contents, &do)
+	err = yaml.Unmarshal(contents, cred)
+	if err != nil {
+		return nil, err
+	}
+	client, err := scw.NewScalewayAPI(cred.Organization, cred.Token, "pharmer", cred.Region)
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, cloud.ErrNotImplemented
+	return &Cloud{
+		client:        client,
+		instances:     newInstances(client),
+		zones:         newZones(client, cred.Region),
+		loadbalancers: newLoadbalancers(client),
+	}, nil
 }
 
-func (c *Cloud) Initialize(clientBuilder controller.ControllerClientBuilder) {}
+func (c *Cloud) Initialize(clientBuilder controller.ControllerClientBuilder) {
+}
 
 func (c *Cloud) LoadBalancer() (cloudprovider.LoadBalancer, bool) {
-	return nil, false
+	return c.loadbalancers, true
 }
 
 func (c *Cloud) Instances() (cloudprovider.Instances, bool) {
-	return c, true
+	return c.instances, true
 }
 
 func (c *Cloud) Zones() (cloudprovider.Zones, bool) {
-	return c, true
+	return c.zones, true
 }
 
 func (c *Cloud) Clusters() (cloudprovider.Clusters, bool) {
@@ -73,7 +88,7 @@ func (c *Cloud) ProviderName() string {
 }
 
 func (c *Cloud) ScrubDNS(nameservers, searches []string) (nsOut, srchOut []string) {
-	return nameservers, searches
+	return nil, nil
 }
 
 func (c *Cloud) HasClusterID() bool {

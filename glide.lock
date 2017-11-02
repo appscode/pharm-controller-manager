@@ -1,5 +1,5 @@
-hash: 7f9dd6fd311a047253fcad56f39fc18ddb64086630697dd4934a77a2b1aa5bf4
-updated: 2017-11-02T13:03:46.661535055+06:00
+hash: 9a89c38d78a5d41c1eaee502f8779dc2c8326fda1182bb8908f99d848c0e5126
+updated: 2017-11-02T16:59:51.614999406+06:00
 imports:
 - name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
@@ -282,6 +282,8 @@ imports:
   subpackages:
   - specs-go
   - specs-go/v1
+- name: github.com/packethost/packngo
+  version: 57c0c52ff7d4931ba14f77b683fba0b859443279
 - name: github.com/peterbourgon/diskv
   version: 5f041e8faa004a95c88a202771f4cc3e991971e6
 - name: github.com/pkg/errors

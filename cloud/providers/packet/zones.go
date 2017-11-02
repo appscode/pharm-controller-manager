@@ -1,19 +1,42 @@
 package packet
 
 import (
-	"github.com/appscode/pharm-controller-manager/cloud"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/kubernetes/pkg/cloudprovider"
+	"github.com/packethost/packngo"
 )
 
-func (c *Cloud) GetZone() (cloudprovider.Zone, error) {
-	return cloudprovider.Zone{}, cloud.ErrNotImplemented
+type zones struct {
+	client  *packngo.Client
+	project string
+	zone    string
 }
 
-func (c *Cloud) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error) {
-	return cloudprovider.Zone{}, cloud.ErrNotImplemented
+func newZones(client *packngo.Client, projectID, zone string) cloudprovider.Zones {
+	return zones{client, projectID, zone}
 }
 
-func (c *Cloud) GetZoneByNodeName(nodeName types.NodeName) (cloudprovider.Zone, error) {
-	return cloudprovider.Zone{}, cloud.ErrNotImplemented
+func (z zones) GetZone() (cloudprovider.Zone, error) {
+	return cloudprovider.Zone{Region: z.zone}, nil
+}
+
+func (z zones) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error) {
+	id, err := deviceIDFromProviderID(providerID)
+	if err != nil {
+		return cloudprovider.Zone{}, err
+	}
+	device, err := deviceByID(z.client, id)
+	if err != nil {
+		return cloudprovider.Zone{}, err
+	}
+	return cloudprovider.Zone{Region: device.Facility.ID}, nil
+
+}
+
+func (z zones) GetZoneByNodeName(nodeName types.NodeName) (cloudprovider.Zone, error) {
+	device, err := deviceByName(z.client, z.project, nodeName)
+	if err != nil {
+		return cloudprovider.Zone{}, err
+	}
+	return cloudprovider.Zone{Region: device.Facility.ID}, nil
 }

@@ -25,3 +25,11 @@ import:
   repo: https://github.com/appscode/linodego.git
   version: master
   vcs: git
+- package: github.com/scaleway/scaleway-cli
+  version: logrus
+  repo: https://github.com/tamalsaha/scaleway-cli.git
+  vcs: git
+- package: github.com/moul/gotty-client
+  version: master
+  repo: https://github.com/tamalsaha/gotty-client.git
+  vcs: git

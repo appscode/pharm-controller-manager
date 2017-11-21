@@ -90,7 +90,7 @@ func (i *instances) InstanceType(nodeName types.NodeName) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return device.Plan.Name, nil
+	return device.Plan.Slug, nil
 }
 
 func (i *instances) InstanceTypeByProviderID(providerID string) (string, error) {
@@ -102,7 +102,7 @@ func (i *instances) InstanceTypeByProviderID(providerID string) (string, error) 
 	if err != nil {
 		return "", err
 	}
-	return device.Plan.Name, nil
+	return device.Plan.Slug, nil
 }
 
 func (i *instances) AddSSHKeyToAllInstances(user string, keyData []byte) error {

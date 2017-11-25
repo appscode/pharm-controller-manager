@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/appscode/log"
+	"github.com/appscode/go/log"
 	_ "github.com/appscode/pharm-controller-manager/cloud/providers"
 	"github.com/golang/glog"
 	"github.com/spf13/cobra"

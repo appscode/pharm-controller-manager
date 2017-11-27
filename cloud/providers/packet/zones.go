@@ -1,9 +1,9 @@
 package packet
 
 import (
+	"github.com/packethost/packngo"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/kubernetes/pkg/cloudprovider"
-	"github.com/packethost/packngo"
 )
 
 type zones struct {

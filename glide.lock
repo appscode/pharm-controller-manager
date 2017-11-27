@@ -1,5 +1,5 @@
-hash: 9a89c38d78a5d41c1eaee502f8779dc2c8326fda1182bb8908f99d848c0e5126
-updated: 2017-11-02T16:59:51.614999406+06:00
+hash: 7f9dd6fd311a047253fcad56f39fc18ddb64086630697dd4934a77a2b1aa5bf4
+updated: 2017-11-27T18:20:30.610240854+06:00
 imports:
 - name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
@@ -7,10 +7,11 @@ imports:
   - compute/metadata
   - internal
 - name: github.com/appscode/go
-  version: c01120782e8b487d1c86ab4299241edfe36a3ca2
+  version: 85b510edd14fe8d6beb2ad365afd3c5b3afc8c49
   subpackages:
   - hold
   - runtime
+  - types
   - version
 - name: github.com/appscode/log
   version: 68e0e42e42c01371f3950571fc87c2298a51dd8f
@@ -42,7 +43,6 @@ imports:
   - private/protocol/query
   - private/protocol/query/queryutil
   - private/protocol/rest
-  - private/protocol/restxml
   - private/protocol/xml/xmlutil
   - private/waiter
   - service/autoscaling
@@ -50,7 +50,7 @@ imports:
   - service/ecr
   - service/elb
   - service/kms
-  - service/route53
+  - service/lightsail
   - service/sts
 - name: github.com/Azure/azure-sdk-for-go
   version: 786cc84138518bf7fd6d60e92fad1ac9d1a117ad
@@ -283,7 +283,7 @@ imports:
   - specs-go
   - specs-go/v1
 - name: github.com/packethost/packngo
-  version: 57c0c52ff7d4931ba14f77b683fba0b859443279
+  version: 02bc5b5de23cdea7ba059b061ba509293858058e
 - name: github.com/peterbourgon/diskv
   version: 5f041e8faa004a95c88a202771f4cc3e991971e6
 - name: github.com/pkg/errors
@@ -361,7 +361,7 @@ imports:
 - name: github.com/sirupsen/logrus
   version: 89742aefa4b206dcf400792f3bd35b542998eb3b
 - name: github.com/softlayer/softlayer-go
-  version: 17470076bfd71eee8ed8e592c72a8b305826f809
+  version: 7fd053690157807b18b2e5b2d306c9ab798531aa
   subpackages:
   - config
   - datatypes
@@ -369,7 +369,7 @@ imports:
   - session
   - sl
 - name: github.com/spf13/cobra
-  version: b3426bbac13d7110c4d8fce456ea0012f79f3b8b
+  version: 7b2c5ac9fc04fc5efafb60700713d4fa609b777b
   subpackages:
   - doc
 - name: github.com/spf13/pflag
@@ -510,7 +510,7 @@ imports:
 - name: gopkg.in/warnings.v0
   version: 8a331561fe74dadba6edfc59f3be66c22c3b065d
 - name: gopkg.in/yaml.v2
-  version: 53feefa2559fb8dfa8d81baad31be332c97d6c77
+  version: 287cf08546ab5e7e37d55a84f7ed3fd1db036de5
 - name: k8s.io/api
   version: fe29995db37613b9c5b2a647544cf627bfa8d299
   subpackages:

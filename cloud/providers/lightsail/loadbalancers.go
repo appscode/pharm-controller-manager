@@ -1,18 +1,18 @@
-package packet
+package lightsail
 
 import (
 	"github.com/appscode/pharm-controller-manager/cloud"
-	"github.com/packethost/packngo"
+	"github.com/aws/aws-sdk-go/service/lightsail"
 	"k8s.io/api/core/v1"
 	"k8s.io/kubernetes/pkg/cloudprovider"
 )
 
 type loadbalancers struct {
-	client *packngo.Client
+	client *lightsail.Lightsail
 }
 
 // newLoadbalancers returns a cloudprovider.LoadBalancer whose concrete type is a *loadbalancer.
-func newLoadbalancers(client *packngo.Client) cloudprovider.LoadBalancer {
+func newLoadbalancers(client *lightsail.Lightsail) cloudprovider.LoadBalancer {
 	return &loadbalancers{client: client}
 }
 

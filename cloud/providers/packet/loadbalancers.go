@@ -1,8 +1,8 @@
 package packet
 
 import (
-	"github.com/packethost/packngo"
 	"github.com/appscode/pharm-controller-manager/cloud"
+	"github.com/packethost/packngo"
 	"k8s.io/api/core/v1"
 	"k8s.io/kubernetes/pkg/cloudprovider"
 )

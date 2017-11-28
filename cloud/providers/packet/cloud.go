@@ -5,9 +5,9 @@ import (
 	"io/ioutil"
 
 	"github.com/ghodss/yaml"
+	"github.com/packethost/packngo"
 	"k8s.io/kubernetes/pkg/cloudprovider"
 	"k8s.io/kubernetes/pkg/controller"
-	"github.com/packethost/packngo"
 )
 
 const (
@@ -16,12 +16,12 @@ const (
 
 type credential struct {
 	Project string `json:"project" yaml:"project"`
-	ApiKey string `json:"apiKey" yaml:"apiKey"`
-	Zone     string `json:"zone" yaml:"zone"`
+	ApiKey  string `json:"apiKey" yaml:"apiKey"`
+	Zone    string `json:"zone" yaml:"zone"`
 }
 
 type Cloud struct {
-	client  *packngo.Client
+	client        *packngo.Client
 	instances     cloudprovider.Instances
 	zones         cloudprovider.Zones
 	loadbalancers cloudprovider.LoadBalancer
@@ -47,7 +47,7 @@ func newCloud(config io.Reader) (*Cloud, error) {
 		return nil, err
 	}
 
-	packetClient :=  packngo.NewClient("", packet.ApiKey, nil)
+	packetClient := packngo.NewClient("", packet.ApiKey, nil)
 
 	return &Cloud{
 		client:        packetClient,

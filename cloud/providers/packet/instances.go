@@ -1,14 +1,15 @@
 package packet
 
 import (
+	"errors"
+	"fmt"
+	"strings"
+
 	"github.com/appscode/pharm-controller-manager/cloud"
+	"github.com/packethost/packngo"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"github.com/packethost/packngo"
 	"k8s.io/kubernetes/pkg/cloudprovider"
-	"fmt"
-	"errors"
-	"strings"
 )
 
 type instances struct {
@@ -137,7 +138,7 @@ func deviceByName(client *packngo.Client, projectID string, nodeName types.NodeN
 	}
 
 	for _, device := range devices {
-		if device.Hostname== string(nodeName) {
+		if device.Hostname == string(nodeName) {
 			return &device, nil
 		}
 	}
@@ -166,4 +167,3 @@ func deviceIDFromProviderID(providerID string) (string, error) {
 
 	return split[2], nil
 }
-

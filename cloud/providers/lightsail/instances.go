@@ -60,15 +60,11 @@ func nodeAddresses(instance *lightsail.Instance) ([]v1.NodeAddress, error) {
 }
 
 func (i *instances) ExternalID(nodeName types.NodeName) (string, error) {
-	return i.InstanceID(nodeName)
+	return string(nodeName), nil
 }
 
 func (i *instances) InstanceID(nodeName types.NodeName) (string, error) {
-	instance, err := instanceByName(i.client, nodeName)
-	if err != nil {
-		return "", err
-	}
-	return *instance.Arn, nil
+	return string(nodeName), nil
 }
 
 func (i *instances) InstanceType(nodeName types.NodeName) (string, error) {
@@ -114,41 +110,21 @@ func (i *instances) InstanceExistsByProviderID(providerID string) (bool, error) 
 }
 
 func instanceByName(client *lightsail.Lightsail, nodeName types.NodeName) (*lightsail.Instance, error) {
-	hosts, err := allInstanceList(client)
+	host, err := client.GetInstance(&lightsail.GetInstanceInput{
+		InstanceName: StringP(string(nodeName)),
+	})
 	if err != nil {
 		return nil, err
 	}
-
-	for _, host := range hosts {
-		if getNodeName(*host.PrivateIpAddress) == nodeName {
-			return host, nil
-		}
+	if host.Instance != nil {
+		return host.Instance, nil
 	}
-
 	return nil, cloudprovider.InstanceNotFound
 
 }
 
-func instanceByID(client *lightsail.Lightsail, providerId string) (*lightsail.Instance, error) {
-	hosts, err := allInstanceList(client)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, host := range hosts {
-		if *host.Arn == providerId {
-			return host, nil
-		}
-	}
-
-	return nil, cloudprovider.InstanceNotFound
-
-}
-
-func getNodeName(ip string) types.NodeName {
-	address := strings.Replace(ip, ".", "-", -1)
-	name := "ip-" + address
-	return types.NodeName(name)
+func instanceByID(client *lightsail.Lightsail, id string) (*lightsail.Instance, error)  {
+	return instanceByName(client, types.NodeName(id))
 }
 
 // instanceIDFromProviderID returns a server's ID from providerID.
@@ -166,7 +142,7 @@ func instanceIDFromProviderID(providerID string) (string, error) {
 		return "", fmt.Errorf("unexpected providerID format: %s, format should be: lightsail://12345", providerID)
 	}
 
-	// since split[0] is actually "vultr:"
+	// since split[0] is actually "lightsail:"
 	if strings.TrimSuffix(split[0], ":") != ProviderName {
 		return "", fmt.Errorf("provider name from providerID should be vultr: %s", providerID)
 	}

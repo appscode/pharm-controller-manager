@@ -3,7 +3,8 @@ package lightsail
 import (
 	"io"
 	"io/ioutil"
-	//. "github.com/appscode/go/types"
+	"net/http"
+
 	_aws "github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -11,8 +12,6 @@ import (
 	"github.com/ghodss/yaml"
 	"k8s.io/kubernetes/pkg/cloudprovider"
 	"k8s.io/kubernetes/pkg/controller"
-	//"github.com/aws/aws-sdk-go/aws/ec2metadata"
-	"net/http"
 )
 
 const (

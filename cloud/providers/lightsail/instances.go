@@ -7,33 +7,11 @@ import (
 
 	. "github.com/appscode/go/types"
 	"github.com/appscode/pharm-controller-manager/cloud"
-	_aws "github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/lightsail"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/kubernetes/pkg/cloudprovider"
 )
-
-type awsInstance struct {
-	// id in AWS
-	awsID string
-
-	// node name in k8s
-	nodeName types.NodeName
-
-	// availability zone the instance resides in
-	availabilityZone string
-
-	// ID of VPC the instance resides in
-	vpcID string
-
-	// ID of subnet the instance resides in
-	subnetID string
-
-	// instance type
-	instanceType string
-}
 
 type instances struct {
 	client *lightsail.Lightsail
@@ -52,18 +30,16 @@ func (i *instances) NodeAddresses(name types.NodeName) ([]v1.NodeAddress, error)
 }
 
 func (i *instances) NodeAddressesByProviderID(providerID string) ([]v1.NodeAddress, error) {
-	fmt.Println(providerID, "**************8")
-	return nil, nil
-	/*id, err := serverIDFromProviderID(providerID)
+	id, err := instanceIDFromProviderID(providerID)
 	if err != nil {
 		return nil, err
 	}
-	//server, err := serverByID(i.client, id)
+	instance, err := instanceByID(i.client, id)
 	if err != nil {
 		return nil, err
 	}
 
-	return nodeAddresses(&server)*/
+	return nodeAddresses(instance)
 }
 
 func nodeAddresses(instance *lightsail.Instance) ([]v1.NodeAddress, error) {
@@ -92,7 +68,7 @@ func (i *instances) InstanceID(nodeName types.NodeName) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return *instance.BlueprintId, nil
+	return *instance.Arn, nil
 }
 
 func (i *instances) InstanceType(nodeName types.NodeName) (string, error) {
@@ -100,21 +76,19 @@ func (i *instances) InstanceType(nodeName types.NodeName) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return *instance.ResourceType, nil
+	return *instance.BundleId, nil
 }
 
 func (i *instances) InstanceTypeByProviderID(providerID string) (string, error) {
-	fmt.Println(providerID, "...............")
-	/*	id, err := serverIDFromProviderID(providerID)
-		if err != nil {
-			return "", err
-		}
-		server, err := serverByID(i.client, id)
-		if err != nil {
-			return "", err
-		}*/
-	return "", nil
-	//return strconv.Itoa(server.PlanID), nil
+	id, err := instanceIDFromProviderID(providerID)
+	if err != nil {
+		return "", err
+	}
+	instance, err := instanceByID(i.client, id)
+	if err != nil {
+		return "", err
+	}
+	return *instance.BundleId, nil
 }
 
 func (i *instances) AddSSHKeyToAllInstances(user string, keyData []byte) error {
@@ -126,13 +100,12 @@ func (i *instances) CurrentNodeName(hostname string) (types.NodeName, error) {
 }
 
 func (i *instances) InstanceExistsByProviderID(providerID string) (bool, error) {
-	//TODO(sanjid): check provider id here
-	id, err := serverIDFromProviderID(providerID)
+	id, err := instanceIDFromProviderID(providerID)
 	if err != nil {
 		return false, err
 	}
-	fmt.Println(id, ",,,,,,,,,,,,,,,,")
-	//_, err = insta(i.client, id)
+
+	_, err = instanceByID(i.client, id)
 	if err == nil {
 		return true, nil
 	}
@@ -141,22 +114,49 @@ func (i *instances) InstanceExistsByProviderID(providerID string) (bool, error) 
 }
 
 func instanceByName(client *lightsail.Lightsail, nodeName types.NodeName) (*lightsail.Instance, error) {
-	host, err := client.GetInstance(&lightsail.GetInstanceInput{
-		InstanceName: _aws.String(string(nodeName)),
-	})
-
+	hosts, err := allInstanceList(client)
 	if err != nil {
 		return nil, err
 	}
-	return host.Instance, nil
+
+	for _, host := range hosts {
+		if getNodeName(*host.PrivateIpAddress) == nodeName {
+			return host, nil
+		}
+	}
+
+	return nil, cloudprovider.InstanceNotFound
+
 }
 
-// serverIDFromProviderID returns a server's ID from providerID.
+func instanceByID(client *lightsail.Lightsail, providerId string) (*lightsail.Instance, error) {
+	hosts, err := allInstanceList(client)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, host := range hosts {
+		if *host.Arn == providerId {
+			return host, nil
+		}
+	}
+
+	return nil, cloudprovider.InstanceNotFound
+
+}
+
+func getNodeName(ip string) types.NodeName {
+	address := strings.Replace(ip, ".", "-", -1)
+	name := "ip-" + address
+	return types.NodeName(name)
+}
+
+// instanceIDFromProviderID returns a server's ID from providerID.
 //
 // The providerID spec should be retrievable from the Kubernetes
 // node object. The expected format is: lightsail://server-id
 
-func serverIDFromProviderID(providerID string) (string, error) {
+func instanceIDFromProviderID(providerID string) (string, error) {
 	if providerID == "" {
 		return "", errors.New("providerID cannot be empty string")
 	}
@@ -172,26 +172,4 @@ func serverIDFromProviderID(providerID string) (string, error) {
 	}
 
 	return split[2], nil
-}
-
-func newAWSInstance(instance *ec2.Instance) *awsInstance {
-	az := ""
-	if instance.Placement != nil {
-		az = _aws.StringValue(instance.Placement.AvailabilityZone)
-	}
-	self := &awsInstance{
-		awsID:            _aws.StringValue(instance.InstanceId),
-		nodeName:         mapInstanceToNodeName(instance),
-		availabilityZone: az,
-		instanceType:     _aws.StringValue(instance.InstanceType),
-		vpcID:            _aws.StringValue(instance.VpcId),
-		subnetID:         _aws.StringValue(instance.SubnetId),
-	}
-
-	return self
-}
-
-// mapInstanceToNodeName maps a EC2 instance to a k8s NodeName, by extracting the PrivateDNSName
-func mapInstanceToNodeName(i *ec2.Instance) types.NodeName {
-	return types.NodeName(_aws.StringValue(i.PrivateDnsName))
 }

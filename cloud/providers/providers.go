@@ -1,6 +1,7 @@
 package providers
 
 import (
+	_ "github.com/appscode/pharm-controller-manager/cloud/providers/lightsail"
 	_ "github.com/appscode/pharm-controller-manager/cloud/providers/linode"
 	_ "github.com/appscode/pharm-controller-manager/cloud/providers/packet"
 	_ "github.com/appscode/pharm-controller-manager/cloud/providers/scaleway"

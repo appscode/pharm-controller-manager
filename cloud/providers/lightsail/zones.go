@@ -26,7 +26,6 @@ func (z zones) GetZone() (cloudprovider.Zone, error) {
 }
 
 func (z zones) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error) {
-	fmt.Println(providerID, "-----------------------")
 	return getZone()
 }
 

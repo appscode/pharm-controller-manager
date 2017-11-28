@@ -7,7 +7,7 @@
 Kubernetes 1.8+
 
 ## Contribution guidelines
-Want to help improve Swanc? Please start [here](/CONTRIBUTING.md).
+Want to help improve pharm-controller-manager? Please start [here](/CONTRIBUTING.md).
 
 ## Support
 If you have any questions, [file an issue](https://github.com/appscode/pharmer/issues/new) or talk to us on the [Kubernetes Slack team](http://slack.kubernetes.io/) channel `#pharmer`.

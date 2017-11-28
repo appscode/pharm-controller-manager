@@ -1,5 +1,5 @@
-hash: 7f9dd6fd311a047253fcad56f39fc18ddb64086630697dd4934a77a2b1aa5bf4
-updated: 2017-11-27T18:20:30.610240854+06:00
+hash: 75b058bd6473d9681912c8e61c5bcb6b5a6d3b1738ccd659659bfa3d40877887
+updated: 2017-11-28T05:55:37.648077739-08:00
 imports:
 - name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
@@ -9,16 +9,15 @@ imports:
 - name: github.com/appscode/go
   version: 85b510edd14fe8d6beb2ad365afd3c5b3afc8c49
   subpackages:
+  - context
   - hold
+  - log
+  - log/golog
   - runtime
   - types
   - version
-- name: github.com/appscode/log
-  version: 68e0e42e42c01371f3950571fc87c2298a51dd8f
-  subpackages:
-  - golog
 - name: github.com/aws/aws-sdk-go
-  version: 63ce630574a5ec05ecd8e8de5cea16332a5a684d
+  version: cd721c97ef6fcfcb76b4feb14fcfead57fb01e5e
   subpackages:
   - aws
   - aws/awserr
@@ -36,6 +35,7 @@ imports:
   - aws/request
   - aws/session
   - aws/signer/v4
+  - internal/shareddefaults
   - private/protocol
   - private/protocol/ec2query
   - private/protocol/json/jsonutil
@@ -44,7 +44,6 @@ imports:
   - private/protocol/query/queryutil
   - private/protocol/rest
   - private/protocol/xml/xmlutil
-  - private/waiter
   - service/autoscaling
   - service/ec2
   - service/ecr
@@ -138,7 +137,7 @@ imports:
 - name: github.com/docker/go-units
   version: 9e638d38cf6977a37a8ea0078f3ee75a7cdb2dd1
 - name: github.com/dustin/go-humanize
-  version: f3565c9525600a911af3bd34f8b535ea81b2a9e0
+  version: bb3d318650d48840a39aa21a027c6630e198e626
 - name: github.com/emicklei/go-restful
   version: ff4f55a206334ef123e4f79bbf348980da81ca46
   subpackages:
@@ -180,6 +179,8 @@ imports:
   version: 7d79101e329e5a3adf994758c578dab82b90c017
 - name: github.com/google/gofuzz
   version: 44d81051d367757e1c7c6a5a86423ece9afcf63c
+- name: github.com/google/uuid
+  version: 4ebdd04351c754ab14fd5295c91fb901e07dfbcc
 - name: github.com/googleapis/gnostic
   version: 0c5108395e2debce0d731cf0287ddf7242066aba
   subpackages:
@@ -256,7 +257,7 @@ imports:
   - jlexer
   - jwriter
 - name: github.com/mattn/go-isatty
-  version: 56b76bdf51f7708750eac80fa38b952bb9f32639
+  version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
 - name: github.com/matttproud/golang_protobuf_extensions
   version: fc2b8d3a73c4867e51861bbdd5ae3c1f0869dd6a
   subpackages:
@@ -270,7 +271,7 @@ imports:
 - name: github.com/mitchellh/mapstructure
   version: 53818660ed4955e899c0bcafa97299a388bd7c8e
 - name: github.com/moul/anonuuid
-  version: 609b752a95effbbef26d134ac18ed6f57e01b98e
+  version: ebb9b023e8eede7d469a89f0d58f3155e78100b5
 - name: github.com/moul/gotty-client
   version: 990fa23220655da4599785d2821e9e3f7488fd52
   repo: https://github.com/tamalsaha/gotty-client.git
@@ -369,7 +370,7 @@ imports:
   - session
   - sl
 - name: github.com/spf13/cobra
-  version: 7b2c5ac9fc04fc5efafb60700713d4fa609b777b
+  version: 1be1d2841c773c01bee8289f55f7463b6e2c2539
   subpackages:
   - doc
 - name: github.com/spf13/pflag
@@ -440,7 +441,7 @@ imports:
   - jws
   - jwt
 - name: golang.org/x/sync
-  version: 316e794f7b5e3df4e95175a45a5fb8b12f85cb4f
+  version: fd80eb99c8f653c847d294a001bdf2a3a6f768f5
   subpackages:
   - errgroup
 - name: golang.org/x/sys
@@ -510,7 +511,7 @@ imports:
 - name: gopkg.in/warnings.v0
   version: 8a331561fe74dadba6edfc59f3be66c22c3b065d
 - name: gopkg.in/yaml.v2
-  version: 287cf08546ab5e7e37d55a84f7ed3fd1db036de5
+  version: 53feefa2559fb8dfa8d81baad31be332c97d6c77
 - name: k8s.io/api
   version: fe29995db37613b9c5b2a647544cf627bfa8d299
   subpackages:
@@ -539,7 +540,7 @@ imports:
   - storage/v1
   - storage/v1beta1
 - name: k8s.io/apiextensions-apiserver
-  version: 51a1910459f074162eb4e25233e461fe91e99405
+  version: 5bc0d8f05a92b3a09bcf1a9db442a29c0b7a514d
   subpackages:
   - pkg/features
 - name: k8s.io/apimachinery

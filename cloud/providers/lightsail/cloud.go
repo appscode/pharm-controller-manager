@@ -27,7 +27,6 @@ type Cloud struct {
 	client        *lightsail.Lightsail
 	instances     cloudprovider.Instances
 	zones         cloudprovider.Zones
-	loadbalancers cloudprovider.LoadBalancer
 }
 
 func init() {
@@ -69,7 +68,6 @@ func newCloud(config io.Reader) (cloudprovider.Interface, error) {
 		client:        lightsailClient,
 		instances:     newInstances(lightsailClient),
 		zones:         newZones(lightsailClient),
-		loadbalancers: newLoadbalancers(lightsailClient),
 	}, nil
 }
 
@@ -77,7 +75,7 @@ func (c *Cloud) Initialize(clientBuilder controller.ControllerClientBuilder) {
 }
 
 func (c *Cloud) LoadBalancer() (cloudprovider.LoadBalancer, bool) {
-	return c.loadbalancers, true
+	return nil, false
 }
 
 func (c *Cloud) Instances() (cloudprovider.Instances, bool) {

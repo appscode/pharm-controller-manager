@@ -1,7 +1,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/appscode/pharm-controller-manager)](https://goreportcard.com/report/github.com/appscode/pharm-controller-manager)
 
 # pharm-controller-manager
-[Kubernetes Cloud Controller Manager](https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/). This is intended to used with [Pharmer by AppsCode](https://appscode.com/products/pharmer).
+[Kubernetes Cloud Controller Manager](https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/). This is intended to be used with [Pharmer by AppsCode](https://appscode.com/products/pharmer).
 
 ## Supported Versions
 Kubernetes 1.8+

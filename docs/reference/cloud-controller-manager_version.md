@@ -1,21 +1,20 @@
-## pharm-controller-manager debug
+## cloud-controller-manager version
 
-Debug pharm-controller-manager
+Prints binary version number.
 
 ### Synopsis
 
 
-Debug pharm-controller-manager
+Prints binary version number.
 
 ```
-pharm-controller-manager debug [flags]
+cloud-controller-manager version [flags]
 ```
 
 ### Options
 
 ```
-      --cloud-config string   The path to the cloud provider configuration file.  Empty string for no configuration file.
-  -h, --help                  help for debug
+  -h, --help   help for version
 ```
 
 ### Options inherited from parent commands
@@ -23,7 +22,7 @@ pharm-controller-manager debug [flags]
 ```
       --alsologtostderr                         log to standard error as well as files
       --analytics                               Send analytical events to Google Analytics (default true)
-      --cloud-provider-gce-lb-src-cidrs cidrs   CIDRS opened in GCE firewall for LB traffic proxy & health checks (default 130.211.0.0/22,35.191.0.0/16,209.85.152.0/22,209.85.204.0/22)
+      --cloud-provider-gce-lb-src-cidrs cidrs   CIDRS opened in GCE firewall for LB traffic proxy & health checks (default 35.191.0.0/16,209.85.152.0/22,209.85.204.0/22,130.211.0.0/22)
       --log_backtrace_at traceLocation          when logging hits line file:N, emit a stack trace (default :0)
       --log_dir string                          If non-empty, write log files in this directory
       --logtostderr                             log to standard error instead of files
@@ -33,5 +32,5 @@ pharm-controller-manager debug [flags]
 ```
 
 ### SEE ALSO
-* [pharm-controller-manager](pharm-controller-manager.md)	 - Pharm Controller Manager by Appscode - Start farms
+* [cloud-controller-manager](cloud-controller-manager.md)	 - Pharm Controller Manager by Appscode - Start farms
 

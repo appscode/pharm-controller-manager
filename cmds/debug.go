@@ -15,7 +15,7 @@ func NewCmdDebug() *cobra.Command {
 	var cloudConfigFile string
 	cmd := &cobra.Command{
 		Use:               "debug",
-		Short:             "Debug pharm-controller-manager",
+		Short:             "Debug cloud-controller-manager",
 		DisableAutoGenTag: true,
 		Run: func(cmd *cobra.Command, args []string) {
 			contents, err := ioutil.ReadFile(cloudConfigFile)

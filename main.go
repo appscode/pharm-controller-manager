@@ -4,7 +4,7 @@ import (
 	"os"
 
 	logs "github.com/appscode/go/log/golog"
-	"github.com/appscode/pharm-controller-manager/cmds"
+	"github.com/pharmer/cloud-controller-manager/cmds"
 )
 
 func main() {

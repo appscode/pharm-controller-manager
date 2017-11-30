@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/appscode/pharm-controller-manager/cloud"
+	"github.com/pharmer/cloud-controller-manager/cloud"
 	"github.com/softlayer/softlayer-go/datatypes"
 	"github.com/softlayer/softlayer-go/services"
 	"k8s.io/api/core/v1"

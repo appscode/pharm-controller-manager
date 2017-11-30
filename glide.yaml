@@ -1,4 +1,4 @@
-package: github.com/appscode/pharm-controller-manager
+package: github.com/pharmer/cloud-controller-manager
 import:
 - package: github.com/appscode/go
   version: master

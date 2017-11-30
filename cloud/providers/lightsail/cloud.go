@@ -24,9 +24,9 @@ type tokenSource struct {
 }
 
 type Cloud struct {
-	client        *lightsail.Lightsail
-	instances     cloudprovider.Instances
-	zones         cloudprovider.Zones
+	client    *lightsail.Lightsail
+	instances cloudprovider.Instances
+	zones     cloudprovider.Zones
 }
 
 func init() {
@@ -65,9 +65,9 @@ func newCloud(config io.Reader) (cloudprovider.Interface, error) {
 	lightsailClient := lightsail.New(sess)
 
 	return &Cloud{
-		client:        lightsailClient,
-		instances:     newInstances(lightsailClient),
-		zones:         newZones(lightsailClient),
+		client:    lightsailClient,
+		instances: newInstances(lightsailClient),
+		zones:     newZones(lightsailClient),
 	}, nil
 }
 

@@ -2,7 +2,7 @@ package vultr
 
 import (
 	gv "github.com/JamesClonk/vultr/lib"
-	"github.com/appscode/pharm-controller-manager/cloud"
+	"github.com/pharmer/cloud-controller-manager/cloud"
 	"k8s.io/api/core/v1"
 	"k8s.io/kubernetes/pkg/cloudprovider"
 )

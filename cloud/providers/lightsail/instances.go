@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	. "github.com/appscode/go/types"
-	"github.com/appscode/pharm-controller-manager/cloud"
 	"github.com/aws/aws-sdk-go/service/lightsail"
+	"github.com/pharmer/cloud-controller-manager/cloud"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/kubernetes/pkg/cloudprovider"
@@ -123,7 +123,7 @@ func instanceByName(client *lightsail.Lightsail, nodeName types.NodeName) (*ligh
 
 }
 
-func instanceByID(client *lightsail.Lightsail, id string) (*lightsail.Instance, error)  {
+func instanceByID(client *lightsail.Lightsail, id string) (*lightsail.Instance, error) {
 	return instanceByName(client, types.NodeName(id))
 }
 

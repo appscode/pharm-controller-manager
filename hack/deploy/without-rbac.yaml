@@ -1,19 +1,19 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: pharm-controller-manager
+  name: cloud-controller-manager
   labels:
-    app: pharm-controller-manager
+    app: cloud-controller-manager
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: pharm-controller-manager
+        app: cloud-controller-manager
     spec:
       containers:
-        - image: appscode/pharm-controller-manager:canary
-          name: pharm-controller-manager
+        - image: appscode/cloud-controller-manager:canary
+          name: cloud-controller-manager
           ports:
             - containerPort: 9844
               name: web
@@ -22,13 +22,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: pharm-controller-manager
+  name: cloud-controller-manager
   labels:
-    app: pharm-controller-manager
+    app: cloud-controller-manager
 spec:
   ports:
   - port: 9844
     protocol: TCP
     targetPort: web
   selector:
-    app: pharm-controller-manager
+    app: cloud-controller-manager

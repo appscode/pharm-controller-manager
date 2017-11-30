@@ -10,11 +10,10 @@ BIN=$GOPATH/bin
 ROOT=$GOPATH
 REPO_ROOT=$GOPATH/src/github.com/pharmer/cloud-controller-manager
 
-source "$REPO_ROOT/hack/libbuild/common/lib.sh"
-source "$REPO_ROOT/hack/libbuild/common/public_image.sh"
+source "$REPO_ROOT/hack/libbuild/common/pharmer_image.sh"
 
 APPSCODE_ENV=${APPSCODE_ENV:-dev}
-IMG=pharm-controller-manager
+IMG=cloud-controller-manager
 
 DIST=$GOPATH/src/github.com/pharmer/cloud-controller-manager/dist
 mkdir -p $DIST
@@ -24,7 +23,7 @@ fi
 
 clean() {
     pushd $GOPATH/src/github.com/pharmer/cloud-controller-manager/hack/docker
-    rm pharm-controller-manager Dockerfile
+    rm cloud-controller-manager Dockerfile
     popd
 }
 
@@ -38,8 +37,8 @@ build_binary() {
 
 build_docker() {
     pushd $GOPATH/src/github.com/pharmer/cloud-controller-manager/hack/docker
-    cp $DIST/pharm-controller-manager/pharm-controller-manager-alpine-amd64 pharm-controller-manager
-    chmod 755 pharm-controller-manager
+    cp $DIST/cloud-controller-manager/cloud-controller-manager-alpine-amd64 cloud-controller-manager
+    chmod 755 cloud-controller-manager
 
     cat >Dockerfile <<EOL
 FROM alpine
@@ -47,14 +46,14 @@ FROM alpine
 RUN set -x \
   && apk add --update --no-cache ca-certificates tzdata
 
-COPY pharm-controller-manager /usr/bin/pharm-controller-manager
+COPY cloud-controller-manager /usr/bin/cloud-controller-manager
 
-ENTRYPOINT ["pharm-controller-manager"]
+ENTRYPOINT ["cloud-controller-manager"]
 EOL
-    local cmd="docker build -t appscode/$IMG:$TAG ."
+    local cmd="docker build -t pharmer/$IMG:$TAG ."
     echo $cmd; $cmd
 
-    rm pharm-controller-manager Dockerfile
+    rm cloud-controller-manager Dockerfile
     popd
 }
 

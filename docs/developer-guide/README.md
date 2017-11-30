@@ -24,14 +24,14 @@ $ cd $(go env GOPATH)/src/github.com/pharmer/cloud-controller-manager
 To install various dev tools for Pharm Controller Manager, run the following command:
 
 ```console
-# setting up dependencies for compiling pharm-controller-manager...
+# setting up dependencies for compiling cloud-controller-manager...
 $ ./hack/builddeps.sh
 ```
 
 #### Build Binary
 ```
 $ ./hack/make.py
-$ pharm-controller-manager version
+$ cloud-controller-manager version
 ```
 
 #### Dependency management
@@ -49,7 +49,7 @@ To build and push your custom Docker image, follow the steps below. To release a
 $ ./hack/docker/setup.sh; ./hack/docker/setup.sh push
 
 # Add docker tag for your repository
-$ docker tag appscode/pharm-controller-manager:<tag> <image>:<tag>
+$ docker tag appscode/cloud-controller-manager:<tag> <image>:<tag>
 
 # Push Image
 $ docker push <image>:<tag>

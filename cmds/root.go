@@ -21,7 +21,7 @@ func NewRootCmd(version string) *cobra.Command {
 		enableAnalytics = true
 	)
 	rootCmd := &cobra.Command{
-		Use:               "pharm-controller-manager [command]",
+		Use:               "cloud-controller-manager [command]",
 		Short:             `Pharm Controller Manager by Appscode - Start farms`,
 		DisableAutoGenTag: true,
 		PersistentPreRun: func(c *cobra.Command, args []string) {

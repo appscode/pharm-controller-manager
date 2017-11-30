@@ -46,7 +46,7 @@ spec:
       - key: "node-role.kubernetes.io/master"
         effect: NoSchedule
       containers:
-        - image: appscode/pharm-controller-manager:softlayer
+        - image: appscode/cloud-controller-manager:softlayer
           imagePullPolicy: Always
           name: ccm
           args:

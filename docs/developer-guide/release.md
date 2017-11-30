@@ -7,7 +7,7 @@ The following steps must be done from a Linux x64 bit machine.
 - Push all the changes to remote repo.
 - Build and push pharm-controller-manager docker image:
 ```console
-$ cd ~/go/src/github.com/appscode/pharm-controller-manager
+$ cd ~/go/src/github.com/pharmer/cloud-controller-manager
 ./hack/docker/setup.sh; env APPSCODE_ENV=prod ./hack/docker/setup.sh release
 ```
 

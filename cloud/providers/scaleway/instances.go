@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/appscode/pharm-controller-manager/cloud"
+	"github.com/pharmer/cloud-controller-manager/cloud"
 	scw "github.com/scaleway/scaleway-cli/pkg/api"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"

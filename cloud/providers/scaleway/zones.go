@@ -1,7 +1,7 @@
 package scaleway
 
 import (
-	"github.com/appscode/pharm-controller-manager/cloud"
+	"github.com/pharmer/cloud-controller-manager/cloud"
 	scw "github.com/scaleway/scaleway-cli/pkg/api"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/kubernetes/pkg/cloudprovider"

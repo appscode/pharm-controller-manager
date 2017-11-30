@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/appscode/pharm-controller-manager/cloud"
+	"github.com/pharmer/cloud-controller-manager/cloud"
 	"github.com/taoh/linodego"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"

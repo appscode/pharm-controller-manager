@@ -1,4 +1,4 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/appscode/pharm-controller-manager)](https://goreportcard.com/report/github.com/appscode/pharm-controller-manager)
+[![Go Report Card](https://goreportcard.com/badge/github.com/pharmer/cloud-controller-manager)](https://goreportcard.com/report/github.com/pharmer/cloud-controller-manager)
 
 # pharm-controller-manager
 [Kubernetes Cloud Controller Manager](https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/). This is intended to be used with [Pharmer by AppsCode](https://appscode.com/products/pharmer).

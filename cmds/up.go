@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/appscode/go/log"
-	_ "github.com/appscode/pharm-controller-manager/cloud/providers"
 	"github.com/golang/glog"
+	_ "github.com/pharmer/cloud-controller-manager/cloud/providers"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/apiserver/pkg/server/healthz"

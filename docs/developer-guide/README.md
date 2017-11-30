@@ -16,8 +16,8 @@ development environment, please follow [these instructions](https://golang.org/d
 #### Download Source
 
 ```console
-$ go get github.com/appscode/pharm-controller-manager
-$ cd $(go env GOPATH)/src/github.com/appscode/pharm-controller-manager
+$ go get github.com/pharmer/cloud-controller-manager
+$ cd $(go env GOPATH)/src/github.com/pharmer/cloud-controller-manager
 ```
 
 #### Install Dev tools

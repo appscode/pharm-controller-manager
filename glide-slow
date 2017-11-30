@@ -5,7 +5,7 @@
 # - ???
 # - Profit
 
-pushd $GOPATH/src/github.com/appscode/pharm-controller-manager
+pushd $GOPATH/src/github.com/pharmer/cloud-controller-manager
 
 # bust glide cache
 #rm -rf ~/.glide/cache/{info,src}/git-diffusion.appscode.com-appscode-37-api*

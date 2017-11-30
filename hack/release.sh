@@ -2,7 +2,7 @@
 set -xeou pipefail
 
 GOPATH=$(go env GOPATH)
-REPO_ROOT="$GOPATH/src/github.com/appscode/pharm-controller-manager"
+REPO_ROOT="$GOPATH/src/github.com/pharmer/cloud-controller-manager"
 
 export APPSCODE_ENV=prod
 

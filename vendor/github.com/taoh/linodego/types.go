@@ -219,3 +219,68 @@ type LinodeIPAddress struct {
 	IPAddress   string `json:"IPADDRESS"`
 	IPAddressId int    `json:"IPADDRESSID"`
 }
+
+type Volume struct {
+	VolumeId int          `json:"VOLUMEID"`
+	Label    CustomString `json:"LABEL"`
+	Size     int          `json:"SIZE"`
+	LinodeId int          `json:"LINODEID"`
+	Status   string       `json:"STATUS"`
+}
+
+type VolumeId struct {
+	VolumeId int `json:"VOLUMEID"`
+}
+
+
+type LinodeNodeBalancer struct {
+	NodeBalancerId     int          `json:"NODEBALANCERID"`
+	Label              CustomString `json:"LABEL"`
+	DataCenterId       int          `json:"DATACENTERID"`
+	HostName           string       `json:"HOSTNAME"`
+	Address4           string `json:"ADDRESS4"`
+	Address6           string `json:"ADDRESS6"`
+	ClientConnThrottle int          `json:"CLIENTCONNTHROTTLE"`
+}
+
+type LinodeNodeBalancerId struct {
+	NodeBalancerId int `json:"NODEBALANCERID"`
+}
+
+
+type NodeBalancerConfig struct {
+	Stickiness     CustomString `json:"STICKINESS"`
+	CheckPath      CustomString `json:"CHECK_PATH"`
+	Port           int          `json:"PORT"`
+	CheckBody      CustomString `json:"CHECK_BODY"`
+	Check          CustomString `json:"CHECK"`
+	CheckInterval  int          `json:"CHECK_INTERVAL"`
+	Protocol       CustomString `json:"PROTOCOL"`
+	ConfigId       int          `json:"CONFIGID"`
+	Algorithm      CustomString `json:"ALGORITHM"`
+	CheckTimeout   int          `json:"CHECK_TIMEOUT"`
+	NodeBalancerId int          `json:"NODEBALANCERID"`
+	CheckAttempts  int          `json:"CHECK_ATTEMPTS"`
+	CheckPassive   int          `json:"CHECK_PASSIVE"`
+	SslFingerprint CustomString `json:"SSL_FINGERPRINT"`
+	SslCommonName  CustomString `json:"SSL_COMMONNAME"`
+}
+
+type NodeBalancerConfigId struct {
+	NodeBalancerConfigId int `json:"ConfigID"`
+}
+
+type NodeBalancerNode struct {
+	Weight         int          `json:"WEIGHT"`
+	Address        CustomString `json:"ADDRESS"`
+	Label          CustomString `json:"LABEL"`
+	NodeId         int          `json:"NODEID"`
+	Mode           CustomString `json:"MODE"`
+	ConfigId       int          `json:"CONFIGID"`
+	Status         CustomString `json:"STATUS"`
+	NodeBalancerId int          `json:"NODEBALANCERID"`
+}
+
+type NodeBalancerNodeId struct {
+	NodeId int `json:"NODEID"`
+}

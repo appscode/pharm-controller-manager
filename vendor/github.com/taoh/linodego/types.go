@@ -238,8 +238,8 @@ type LinodeNodeBalancer struct {
 	Label              CustomString `json:"LABEL"`
 	DataCenterId       int          `json:"DATACENTERID"`
 	HostName           string       `json:"HOSTNAME"`
-	Address4           string `json:"ADDRESS4"`
-	Address6           string `json:"ADDRESS6"`
+	Address4           string       `json:"ADDRESS4"`
+	Address6           string       `json:"ADDRESS6"`
 	ClientConnThrottle int          `json:"CLIENTCONNTHROTTLE"`
 }
 

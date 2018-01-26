@@ -1,5 +1,5 @@
 hash: 9413de41a7cdbc6e599722ddc0fabd68d1863737e593402579fb0f567afc9448
-updated: 2017-12-23T01:45:42.158204961-05:00
+updated: 2018-01-26T13:06:01.315488617-08:00
 imports:
 - name: cloud.google.com/go
   version: 3b1ae45394a234c385be014e9a488f2bb6eef821
@@ -7,7 +7,7 @@ imports:
   - compute/metadata
   - internal
 - name: github.com/appscode/go
-  version: f08cee5a2aa53a1ab6d30e4ae11e381d1b265f81
+  version: 99dbf420807d9459b63d1d0bf702537bb7aa976f
   subpackages:
   - context
   - hold
@@ -147,7 +147,7 @@ imports:
 - name: github.com/ghodss/yaml
   version: 0ca9ea5df5451ffdf184b4428c902747c2c11cd7
 - name: github.com/go-ini/ini
-  version: 2e44421e256d82ebbf3d4d4fcabe8930b905eff3
+  version: 20b96f641a5ea98f2f8619ff4f3e061cff4833bd
 - name: github.com/go-openapi/jsonpointer
   version: 46af16f9f7b149af66e5d1bd010e3574dc06de98
 - name: github.com/go-openapi/jsonreference
@@ -162,7 +162,7 @@ imports:
   - proto
   - sortkeys
 - name: github.com/golang/glog
-  version: 44145f04b68cf362d9c4df2182967c2275eaefed
+  version: 23def4e6c14b4da8ac2ed8007337bc5eb5007998
 - name: github.com/golang/groupcache
   version: 02826c3e79038b59d737d3b1c0a1d937f71a4433
   subpackages:
@@ -237,7 +237,7 @@ imports:
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/JamesClonk/vultr
-  version: e5dad9a80e61623e1da10706f486596f77469049
+  version: fa1c0367800db75e4d10d0ec90c49a8731670224
   subpackages:
   - lib
 - name: github.com/jmespath/go-jmespath
@@ -362,7 +362,7 @@ imports:
 - name: github.com/sirupsen/logrus
   version: 89742aefa4b206dcf400792f3bd35b542998eb3b
 - name: github.com/softlayer/softlayer-go
-  version: 1e6079635172db6191268a4225584cd3ab3d4917
+  version: b9d042f52a64abfd2777ec041b3bc3116263f88b
   subpackages:
   - config
   - datatypes
@@ -370,13 +370,13 @@ imports:
   - session
   - sl
 - name: github.com/spf13/cobra
-  version: ccaecb155a2177302cb56cae929251a256d0f646
+  version: f91529fc609202eededff4de2dc0ba2f662240a3
   subpackages:
   - doc
 - name: github.com/spf13/pflag
   version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: github.com/taoh/linodego
-  version: 53e0016231c0625e3049e64d3071ba3021e6da7c
+  version: 1a2ac7ec11e6761fe83b3648f9437ca0ee4e0224
   repo: https://github.com/appscode/linodego.git
   vcs: git
 - name: github.com/vmware/govmomi

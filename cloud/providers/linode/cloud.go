@@ -51,7 +51,7 @@ func newCloud(config io.Reader) (*Cloud, error) {
 		client:        linodeClient,
 		instances:     newInstances(linodeClient),
 		zones:         newZones(linodeClient, cred.Zone),
-		loadbalancers: newLoadbalancers(linodeClient),
+		loadbalancers: newLoadbalancers(linodeClient, cred.Zone),
 	}, nil
 }
 

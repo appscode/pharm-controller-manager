@@ -1,16 +1,17 @@
 package linode
 
 import (
+	"encoding/base64"
+	"errors"
+	"fmt"
+	"strconv"
+	"strings"
+
 	"github.com/pharmer/cloud-controller-manager/cloud"
 	"github.com/taoh/linodego"
 	"k8s.io/api/core/v1"
 	"k8s.io/kubernetes/pkg/cloudprovider"
-	"errors"
-	"strconv"
-	"fmt"
-	"strings"
 )
-
 
 const (
 	// annDOProtocol is the annotation used to specify the default protocol
@@ -26,12 +27,22 @@ const (
 	// annLinodeTLSPassThrough is the annotation used to specify whether the
 	// Linode loadbalancer should pass encrypted data to backend droplets.
 	// This is optional and defaults to false.
-	annLinodeTLSPassThrough = "service.beta.kubernetes.io/linode-loadbalancer-tls-passthrough"
+	annLinodeCheckPath       = "service.beta.kubernetes.io/linode-loadbalancer-check-path"
+	annLinodeCheckBody       = "service.beta.kubernetes.io/linode-loadbalancer-check-body"
+	annLinodeHealthCheckType = "service.beta.kubernetes.io/linode-loadbalancer-check-type"
 
 	// annLinodeCertificateID is the annotation specifying the certificate ID
 	// used for https protocol. This annoataion is required if annLinodeTLSPorts
 	// is passed.
-	annLinodeCertificateID = "service.beta.kubernetes.io/linode-loadbalancer-certificate-id"
+	annLinodeSSLCertificate = "service.beta.kubernetes.io/linode-loadbalancer-ssl-cert"
+	annLinodeSSLKey         = "service.beta.kubernetes.io/linode-loadbalancer-ssl-key"
+
+	annLinodeHealthCheckInterval = "service.beta.kubernetes.io/linode-loadbalancer-check-interval"
+	annLinodeHealthCheckTimeout  = "service.beta.kubernetes.io/linode-loadbalancer-check-timeout"
+	annLinodeHealthCheckAttempts = "service.beta.kubernetes.io/linode-loadbalancer-check-attempts"
+	annLinodeHealthCheckPassive  = "service.beta.kubernetes.io/linode-loadbalancer-check-passive"
+
+	annLinodeSessionPersistence = "service.beta.kubernetes.io/linode-loadbalancer-stickiness"
 
 	// annLinodeAlgorithm is the annotation specifying which algorithm Linode loadbalancer
 	// should use. Options are round_robin and least_connections. Defaults
@@ -51,17 +62,17 @@ const (
 	lbStatusActive  = "active"
 	lbStatusErrored = "errored"
 )
-var lbNotFound = errors.New("loadbalancer not found")
 
+var lbNotFound = errors.New("loadbalancer not found")
 
 type loadbalancers struct {
 	client *linodego.Client
-	zone string
+	zone   string
 }
 
 // newLoadbalancers returns a cloudprovider.LoadBalancer whose concrete type is a *loadbalancer.
 func newLoadbalancers(client *linodego.Client, zone string) cloudprovider.LoadBalancer {
-	return &loadbalancers{client: client, zone:zone}
+	return &loadbalancers{client: client, zone: zone}
 }
 
 // GetLoadBalancer returns the *v1.LoadBalancerStatus of service.
@@ -105,7 +116,7 @@ func (l *loadbalancers) EnsureLoadBalancer(clusterName string, service *v1.Servi
 	}
 
 	if !exists {
-		ip,  err := l.buildLoadBalancerRequest(service, nodes)
+		ip, err := l.buildLoadBalancerRequest(service, nodes)
 		if err != nil {
 			return nil, err
 		}
@@ -138,7 +149,104 @@ func (l *loadbalancers) EnsureLoadBalancer(clusterName string, service *v1.Servi
 //
 // UpdateLoadBalancer will not modify service or nodes.
 func (l *loadbalancers) UpdateLoadBalancer(clusterName string, service *v1.Service, nodes []*v1.Node) error {
-	return cloud.ErrLBUnsupported
+	lbName := cloudprovider.GetLoadBalancerName(service)
+	lb, err := l.lbByName(l.client, lbName)
+	if err != nil {
+		return err
+	}
+
+	nbs, err := l.client.NodeBalancerConfig.List(lb.NodeBalancerId, 0)
+	if err != nil {
+		return err
+	}
+
+	kubeNode := map[string]*v1.Node{}
+	for _, node := range nodes {
+		kubeNode[node.Name] = node
+	}
+
+	nodePort := map[int]v1.ServicePort{}
+	for _, port := range service.Spec.Ports {
+		nodePort[int(port.Port)] = port
+	}
+	for _, port := range service.Spec.Ports {
+		found := false
+		for _, nb := range nbs.NodeBalancerConfigs {
+			if _, found := nodePort[nb.Port]; !found {
+				if _, err = l.client.NodeBalancerConfig.Delete(lb.NodeBalancerId, nb.ConfigId); err != nil {
+					return err
+				}
+				continue
+			}
+			if nb.Port == int(port.Port) {
+				found = true
+				protocol, err := getProtocol(service)
+				if err != nil {
+					return err
+				}
+
+				args := map[string]string{}
+				args["Protocol"] = protocol
+				args["Algorithm"] = getAlgorithm(service)
+				healthArgs, err := getHealthCheck(service)
+				if err != nil {
+					return err
+				}
+				args = mergeMaps(args, healthArgs)
+				tlsArgs, err := getTLSArgs(service, nb.Port, protocol)
+				if err != nil {
+					return err
+				}
+				args = mergeMaps(args, tlsArgs)
+				_, err = l.client.NodeBalancerConfig.Update(nb.ConfigId, args)
+				if err != nil {
+					return err
+				}
+
+				nodeList, err := l.client.Node.List(nb.ConfigId, 0)
+				for _, node := range nodeList.NodeBalancerNodes {
+					if _, found := kubeNode[node.Label.String()]; !found {
+						if _, err = l.client.Node.Delete(node.NodeId); err != nil {
+							return err
+						}
+						continue
+					}
+					args := map[string]string{}
+					args["Address"] = fmt.Sprintf("%v:%v", getNodeInternalIp(kubeNode[node.Label.String()]), port.NodePort)
+					_, err := l.client.Node.Update(node.NodeId, args)
+					if err != nil {
+						return err
+					}
+				}
+			}
+		}
+		if !found {
+			ncid, err := l.createNodeBalancerConfig(service, lb.NodeBalancerId, int(port.Port))
+			if err != nil {
+				return err
+			}
+			for _, node := range nodes {
+				if err = createNBNode(l.client, ncid, node, port.NodePort); err != nil {
+					return err
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+func createNBNode(client *linodego.Client, configID int, node *v1.Node, port int32) error {
+	ip := fmt.Sprintf("%v:%v", getNodeInternalIp(node), port)
+	args := map[string]string{}
+	args["Weight"] = "100"
+	args["Mode"] = "accept"
+
+	_, err := client.Node.Create(configID, node.Name, ip, args)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // EnsureLoadBalancerDeleted deletes the specified loadbalancer if it exists.
@@ -147,9 +255,23 @@ func (l *loadbalancers) UpdateLoadBalancer(clusterName string, service *v1.Servi
 //
 // EnsureLoadBalancerDeleted will not modify service.
 func (l *loadbalancers) EnsureLoadBalancerDeleted(clusterName string, service *v1.Service) error {
-	return cloud.ErrLBUnsupported
-}
+	_, exists, err := l.GetLoadBalancer(clusterName, service)
+	if err != nil {
+		return err
+	}
 
+	if !exists {
+		return nil
+	}
+	lbName := cloudprovider.GetLoadBalancerName(service)
+	lb, err := l.lbByName(l.client, lbName)
+	if err != nil {
+		return err
+	}
+	_, err = l.client.NodeBalancer.Delete(lb.NodeBalancerId)
+
+	return err
+}
 
 // lbByName gets a DigitalOcean Load Balancer by name. The returned error will
 // be lbNotFound if the load balancer does not exist.
@@ -182,7 +304,33 @@ func (l *loadbalancers) createNoadBalancer(service *v1.Service) (int, error) {
 	return resp.NodeBalancerId.NodeBalancerId, nil
 }
 
-func (l *loadbalancers) createNodeBalancerConfig(nbId int, args map[string]string) (int, error)  {
+func (l *loadbalancers) createNodeBalancerConfig(service *v1.Service, nbId, port int) (int, error) {
+	protocol, err := getProtocol(service)
+	if err != nil {
+		return -1, err
+	}
+
+	args := map[string]string{}
+	args["Port"] = strconv.Itoa(port)
+	args["Protocol"] = protocol
+	args["Algorithm"] = getAlgorithm(service)
+	if cp, ok := service.Annotations[annLinodeSessionPersistence]; ok {
+		args["Stickiness"] = cp
+	} else {
+		args["Stickiness"] = "table"
+	}
+
+	healthArgs, err := getHealthCheck(service)
+	if err != nil {
+		return -1, err
+	}
+	args = mergeMaps(args, healthArgs)
+
+	tlsArgs, err := getTLSArgs(service, port, protocol)
+	if err != nil {
+		return -1, err
+	}
+	args = mergeMaps(args, tlsArgs)
 	resp, err := l.client.NodeBalancerConfig.Create(nbId, args)
 	if err != nil {
 		return -1, err
@@ -190,13 +338,96 @@ func (l *loadbalancers) createNodeBalancerConfig(nbId int, args map[string]strin
 	return resp.NodeBalancerConfigId.NodeBalancerConfigId, nil
 }
 
+func getHealthCheck(service *v1.Service) (map[string]string, error) {
+	args := map[string]string{}
+
+	health, err := getHealthCheckType(service)
+	if err != nil {
+		return args, nil
+	}
+	args["check"] = health
+	if health == "http" || health == "http_body" {
+		path := service.Annotations[annLinodeCheckPath]
+		if path == "" {
+			path = "/"
+		}
+		args["check_path"] = path
+	}
+
+	if health == "http_body" {
+		body := service.Annotations[annLinodeCheckBody]
+		if body == "" {
+			return args, fmt.Errorf("for health check type http_body need body regex annotation %v", annLinodeCheckBody)
+		}
+		args["check_body"] = body
+	}
+	if ci, ok := service.Annotations[annLinodeHealthCheckInterval]; ok {
+		args["check_interval"] = ci
+	} else {
+		args["check_interval"] = "5"
+	}
+
+	if ct, ok := service.Annotations[annLinodeHealthCheckTimeout]; ok {
+		args["check_timeout"] = ct
+	} else {
+		args["check_timeout"] = "3"
+	}
+
+	if ca, ok := service.Annotations[annLinodeHealthCheckAttempts]; ok {
+		args["check_attempts"] = ca
+	} else {
+		args["check_attempts"] = "2"
+	}
+
+	if cp, ok := service.Annotations[annLinodeHealthCheckPassive]; ok {
+		args["check_passive"] = cp
+	} else {
+		args["check_passive"] = "true"
+	}
+
+	return args, nil
+}
+
+func getTLSArgs(service *v1.Service, port int, protocol string) (map[string]string, error) {
+	args := map[string]string{}
+	tlsPorts, err := getTLSPorts(service)
+	if err != nil {
+		return args, err
+	}
+	if len(tlsPorts) > 0 {
+		for _, tlsPort := range tlsPorts {
+			if tlsPort == port && protocol == "https" {
+				cert, key := getSSLCertInfo(service)
+				if cert == "" && key == "" {
+					return args, fmt.Errorf("must set %v and %v annotation for https protocol", annLinodeSSLCertificate, annLinodeSSLKey)
+				}
+				if cert != "" {
+					args["ssl_cert"] = cert
+				}
+				if key != "" {
+					args["ssl_key"] = key
+				}
+
+			}
+		}
+	}
+
+	return args, nil
+}
+
+func mergeMaps(first, second map[string]string) map[string]string {
+	for k, v := range second {
+		first[k] = v
+	}
+	return first
+}
 
 // buildLoadBalancerRequest returns a *godo.LoadBalancerRequest to balance
 // requests for service across nodes.
-func (l *loadbalancers) buildLoadBalancerRequest(service *v1.Service, nodes []*v1.Node)  (string, error){
+func (l *loadbalancers) buildLoadBalancerRequest(service *v1.Service, nodes []*v1.Node) (string, error) {
 	lb, err := l.createNoadBalancer(service)
 	if err != nil {
-		return  "", err
+		return "", err
 	}
 
 	nb, err := l.client.NodeBalancer.List(lb)
@@ -205,37 +436,20 @@ func (l *loadbalancers) buildLoadBalancerRequest(service *v1.Service, nodes []*v
 	}
 	ports := service.Spec.Ports
 	for _, port := range ports {
-		protocol, err := getProtocol(service)
-		if err != nil {
-			return  "", err
-		}
 
-		args := map[string]string{}
-		args["Port"] = strconv.Itoa(int(port.Port))
-		args["Protocol"] = protocol
-		args["Algorithm"] = "roundrobin"
-		args["Stickiness"] = "table"
-		args["check"] = "connection"
-		args["check_interval"] = "5"
-		args["check_timeout"] = "3"
-		args["check_attempts"] = "2"
-		args["check_passive"] = "true"
-		ncid, err := l.createNodeBalancerConfig(lb, args)
+		ncid, err := l.createNodeBalancerConfig(service, lb, int(port.Port))
 		if err != nil {
-			return  "", err
+			return "", err
 		}
-
 
 		for _, node := range nodes {
-			_, err := l.client.Node.Create(ncid, node.Name, fmt.Sprint("%v:%v", nb.NodeBalancer[0].Address4, port.NodePort), nil )
-			if err != nil {
+			if err = createNBNode(l.client, ncid, node, port.NodePort); err != nil {
 				return "", err
 			}
 		}
 	}
 	return nb.NodeBalancer[0].Address4, nil
 }
-
 
 // getProtocol returns the desired protocol of service.
 func getProtocol(service *v1.Service) (string, error) {
@@ -249,6 +463,17 @@ func getProtocol(service *v1.Service) (string, error) {
 	}
 
 	return protocol, nil
+}
+
+func getHealthCheckType(service *v1.Service) (string, error) {
+	hType, ok := service.Annotations[annLinodeHealthCheckType]
+	if !ok {
+		return "connection", nil
+	}
+	if hType != "connection" && hType != "http" && hType != "http_body" {
+		return "", fmt.Errorf("invalid health check type: %q specifed in annotation: %q", hType, annLinodeHealthCheckType)
+	}
+	return hType, nil
 }
 
 // getTLSPorts returns the ports of service that are set to use TLS.
@@ -271,4 +496,42 @@ func getTLSPorts(service *v1.Service) ([]int, error) {
 	}
 
 	return tlsPortsInt, nil
+}
+
+func getNodeInternalIp(node *v1.Node) string {
+	for _, addr := range node.Status.Addresses {
+		if addr.Type == v1.NodeInternalIP {
+			return addr.Address
+		}
+	}
+	return ""
+}
+
+// getAlgorithm returns the load balancing algorithm to use for service.
+// round_robin is returned when service does not specify an algorithm.
+func getAlgorithm(service *v1.Service) string {
+	algo := service.Annotations[annLinodeAlgorithm]
+
+	switch algo {
+	case "least_connections":
+		return "leastconn"
+	case "source":
+		return "source"
+	default:
+		return "roundrobin"
+	}
+}
+
+func getSSLCertInfo(service *v1.Service) (string, string) {
+	cert := service.Annotations[annLinodeSSLCertificate]
+	if cert != "" {
+		cb, _ := base64.StdEncoding.DecodeString(cert)
+		cert = string(cb)
+	}
+	key := service.Annotations[annLinodeSSLKey]
+	if key != "" {
+		kb, _ := base64.StdEncoding.DecodeString(key)
+		key = string(kb)
+	}
+	return cert, key
 }

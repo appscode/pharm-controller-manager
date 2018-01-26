@@ -84,7 +84,7 @@ func (t *NodeBalancerService) Delete(nodeBalancerId int) (*NodeBalancerResponse,
 	u := &url.Values{}
 	u.Add("NodeBalancerID", strconv.Itoa(nodeBalancerId))
 	v := NodeBalancerResponse{}
-	if err := t.client.do("volume.delete", u, &v.Response); err != nil {
+	if err := t.client.do("nodebalancer.delete", u, &v.Response); err != nil {
 		return nil, err
 	}
 

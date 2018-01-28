@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/appscode/go/log"
-	"github.com/golang/glog"
 	_ "github.com/pharmer/cloud-controller-manager/cloud/providers"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -15,8 +14,7 @@ import (
 	"k8s.io/kubernetes/cmd/cloud-controller-manager/app"
 	"k8s.io/kubernetes/cmd/cloud-controller-manager/app/options"
 	_ "k8s.io/kubernetes/pkg/client/metrics/prometheus" // for client metric registration
-	"k8s.io/kubernetes/pkg/cloudprovider"
-	_ "k8s.io/kubernetes/pkg/version/prometheus" // for version metric registration
+	_ "k8s.io/kubernetes/pkg/version/prometheus"        // for version metric registration
 )
 
 func init() {
@@ -37,16 +35,7 @@ func NewCmdUp() *cobra.Command {
 			if err != nil {
 				log.Fatalln("Failed to resolve DNS. Reason: %v", err)
 			}
-
-			fmt.Println(s.CloudProvider, "*****************")
-
-			cloud, err := cloudprovider.InitCloudProvider(s.CloudProvider, s.CloudConfigFile)
-			fmt.Println(s.CloudConfigFile, "----")
-			if err != nil {
-				glog.Fatalf("Cloud provider could not be initialized: %v", err)
-			}
-
-			if err := app.Run(s, cloud); err != nil {
+			if err := app.Run(s); err != nil {
 				fmt.Fprintf(os.Stderr, "%v\n", err)
 				os.Exit(1)
 			}

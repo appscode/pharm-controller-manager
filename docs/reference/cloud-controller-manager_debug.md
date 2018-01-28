@@ -4,7 +4,6 @@ Debug cloud-controller-manager
 
 ### Synopsis
 
-
 Debug cloud-controller-manager
 
 ```
@@ -23,7 +22,7 @@ cloud-controller-manager debug [flags]
 ```
       --alsologtostderr                         log to standard error as well as files
       --analytics                               Send analytical events to Google Analytics (default true)
-      --cloud-provider-gce-lb-src-cidrs cidrs   CIDRS opened in GCE firewall for LB traffic proxy & health checks (default 35.191.0.0/16,209.85.152.0/22,209.85.204.0/22,130.211.0.0/22)
+      --cloud-provider-gce-lb-src-cidrs cidrs   CIDRs opened in GCE firewall for LB traffic proxy & health checks (default 130.211.0.0/22,35.191.0.0/16,209.85.152.0/22,209.85.204.0/22)
       --log_backtrace_at traceLocation          when logging hits line file:N, emit a stack trace (default :0)
       --log_dir string                          If non-empty, write log files in this directory
       --logtostderr                             log to standard error instead of files
@@ -33,5 +32,6 @@ cloud-controller-manager debug [flags]
 ```
 
 ### SEE ALSO
+
 * [cloud-controller-manager](cloud-controller-manager.md)	 - Pharm Controller Manager by Appscode - Start farms
 

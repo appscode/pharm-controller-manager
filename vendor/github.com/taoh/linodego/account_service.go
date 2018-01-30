@@ -6,10 +6,18 @@ import (
 	"strconv"
 )
 
+// AccountService is an interface generated for "github.com/appscode/linodego".AccountService.
+type AccountInterface interface {
+	EstimateInvoice(string, int, int, int) (*EstimateInvoiceResponse, error)
+	Info() (*AccountInfoResponse, error)
+}
+
 // Account Service
 type AccountService struct {
 	client *Client
 }
+
+var _ AccountInterface = &AccountService{}
 
 // Response for account.estimateinvoice API
 type EstimateInvoiceResponse struct {

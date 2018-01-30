@@ -6,10 +6,20 @@ import (
 	"strconv"
 )
 
+// StackScriptService is an interface generated for "github.com/appscode/linodego".StackScriptService.
+type StackScriptInterface interface {
+	Create(string, string, string, map[string]string) (*StackScriptResponse, error)
+	Delete(int) (*StackScriptResponse, error)
+	List(int) (*StackScriptListResponse, error)
+	Update(int, map[string]string) (*StackScriptResponse, error)
+}
+
 // Linode Config Service
 type StackScriptService struct {
 	client *Client
 }
+
+var _ StackScriptInterface = &StackScriptService{}
 
 // Response for linode.config.list API
 type StackScriptListResponse struct {

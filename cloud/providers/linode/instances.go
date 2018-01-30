@@ -135,6 +135,9 @@ func linodeByID(client *linodego.Client, id string) (*linodego.Linode, error) {
 	if err != nil {
 		return nil, err
 	}
+	if len(linode.Linodes) == 0 {
+		return nil, fmt.Errorf("linode not found with id %v", linodeID)
+	}
 	return &linode.Linodes[0], nil
 
 }

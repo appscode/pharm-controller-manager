@@ -7,10 +7,25 @@ import (
 	"strconv"
 )
 
+// LinodeService is an interface generated for "github.com/appscode/linodego".LinodeService.
+type LinodeInterface interface {
+	Boot(int, int) (*JobResponse, error)
+	Clone(int, int, int, int) (*LinodeResponse, error)
+	Create(int, int, int) (*LinodeResponse, error)
+	Delete(int, bool) (*LinodeResponse, error)
+	List(int) (*LinodesListResponse, error)
+	Reboot(int, int) (*JobResponse, error)
+	Resize(int, int) (*LinodeResponse, error)
+	Shutdown(int) (*JobResponse, error)
+	Update(int, map[string]interface{}) (*LinodeResponse, error)
+}
+
 // Linode Service
 type LinodeService struct {
 	client *Client
 }
+
+var _ LinodeInterface = &LinodeService{}
 
 // Response for linode.list API
 type LinodesListResponse struct {

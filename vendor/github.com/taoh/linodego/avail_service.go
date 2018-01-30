@@ -6,10 +6,23 @@ import (
 	"strconv"
 )
 
+// AvailService is an interface generated for "github.com/appscode/linodego".AvailService.
+type AvailInterface interface {
+	DataCenters() (*AvailDataCentersResponse, error)
+	Distributions() (*AvailDistributionsResponse, error)
+	FilterKernels(int, int) (*KernelsResponse, error)
+	Kernels(map[string]string) (*KernelsResponse, error)
+	LinodePlans() (*LinodePlansResponse, error)
+	NodeBalancers() (*NodeBalancersResponse, error)
+	StackScripts() (*StackScriptsResponse, error)
+}
+
 // Avail Service
 type AvailService struct {
 	client *Client
 }
+
+var _ AvailInterface = &AvailService{}
 
 // Response for avail.datacenters API
 type AvailDataCentersResponse struct {

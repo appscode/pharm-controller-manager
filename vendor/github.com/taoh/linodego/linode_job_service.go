@@ -6,10 +6,17 @@ import (
 	"strconv"
 )
 
+// LinodeJobService is an interface generated for "github.com/appscode/linodego".LinodeJobService.
+type LinodeJobInterface interface {
+	List(int, int, bool) (*LinodesJobListResponse, error)
+}
+
 // Job service
 type LinodeJobService struct {
 	client *Client
 }
+
+var _ LinodeJobInterface = &LinodeJobService{}
 
 // Resonse for linode.job.list API
 type LinodesJobListResponse struct {

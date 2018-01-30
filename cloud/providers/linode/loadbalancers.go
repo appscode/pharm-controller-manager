@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pharmer/cloud-controller-manager/cloud"
 	"github.com/taoh/linodego"
 	"k8s.io/api/core/v1"
 	"k8s.io/kubernetes/pkg/cloudprovider"
@@ -102,7 +101,6 @@ func (l *loadbalancers) GetLoadBalancer(clusterName string, service *v1.Service)
 			},
 		},
 	}, true, nil
-	return nil, false, cloud.ErrNotImplemented
 }
 
 // EnsureLoadBalancer ensures that the cluster is running a load balancer for
@@ -169,6 +167,7 @@ func (l *loadbalancers) UpdateLoadBalancer(clusterName string, service *v1.Servi
 	for _, port := range service.Spec.Ports {
 		nodePort[int(port.Port)] = port
 	}
+
 	for _, port := range service.Spec.Ports {
 		found := false
 		for _, nb := range nbs.NodeBalancerConfigs {
@@ -433,6 +432,9 @@ func (l *loadbalancers) buildLoadBalancerRequest(service *v1.Service, nodes []*v
 	nb, err := l.client.NodeBalancer.List(lb)
 	if err != nil {
 		return "", err
+	}
+	if len(nb.NodeBalancer) == 0 {
+		return "", fmt.Errorf("nodebalancer with id %v not found", lb)
 	}
 	ports := service.Spec.Ports
 	for _, port := range ports {

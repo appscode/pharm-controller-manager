@@ -6,10 +6,21 @@ import (
 	"strconv"
 )
 
+// LinodeIPService is an interface generated for "github.com/appscode/linodego".LinodeIPService.
+type LinodeIPInterface interface {
+	AddPrivate(int) (*LinodeIPAddressResponse, error)
+	AddPublic(int) (*LinodeIPAddressResponse, error)
+	List(int, int) (*LinodeIPListResponse, error)
+	SetRDNS(int, string) (*LinodeRDNSIPAddressResponse, error)
+	Swap(int, int, int) (*LinodeLinodeIPAddressResponse, error)
+}
+
 // Linode IP Service
 type LinodeIPService struct {
 	client *Client
 }
+
+var _ LinodeIPInterface = &LinodeIPService{}
 
 // IP List Response
 type LinodeIPListResponse struct {

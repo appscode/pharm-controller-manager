@@ -6,10 +6,20 @@ import (
 	"strconv"
 )
 
+// NodeBalancerNodeService is an interface generated for "github.com/appscode/linodego".NodeBalancerNodeService.
+type NodeBalancerNodeInterface interface {
+	Create(int, string, string, map[string]string) (*NodeBalancerNodeResponse, error)
+	Delete(int) (*NodeBalancerNodeResponse, error)
+	List(int, int) (*NodeBalancerNodeListResponse, error)
+	Update(int, map[string]string) (*NodeBalancerNodeResponse, error)
+}
+
 // NodeBalancer Config Service
 type NodeBalancerNodeService struct {
 	client *Client
 }
+
+var _ NodeBalancerNodeInterface = &NodeBalancerNodeService{}
 
 // Response for nodebalancer.config.list API
 type NodeBalancerNodeListResponse struct {

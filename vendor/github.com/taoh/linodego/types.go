@@ -232,7 +232,6 @@ type VolumeId struct {
 	VolumeId int `json:"VOLUMEID"`
 }
 
-
 type LinodeNodeBalancer struct {
 	NodeBalancerId     int          `json:"NODEBALANCERID"`
 	Label              CustomString `json:"LABEL"`
@@ -246,7 +245,6 @@ type LinodeNodeBalancer struct {
 type LinodeNodeBalancerId struct {
 	NodeBalancerId int `json:"NODEBALANCERID"`
 }
-
 
 type NodeBalancerConfig struct {
 	Stickiness     CustomString `json:"STICKINESS"`

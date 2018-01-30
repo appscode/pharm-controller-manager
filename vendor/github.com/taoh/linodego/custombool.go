@@ -4,10 +4,18 @@ import (
 	"fmt"
 )
 
+// CustomBool is an interface generated for "github.com/appscode/linodego".CustomBool.
+type CustomBoolImpl interface {
+	MarshalJSON() ([]byte, error)
+	UnmarshalJSON([]byte) error
+}
+
 // CustomBool is a type to handle Linode's insistance of using ints as boolean values.
 type CustomBool struct {
 	Bool bool
 }
+
+var _ CustomBoolImpl = &CustomBool{}
 
 func (cb *CustomBool) UnmarshalJSON(b []byte) error {
 	if len(b) != 1 {

@@ -6,11 +6,20 @@ import (
 	"strconv"
 )
 
+// NodeBalancerService is an interface generated for "github.com/appscode/linodego".NodeBalancerService.
+type NodeBalancerInterface interface {
+	Create(int, string, map[string]string) (*NodeBalancerResponse, error)
+	Delete(int) (*NodeBalancerResponse, error)
+	List(int) (*NodeBalancerListResponse, error)
+	Update(int, map[string]string) (*NodeBalancerResponse, error)
+}
 
 // Nodebalancer Service
 type NodeBalancerService struct {
 	client *Client
 }
+
+var _ NodeBalancerInterface = &NodeBalancerService{}
 
 // Response for nodebalancer.list API
 type NodeBalancerListResponse struct {
@@ -18,13 +27,11 @@ type NodeBalancerListResponse struct {
 	NodeBalancer []LinodeNodeBalancer
 }
 
-
 // Response for general config APIs
 type NodeBalancerResponse struct {
 	Response
 	NodeBalancerId LinodeNodeBalancerId
 }
-
 
 // List all nodebalancers. If nodeBalancerId is greater than 0, limit the results to given nodebalancer.
 func (t *NodeBalancerService) List(nodeBalancerId int) (*NodeBalancerListResponse, error) {
@@ -45,7 +52,7 @@ func (t *NodeBalancerService) List(nodeBalancerId int) (*NodeBalancerListRespons
 }
 
 // Create NodeBalancer
-func (t *NodeBalancerService) Create(datacenterId int,label string, args map[string]string) (*NodeBalancerResponse, error) {
+func (t *NodeBalancerService) Create(datacenterId int, label string, args map[string]string) (*NodeBalancerResponse, error) {
 	u := &url.Values{}
 	u.Add("DatacenterID", strconv.Itoa(datacenterId))
 	u.Add("Label", label)
@@ -93,4 +100,3 @@ func (t *NodeBalancerService) Delete(nodeBalancerId int) (*NodeBalancerResponse,
 	}
 	return &v, nil
 }
-

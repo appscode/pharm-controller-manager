@@ -44,21 +44,21 @@ type Client struct {
 	UsePost bool
 
 	// Services
-	Test        *TestService
-	Api         *ApiService
-	Avail       *AvailService
-	Account     *AccountService
-	Image       *ImageService
-	Linode      *LinodeService
-	Job         *LinodeJobService
-	Config      *LinodeConfigService
-	Ip          *LinodeIPService
-	Disk        *LinodeDiskService
-	StackScript *StackScriptService
-	Volume      *LinodeVolumeService
-	NodeBalancer *NodeBalancerService
-	NodeBalancerConfig *NodeBalancerConfigService
-	Node *NodeBalancerNodeService
+	Test               TestInterface
+	Api                ApiInterface
+	Avail              AvailInterface
+	Account            AccountInterface
+	Image              ImageInterface
+	Linode             LinodeInterface
+	Job                LinodeJobInterface
+	Config             LinodeConfigInterface
+	Ip                 LinodeIPInterface
+	Disk               LinodeDiskInterface
+	StackScript        StackScriptInterface
+	Volume             LinodeVolumeInterface
+	NodeBalancer       NodeBalancerInterface
+	NodeBalancerConfig NodeBalancerConfigInterface
+	Node               NodeBalancerNodeInterface
 }
 
 // Creates a new Linode client object.
@@ -86,9 +86,9 @@ func NewClient(AccessKey string, httpClient *http.Client) *Client {
 	c.Disk = &LinodeDiskService{client: c}
 	c.StackScript = &StackScriptService{client: c}
 	c.Volume = &LinodeVolumeService{client: c}
-	c.NodeBalancer = &NodeBalancerService{client:c}
+	c.NodeBalancer = &NodeBalancerService{client: c}
 	c.NodeBalancerConfig = &NodeBalancerConfigService{client: c}
-	c.Node = &NodeBalancerNodeService{client:c}
+	c.Node = &NodeBalancerNodeService{client: c}
 	return c
 }
 

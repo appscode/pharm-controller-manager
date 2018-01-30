@@ -6,10 +6,26 @@ import (
 	"strconv"
 )
 
+// LinodeDiskService is an interface generated for "github.com/appscode/linodego".LinodeDiskService.
+type LinodeDiskInterface interface {
+	Create(int, string, string, int, map[string]string) (*LinodeDiskJobResponse, error)
+	CreateFromDistribution(int, int, string, int, map[string]string) (*LinodeDiskJobResponse, error)
+	CreateFromImage(int, int, string, int, map[string]string) (*LinodeDiskJobResponse, error)
+	CreateFromStackscript(int, int, string, string, int, int, string, map[string]string) (*LinodeDiskJobResponse, error)
+	Delete(int, int) (*LinodeDiskJobResponse, error)
+	Duplicate(int, int) (*LinodeDiskJobResponse, error)
+	Imagize(int, int, string, string) (*LinodeDiskJobResponse, error)
+	List(int, int) (*LinodeDiskListResponse, error)
+	Resize(int, int, int) (*LinodeDiskJobResponse, error)
+	Update(int, int, string, bool) (*LinodeDiskJobResponse, error)
+}
+
 // Linode Disk Service
 type LinodeDiskService struct {
 	client *Client
 }
+
+var _ LinodeDiskInterface = &LinodeDiskService{}
 
 // Response for linode.disk.list API
 type LinodeDiskListResponse struct {

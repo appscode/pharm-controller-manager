@@ -6,10 +6,20 @@ import (
 	"strconv"
 )
 
+// LinodeConfigService is an interface generated for "github.com/appscode/linodego".LinodeConfigService.
+type LinodeConfigInterface interface {
+	Create(int, int, string, map[string]string) (*LinodeConfigResponse, error)
+	Delete(int, int) (*LinodeConfigResponse, error)
+	List(int, int) (*LinodeConfigListResponse, error)
+	Update(int, int, int, map[string]string) (*LinodeConfigResponse, error)
+}
+
 // Linode Config Service
 type LinodeConfigService struct {
 	client *Client
 }
+
+var _ LinodeConfigInterface = &LinodeConfigService{}
 
 // Response for linode.config.list API
 type LinodeConfigListResponse struct {

@@ -31,7 +31,7 @@ type LinodeVolumeListResponse struct {
 // Response for general config APIs
 type LinodeVolumeResponse struct {
 	Response
-	VolumeId StackScriptId
+	VolumeId VolumeId
 }
 
 // List all volumes. If volumeId is greater than 0, limit the results to given volume.

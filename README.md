@@ -1,4 +1,9 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/pharmer/cloud-controller-manager)](https://goreportcard.com/report/github.com/pharmer/cloud-controller-manager)
+[![Build Status](https://travis-ci.org/pharmer/cloud-controller-manager.svg?branch=master)](https://travis-ci.org/pharmer/cloud-controller-manager)
+[![codecov](https://codecov.io/gh/pharmer/cloud-controller-manager/branch/master/graph/badge.svg)](https://codecov.io/gh/pharmer/cloud-controller-manager)
+[![Docker Pulls](https://img.shields.io/docker/pulls/pharmer/cloud-controller-manager.svg)](https://hub.docker.com/r/pharmer/cloud-controller-manager/)
+[![Slack](https://slack.appscode.com/badge.svg)](https://slack.appscode.com)
+[![Twitter](https://img.shields.io/twitter/follow/appscodehq.svg?style=social&logo=twitter&label=Follow)](https://twitter.com/intent/follow?screen_name=AppsCodeHQ)
 
 # cloud-controller-manager
 [Kubernetes Cloud Controller Manager](https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/). This is intended to be used with [Pharmer by AppsCode](https://appscode.com/products/pharmer).

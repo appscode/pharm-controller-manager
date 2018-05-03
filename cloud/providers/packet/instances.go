@@ -1,6 +1,7 @@
 package packet
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -21,7 +22,7 @@ func newInstances(client *packngo.Client, projectID string) cloudprovider.Instan
 	return &instances{client, projectID}
 }
 
-func (i *instances) NodeAddresses(name types.NodeName) ([]v1.NodeAddress, error) {
+func (i *instances) NodeAddresses(_ context.Context, name types.NodeName) ([]v1.NodeAddress, error) {
 	device, err := deviceByName(i.client, i.project, name)
 	if err != nil {
 		return nil, err
@@ -29,7 +30,7 @@ func (i *instances) NodeAddresses(name types.NodeName) ([]v1.NodeAddress, error)
 	return i.nodeAddresses(device)
 }
 
-func (i *instances) NodeAddressesByProviderID(providerID string) ([]v1.NodeAddress, error) {
+func (i *instances) NodeAddressesByProviderID(_ context.Context, providerID string) ([]v1.NodeAddress, error) {
 	id, err := deviceIDFromProviderID(providerID)
 	if err != nil {
 		return nil, err
@@ -74,11 +75,11 @@ func (i *instances) nodeAddresses(device *packngo.Device) ([]v1.NodeAddress, err
 	return addresses, nil
 }
 
-func (i *instances) ExternalID(nodeName types.NodeName) (string, error) {
-	return i.InstanceID(nodeName)
+func (i *instances) ExternalID(ctx context.Context, nodeName types.NodeName) (string, error) {
+	return i.InstanceID(ctx, nodeName)
 }
 
-func (i *instances) InstanceID(nodeName types.NodeName) (string, error) {
+func (i *instances) InstanceID(_ context.Context, nodeName types.NodeName) (string, error) {
 	device, err := deviceByName(i.client, i.project, nodeName)
 	if err != nil {
 		return "", err
@@ -86,7 +87,7 @@ func (i *instances) InstanceID(nodeName types.NodeName) (string, error) {
 	return device.ID, nil
 }
 
-func (i *instances) InstanceType(nodeName types.NodeName) (string, error) {
+func (i *instances) InstanceType(_ context.Context, nodeName types.NodeName) (string, error) {
 	device, err := deviceByName(i.client, i.project, nodeName)
 	if err != nil {
 		return "", err
@@ -94,7 +95,7 @@ func (i *instances) InstanceType(nodeName types.NodeName) (string, error) {
 	return device.Plan.Slug, nil
 }
 
-func (i *instances) InstanceTypeByProviderID(providerID string) (string, error) {
+func (i *instances) InstanceTypeByProviderID(_ context.Context, providerID string) (string, error) {
 	id, err := deviceIDFromProviderID(providerID)
 	if err != nil {
 		return "", err
@@ -106,15 +107,15 @@ func (i *instances) InstanceTypeByProviderID(providerID string) (string, error) 
 	return device.Plan.Slug, nil
 }
 
-func (i *instances) AddSSHKeyToAllInstances(user string, keyData []byte) error {
+func (i *instances) AddSSHKeyToAllInstances(_ context.Context, user string, keyData []byte) error {
 	return cloud.ErrNotImplemented
 }
 
-func (i *instances) CurrentNodeName(hostname string) (types.NodeName, error) {
+func (i *instances) CurrentNodeName(_ context.Context, hostname string) (types.NodeName, error) {
 	return types.NodeName(hostname), nil
 }
 
-func (i *instances) InstanceExistsByProviderID(providerID string) (bool, error) {
+func (i *instances) InstanceExistsByProviderID(_ context.Context, providerID string) (bool, error) {
 	id, err := deviceIDFromProviderID(providerID)
 	if err != nil {
 		return false, err
@@ -132,7 +133,7 @@ func deviceByID(client *packngo.Client, id string) (*packngo.Device, error) {
 }
 
 func deviceByName(client *packngo.Client, projectID string, nodeName types.NodeName) (*packngo.Device, error) {
-	devices, _, err := client.Devices.List(projectID)
+	devices, _, err := client.Devices.List(projectID, nil)
 	if err != nil {
 		return nil, err
 	}

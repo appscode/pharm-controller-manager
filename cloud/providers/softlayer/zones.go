@@ -1,6 +1,7 @@
 package softlayer
 
 import (
+	"context"
 	"strconv"
 
 	"github.com/softlayer/softlayer-go/services"
@@ -21,11 +22,11 @@ func newZones(virtualServiceClient services.Virtual_Guest,
 		accountServiceClient: accountServiceClient, zone: region}
 }
 
-func (z zones) GetZone() (cloudprovider.Zone, error) {
+func (z zones) GetZone(_ context.Context) (cloudprovider.Zone, error) {
 	return cloudprovider.Zone{Region: z.zone}, nil
 }
 
-func (z zones) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error) {
+func (z zones) GetZoneByProviderID(_ context.Context, providerID string) (cloudprovider.Zone, error) {
 	id, err := guestIDFromProviderID(providerID)
 	if err != nil {
 		return cloudprovider.Zone{}, err
@@ -40,7 +41,7 @@ func (z zones) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error
 
 }
 
-func (z zones) GetZoneByNodeName(nodeName types.NodeName) (cloudprovider.Zone, error) {
+func (z zones) GetZoneByNodeName(_ context.Context, nodeName types.NodeName) (cloudprovider.Zone, error) {
 	vGuest, err := guestByName(z.accountServiceClient, nodeName)
 	if err != nil {
 		return cloudprovider.Zone{}, err

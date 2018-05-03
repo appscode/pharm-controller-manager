@@ -1,6 +1,8 @@
 package packet
 
 import (
+	"context"
+
 	"github.com/packethost/packngo"
 	"github.com/pharmer/cloud-controller-manager/cloud"
 	"k8s.io/api/core/v1"
@@ -19,7 +21,7 @@ func newLoadbalancers(client *packngo.Client) cloudprovider.LoadBalancer {
 // GetLoadBalancer returns the *v1.LoadBalancerStatus of service.
 //
 // GetLoadBalancer will not modify service.
-func (l *loadbalancers) GetLoadBalancer(clusterName string, service *v1.Service) (*v1.LoadBalancerStatus, bool, error) {
+func (l *loadbalancers) GetLoadBalancer(_ context.Context, clusterName string, service *v1.Service) (*v1.LoadBalancerStatus, bool, error) {
 	return nil, false, cloud.ErrNotImplemented
 }
 
@@ -27,7 +29,7 @@ func (l *loadbalancers) GetLoadBalancer(clusterName string, service *v1.Service)
 // service.
 //
 // EnsureLoadBalancer will not modify service or nodes.
-func (l *loadbalancers) EnsureLoadBalancer(clusterName string, service *v1.Service, nodes []*v1.Node) (*v1.LoadBalancerStatus, error) {
+func (l *loadbalancers) EnsureLoadBalancer(_ context.Context, clusterName string, service *v1.Service, nodes []*v1.Node) (*v1.LoadBalancerStatus, error) {
 	return nil, cloud.ErrLBUnsupported
 
 }
@@ -36,7 +38,7 @@ func (l *loadbalancers) EnsureLoadBalancer(clusterName string, service *v1.Servi
 // the droplets in nodes.
 //
 // UpdateLoadBalancer will not modify service or nodes.
-func (l *loadbalancers) UpdateLoadBalancer(clusterName string, service *v1.Service, nodes []*v1.Node) error {
+func (l *loadbalancers) UpdateLoadBalancer(_ context.Context, clusterName string, service *v1.Service, nodes []*v1.Node) error {
 	return cloud.ErrLBUnsupported
 }
 
@@ -45,6 +47,6 @@ func (l *loadbalancers) UpdateLoadBalancer(clusterName string, service *v1.Servi
 // successfully deleted.
 //
 // EnsureLoadBalancerDeleted will not modify service.
-func (l *loadbalancers) EnsureLoadBalancerDeleted(clusterName string, service *v1.Service) error {
+func (l *loadbalancers) EnsureLoadBalancerDeleted(_ context.Context, clusterName string, service *v1.Service) error {
 	return cloud.ErrLBUnsupported
 }

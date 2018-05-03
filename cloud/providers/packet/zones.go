@@ -1,6 +1,8 @@
 package packet
 
 import (
+	"context"
+
 	"github.com/packethost/packngo"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/kubernetes/pkg/cloudprovider"
@@ -16,11 +18,11 @@ func newZones(client *packngo.Client, projectID, zone string) cloudprovider.Zone
 	return zones{client, projectID, zone}
 }
 
-func (z zones) GetZone() (cloudprovider.Zone, error) {
+func (z zones) GetZone(_ context.Context) (cloudprovider.Zone, error) {
 	return cloudprovider.Zone{Region: z.zone}, nil
 }
 
-func (z zones) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error) {
+func (z zones) GetZoneByProviderID(_ context.Context, providerID string) (cloudprovider.Zone, error) {
 	id, err := deviceIDFromProviderID(providerID)
 	if err != nil {
 		return cloudprovider.Zone{}, err
@@ -33,7 +35,7 @@ func (z zones) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error
 
 }
 
-func (z zones) GetZoneByNodeName(nodeName types.NodeName) (cloudprovider.Zone, error) {
+func (z zones) GetZoneByNodeName(_ context.Context, nodeName types.NodeName) (cloudprovider.Zone, error) {
 	device, err := deviceByName(z.client, z.project, nodeName)
 	if err != nil {
 		return cloudprovider.Zone{}, err

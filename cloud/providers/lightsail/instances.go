@@ -1,6 +1,7 @@
 package lightsail
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -21,7 +22,7 @@ func newInstances(client *lightsail.Lightsail) cloudprovider.Instances {
 	return &instances{client}
 }
 
-func (i *instances) NodeAddresses(name types.NodeName) ([]v1.NodeAddress, error) {
+func (i *instances) NodeAddresses(_ context.Context, name types.NodeName) ([]v1.NodeAddress, error) {
 	instance, err := instanceByName(i.client, name)
 	if err != nil {
 		return nil, err
@@ -29,7 +30,7 @@ func (i *instances) NodeAddresses(name types.NodeName) ([]v1.NodeAddress, error)
 	return nodeAddresses(instance)
 }
 
-func (i *instances) NodeAddressesByProviderID(providerID string) ([]v1.NodeAddress, error) {
+func (i *instances) NodeAddressesByProviderID(_ context.Context, providerID string) ([]v1.NodeAddress, error) {
 	id, err := instanceIDFromProviderID(providerID)
 	if err != nil {
 		return nil, err
@@ -59,15 +60,15 @@ func nodeAddresses(instance *lightsail.Instance) ([]v1.NodeAddress, error) {
 	return addresses, nil
 }
 
-func (i *instances) ExternalID(nodeName types.NodeName) (string, error) {
+func (i *instances) ExternalID(_ context.Context, nodeName types.NodeName) (string, error) {
 	return string(nodeName), nil
 }
 
-func (i *instances) InstanceID(nodeName types.NodeName) (string, error) {
+func (i *instances) InstanceID(_ context.Context, nodeName types.NodeName) (string, error) {
 	return string(nodeName), nil
 }
 
-func (i *instances) InstanceType(nodeName types.NodeName) (string, error) {
+func (i *instances) InstanceType(_ context.Context, nodeName types.NodeName) (string, error) {
 	instance, err := instanceByName(i.client, nodeName)
 	if err != nil {
 		return "", err
@@ -75,7 +76,7 @@ func (i *instances) InstanceType(nodeName types.NodeName) (string, error) {
 	return *instance.BundleId, nil
 }
 
-func (i *instances) InstanceTypeByProviderID(providerID string) (string, error) {
+func (i *instances) InstanceTypeByProviderID(_ context.Context, providerID string) (string, error) {
 	id, err := instanceIDFromProviderID(providerID)
 	if err != nil {
 		return "", err
@@ -87,15 +88,15 @@ func (i *instances) InstanceTypeByProviderID(providerID string) (string, error) 
 	return *instance.BundleId, nil
 }
 
-func (i *instances) AddSSHKeyToAllInstances(user string, keyData []byte) error {
+func (i *instances) AddSSHKeyToAllInstances(_ context.Context, user string, keyData []byte) error {
 	return cloud.ErrNotImplemented
 }
 
-func (i *instances) CurrentNodeName(hostname string) (types.NodeName, error) {
+func (i *instances) CurrentNodeName(_ context.Context, hostname string) (types.NodeName, error) {
 	return types.NodeName(hostname), nil
 }
 
-func (i *instances) InstanceExistsByProviderID(providerID string) (bool, error) {
+func (i *instances) InstanceExistsByProviderID(_ context.Context, providerID string) (bool, error) {
 	id, err := instanceIDFromProviderID(providerID)
 	if err != nil {
 		return false, err

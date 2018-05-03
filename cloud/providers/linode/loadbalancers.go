@@ -1,6 +1,7 @@
 package linode
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"strconv"
@@ -77,7 +78,7 @@ func newLoadbalancers(client *linodego.Client, zone string) cloudprovider.LoadBa
 // GetLoadBalancer returns the *v1.LoadBalancerStatus of service.
 //
 // GetLoadBalancer will not modify service.
-func (l *loadbalancers) GetLoadBalancer(clusterName string, service *v1.Service) (*v1.LoadBalancerStatus, bool, error) {
+func (l *loadbalancers) GetLoadBalancer(_ context.Context, clusterName string, service *v1.Service) (*v1.LoadBalancerStatus, bool, error) {
 	lbName := cloudprovider.GetLoadBalancerName(service)
 	lb, err := l.lbByName(l.client, lbName)
 	if err != nil {
@@ -107,8 +108,8 @@ func (l *loadbalancers) GetLoadBalancer(clusterName string, service *v1.Service)
 // service.
 //
 // EnsureLoadBalancer will not modify service or nodes.
-func (l *loadbalancers) EnsureLoadBalancer(clusterName string, service *v1.Service, nodes []*v1.Node) (*v1.LoadBalancerStatus, error) {
-	lbStatus, exists, err := l.GetLoadBalancer(clusterName, service)
+func (l *loadbalancers) EnsureLoadBalancer(ctx context.Context, clusterName string, service *v1.Service, nodes []*v1.Node) (*v1.LoadBalancerStatus, error) {
+	lbStatus, exists, err := l.GetLoadBalancer(ctx, clusterName, service)
 	if err != nil {
 		return nil, err
 	}
@@ -128,12 +129,12 @@ func (l *loadbalancers) EnsureLoadBalancer(clusterName string, service *v1.Servi
 		}, nil
 	}
 
-	err = l.UpdateLoadBalancer(clusterName, service, nodes)
+	err = l.UpdateLoadBalancer(ctx, clusterName, service, nodes)
 	if err != nil {
 		return nil, err
 	}
 
-	lbStatus, exists, err = l.GetLoadBalancer(clusterName, service)
+	lbStatus, exists, err = l.GetLoadBalancer(ctx, clusterName, service)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +147,7 @@ func (l *loadbalancers) EnsureLoadBalancer(clusterName string, service *v1.Servi
 // the droplets in nodes.
 //
 // UpdateLoadBalancer will not modify service or nodes.
-func (l *loadbalancers) UpdateLoadBalancer(clusterName string, service *v1.Service, nodes []*v1.Node) error {
+func (l *loadbalancers) UpdateLoadBalancer(_ context.Context, clusterName string, service *v1.Service, nodes []*v1.Node) error {
 	lbName := cloudprovider.GetLoadBalancerName(service)
 	lb, err := l.lbByName(l.client, lbName)
 	if err != nil {
@@ -253,8 +254,8 @@ func createNBNode(client *linodego.Client, configID int, node *v1.Node, port int
 // successfully deleted.
 //
 // EnsureLoadBalancerDeleted will not modify service.
-func (l *loadbalancers) EnsureLoadBalancerDeleted(clusterName string, service *v1.Service) error {
-	_, exists, err := l.GetLoadBalancer(clusterName, service)
+func (l *loadbalancers) EnsureLoadBalancerDeleted(ctx context.Context, clusterName string, service *v1.Service) error {
+	_, exists, err := l.GetLoadBalancer(ctx, clusterName, service)
 	if err != nil {
 		return err
 	}

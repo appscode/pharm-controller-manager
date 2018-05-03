@@ -1,6 +1,7 @@
 package softlayer
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -25,7 +26,7 @@ func newInstances(virtualServiceClient services.Virtual_Guest,
 		accountServiceClient: accountServiceClient}
 }
 
-func (i *instances) NodeAddresses(name types.NodeName) ([]v1.NodeAddress, error) {
+func (i *instances) NodeAddresses(_ context.Context, name types.NodeName) ([]v1.NodeAddress, error) {
 	vGuest, err := guestByName(i.accountServiceClient, name)
 	if err != nil {
 		return nil, err
@@ -33,7 +34,7 @@ func (i *instances) NodeAddresses(name types.NodeName) ([]v1.NodeAddress, error)
 	return nodeAddresses(i.virtualServiceClient, vGuest)
 }
 
-func (i *instances) NodeAddressesByProviderID(providerID string) ([]v1.NodeAddress, error) {
+func (i *instances) NodeAddressesByProviderID(_ context.Context, providerID string) ([]v1.NodeAddress, error) {
 	id, err := guestIDFromProviderID(providerID)
 	if err != nil {
 		return nil, err
@@ -68,11 +69,11 @@ func nodeAddresses(virtualServiceClient services.Virtual_Guest, vGuest datatypes
 	return addresses, nil
 }
 
-func (i *instances) ExternalID(nodeName types.NodeName) (string, error) {
-	return i.InstanceID(nodeName)
+func (i *instances) ExternalID(ctx context.Context, nodeName types.NodeName) (string, error) {
+	return i.InstanceID(ctx, nodeName)
 }
 
-func (i *instances) InstanceID(nodeName types.NodeName) (string, error) {
+func (i *instances) InstanceID(_ context.Context, nodeName types.NodeName) (string, error) {
 	vGuest, err := guestByName(i.accountServiceClient, nodeName)
 	if err != nil {
 		return "", err
@@ -80,7 +81,7 @@ func (i *instances) InstanceID(nodeName types.NodeName) (string, error) {
 	return strconv.Itoa(*vGuest.Id), nil
 }
 
-func (i *instances) InstanceType(nodeName types.NodeName) (string, error) {
+func (i *instances) InstanceType(_ context.Context, nodeName types.NodeName) (string, error) {
 	vGuest, err := guestByName(i.accountServiceClient, nodeName)
 	if err != nil {
 		return "", err
@@ -89,7 +90,7 @@ func (i *instances) InstanceType(nodeName types.NodeName) (string, error) {
 	return guestInstanceType(vGuest)
 }
 
-func (i *instances) InstanceTypeByProviderID(providerID string) (string, error) {
+func (i *instances) InstanceTypeByProviderID(_ context.Context, providerID string) (string, error) {
 	id, err := guestIDFromProviderID(providerID)
 	if err != nil {
 		return "", err
@@ -110,15 +111,15 @@ func guestInstanceType(vGuest datatypes.Virtual_Guest) (string, error) {
 	return sku, nil
 }
 
-func (i *instances) AddSSHKeyToAllInstances(user string, keyData []byte) error {
+func (i *instances) AddSSHKeyToAllInstances(_ context.Context, user string, keyData []byte) error {
 	return cloud.ErrNotImplemented
 }
 
-func (i *instances) CurrentNodeName(hostname string) (types.NodeName, error) {
+func (i *instances) CurrentNodeName(_ context.Context, hostname string) (types.NodeName, error) {
 	return types.NodeName(hostname), nil
 }
 
-func (i *instances) InstanceExistsByProviderID(providerID string) (bool, error) {
+func (i *instances) InstanceExistsByProviderID(_ context.Context, providerID string) (bool, error) {
 	id, err := guestIDFromProviderID(providerID)
 	if err != nil {
 		return false, err

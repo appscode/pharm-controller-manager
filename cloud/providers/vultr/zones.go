@@ -1,6 +1,7 @@
 package vultr
 
 import (
+	"context"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -23,7 +24,7 @@ func newZones(client *gv.Client) cloudprovider.Zones {
 	return zones{client}
 }
 
-func (z zones) GetZone() (cloudprovider.Zone, error) {
+func (z zones) GetZone(_ context.Context) (cloudprovider.Zone, error) {
 	subid, err := fetchServerID()
 	if err != nil {
 		return cloudprovider.Zone{}, err
@@ -36,7 +37,7 @@ func (z zones) GetZone() (cloudprovider.Zone, error) {
 	return cloudprovider.Zone{Region: strconv.Itoa(server.RegionID)}, nil
 }
 
-func (z zones) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error) {
+func (z zones) GetZoneByProviderID(_ context.Context, providerID string) (cloudprovider.Zone, error) {
 	id, err := serverIDFromProviderID(providerID)
 	if err != nil {
 		return cloudprovider.Zone{}, err
@@ -49,7 +50,7 @@ func (z zones) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error
 	return cloudprovider.Zone{Region: strconv.Itoa(server.RegionID)}, nil
 }
 
-func (z zones) GetZoneByNodeName(nodeName types.NodeName) (cloudprovider.Zone, error) {
+func (z zones) GetZoneByNodeName(_ context.Context, nodeName types.NodeName) (cloudprovider.Zone, error) {
 	server, err := serverByName(z.client, nodeName)
 	if err != nil {
 		return cloudprovider.Zone{}, err

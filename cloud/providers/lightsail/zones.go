@@ -1,6 +1,7 @@
 package lightsail
 
 import (
+	"context"
 	"fmt"
 
 	. "github.com/appscode/go/types"
@@ -21,15 +22,15 @@ func newZones(client *lightsail.Lightsail) cloudprovider.Zones {
 	return zones{client}
 }
 
-func (z zones) GetZone() (cloudprovider.Zone, error) {
+func (z zones) GetZone(_ context.Context) (cloudprovider.Zone, error) {
 	return getZone()
 }
 
-func (z zones) GetZoneByProviderID(providerID string) (cloudprovider.Zone, error) {
+func (z zones) GetZoneByProviderID(_ context.Context, providerID string) (cloudprovider.Zone, error) {
 	return getZone()
 }
 
-func (z zones) GetZoneByNodeName(nodeName types.NodeName) (cloudprovider.Zone, error) {
+func (z zones) GetZoneByNodeName(_ context.Context, nodeName types.NodeName) (cloudprovider.Zone, error) {
 	instance, err := instanceByName(z.client, nodeName)
 	if err != nil {
 		return cloudprovider.Zone{}, err

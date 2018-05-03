@@ -19,20 +19,20 @@ import:
 - package: github.com/spf13/cobra
   version: master
 - package: github.com/spf13/pflag
-  version: v1.0.0
+  version: v1.0.1
 - package: golang.org/x/oauth2
 - package: k8s.io/apiserver
-  version: kubernetes-1.9.0
+  version: kubernetes-1.10.0
 - package: k8s.io/api
-  version: kubernetes-1.9.0
+  version: kubernetes-1.10.0
 - package: k8s.io/apimachinery
-  version: kubernetes-1.9.0
+  version: kubernetes-1.10.0
 - package: k8s.io/client-go
-  version: v6.0.0
+  version: v7.0.0
 - package: k8s.io/kubernetes
-  version: v1.9.0
+  version: v1.10.0
 - package: github.com/appscode/kutil
-  version: release-6.0
+  version: release-7.0
 - package: github.com/taoh/linodego
   repo: https://github.com/appscode/linodego.git
   version: master

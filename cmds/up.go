@@ -22,7 +22,7 @@ func init() {
 }
 
 func NewCmdUp() *cobra.Command {
-	s := options.NewCloudControllerManagerServer()
+	s := options.NewCloudControllerManagerOptions()
 	cmd := &cobra.Command{
 		Use:               "up",
 		Short:             "Bootstrap as a Kubernetes master or node",
@@ -35,7 +35,14 @@ func NewCmdUp() *cobra.Command {
 			if err != nil {
 				log.Fatalln("Failed to resolve DNS. Reason: %v", err)
 			}
-			if err := app.Run(s); err != nil {
+
+			c, err := s.Config()
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
+			}
+
+			if err := app.Run(c.Complete()); err != nil {
 				fmt.Fprintf(os.Stderr, "%v\n", err)
 				os.Exit(1)
 			}

@@ -40,6 +40,40 @@ type ListOptions struct {
 	Includes string
 }
 
+func (l *ListOptions) createURL() (url string) {
+	if l.Includes != "" {
+		url += fmt.Sprintf("includes=%s", l.Includes)
+	}
+
+	if l.Page != 0 {
+		if url != "" {
+			url += "&"
+		}
+		url += fmt.Sprintf("page=%d", l.Page)
+	}
+
+	if l.PerPage != 0 {
+		if url != "" {
+			url += "&"
+		}
+		url += fmt.Sprintf("per_page=%d", l.PerPage)
+	}
+
+	return
+}
+
+// meta contains pagination information
+type meta struct {
+	Self           *Href `json:"self"`
+	First          *Href `json:"first"`
+	Last           *Href `json:"last"`
+	Previous       *Href `json:"previous,omitempty"`
+	Next           *Href `json:"next,omitempty"`
+	Total          int   `json:"total"`
+	CurrentPageNum int   `json:"current_page"`
+	LastPageNum    int   `json:"last_page"`
+}
+
 // Response is the http response from api calls
 type Response struct {
 	*http.Response
@@ -158,7 +192,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 	response.populateRate()
 	if c.debug {
 		o, _ := httputil.DumpResponse(response.Response, true)
-		log.Printf("%s\n", string(o))
+		log.Printf("\n=======[RESPONSE]============\n%s\n\n", string(o))
 	}
 	c.RateLimit = response.Rate
 
@@ -189,7 +223,7 @@ func (c *Client) DoRequest(method, path string, body, v interface{}) (*Response,
 	req, err := c.NewRequest(method, path, body)
 	if c.debug {
 		o, _ := httputil.DumpRequestOut(req, true)
-		log.Printf("%s\n", string(o))
+		log.Printf("\n=======[REQUEST]=============\n%s\n", string(o))
 	}
 	if err != nil {
 		return nil, err

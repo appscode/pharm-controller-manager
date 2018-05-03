@@ -1,6 +1,7 @@
 package scaleway
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -20,7 +21,7 @@ func newInstances(client *scw.ScalewayAPI) cloudprovider.Instances {
 	return &instances{client}
 }
 
-func (i *instances) NodeAddresses(name types.NodeName) ([]v1.NodeAddress, error) {
+func (i *instances) NodeAddresses(_ context.Context, name types.NodeName) ([]v1.NodeAddress, error) {
 	server, err := serverByName(i.client, name)
 	if err != nil {
 		return nil, err
@@ -28,7 +29,7 @@ func (i *instances) NodeAddresses(name types.NodeName) ([]v1.NodeAddress, error)
 	return nodeAddresses(server)
 }
 
-func (i *instances) NodeAddressesByProviderID(providerID string) ([]v1.NodeAddress, error) {
+func (i *instances) NodeAddressesByProviderID(_ context.Context, providerID string) ([]v1.NodeAddress, error) {
 	id, err := serverIDFromProviderID(providerID)
 	if err != nil {
 		return nil, err
@@ -58,11 +59,11 @@ func nodeAddresses(server *scw.ScalewayServer) ([]v1.NodeAddress, error) {
 	return addresses, nil
 }
 
-func (i *instances) ExternalID(nodeName types.NodeName) (string, error) {
-	return i.InstanceID(nodeName)
+func (i *instances) ExternalID(ctx context.Context, nodeName types.NodeName) (string, error) {
+	return i.InstanceID(ctx, nodeName)
 }
 
-func (i *instances) InstanceID(nodeName types.NodeName) (string, error) {
+func (i *instances) InstanceID(_ context.Context, nodeName types.NodeName) (string, error) {
 	server, err := serverByName(i.client, nodeName)
 	if err != nil {
 		return "", err
@@ -70,7 +71,7 @@ func (i *instances) InstanceID(nodeName types.NodeName) (string, error) {
 	return server.Identifier, nil
 }
 
-func (i *instances) InstanceType(nodeName types.NodeName) (string, error) {
+func (i *instances) InstanceType(_ context.Context, nodeName types.NodeName) (string, error) {
 	server, err := serverByName(i.client, nodeName)
 	if err != nil {
 		return "", err
@@ -78,7 +79,7 @@ func (i *instances) InstanceType(nodeName types.NodeName) (string, error) {
 	return server.CommercialType, nil
 }
 
-func (i *instances) InstanceTypeByProviderID(providerID string) (string, error) {
+func (i *instances) InstanceTypeByProviderID(_ context.Context, providerID string) (string, error) {
 	id, err := serverIDFromProviderID(providerID)
 	if err != nil {
 		return "", err
@@ -90,15 +91,15 @@ func (i *instances) InstanceTypeByProviderID(providerID string) (string, error) 
 	return server.CommercialType, nil
 }
 
-func (i *instances) AddSSHKeyToAllInstances(user string, keyData []byte) error {
+func (i *instances) AddSSHKeyToAllInstances(_ context.Context, user string, keyData []byte) error {
 	return cloud.ErrNotImplemented
 }
 
-func (i *instances) CurrentNodeName(hostname string) (types.NodeName, error) {
+func (i *instances) CurrentNodeName(_ context.Context, hostname string) (types.NodeName, error) {
 	return types.NodeName(hostname), nil
 }
 
-func (i *instances) InstanceExistsByProviderID(providerID string) (bool, error) {
+func (i *instances) InstanceExistsByProviderID(_ context.Context, providerID string) (bool, error) {
 	id, err := serverIDFromProviderID(providerID)
 	if err != nil {
 		return false, err

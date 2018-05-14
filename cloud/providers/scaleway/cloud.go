@@ -92,5 +92,5 @@ func (c *Cloud) ScrubDNS(nameservers, searches []string) (nsOut, srchOut []strin
 }
 
 func (c *Cloud) HasClusterID() bool {
-	return false
+	return true
 }

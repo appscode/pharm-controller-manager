@@ -127,6 +127,10 @@ func (i *instances) InstanceExistsByProviderID(_ context.Context, providerID str
 	return false, nil
 }
 
+func (i *instances) InstanceShutdownByProviderID(ctx context.Context, providerID string) (bool, error) {
+	return false, cloudprovider.NotImplemented
+}
+
 func deviceByID(client *packngo.Client, id string) (*packngo.Device, error) {
 	device, _, err := client.Devices.Get(id)
 	return device, err

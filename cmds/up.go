@@ -23,7 +23,7 @@ func init() {
 }
 
 func NewCmdUp() *cobra.Command {
-	s := options.NewCloudControllerManagerOptions()
+	s, _ := options.NewCloudControllerManagerOptions()
 	cmd := &cobra.Command{
 		Use:               "up",
 		Short:             "Bootstrap as a Kubernetes master or node",

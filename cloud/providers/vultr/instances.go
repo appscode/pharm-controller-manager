@@ -114,6 +114,10 @@ func (i *instances) InstanceExistsByProviderID(_ context.Context, providerID str
 	return false, nil
 }
 
+func (i *instances) InstanceShutdownByProviderID(ctx context.Context, providerID string) (bool, error) {
+	return false, cloudprovider.NotImplemented
+}
+
 func serverByID(client *gv.Client, id string) (gv.Server, error) {
 	return client.GetServer(id)
 }

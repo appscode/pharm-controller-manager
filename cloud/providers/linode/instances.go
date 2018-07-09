@@ -127,6 +127,10 @@ func (i *instances) InstanceExistsByProviderID(_ context.Context, providerID str
 	return false, nil
 }
 
+func (i *instances) InstanceShutdownByProviderID(ctx context.Context, providerID string) (bool, error) {
+	return false, cloudprovider.NotImplemented
+}
+
 func linodeByID(client *linodego.Client, id string) (*linodego.Linode, error) {
 	linodeID, err := strconv.Atoi(id)
 	if err != nil {

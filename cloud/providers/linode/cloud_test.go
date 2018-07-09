@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/taoh/linodego"
+
 	//"fmt"
 	"encoding/json"
 	"fmt"

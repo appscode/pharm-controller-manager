@@ -112,10 +112,7 @@ Outer:
 	}
 
 	// Count up remaining char
-	for len(target) > 0 {
-		target = target[utf8.RuneLen(rune(target[0])):]
-		runeDiff++
-	}
+	runeDiff += utf8.RuneCountInString(target)
 
 	return runeDiff
 }
@@ -124,9 +121,12 @@ Outer:
 // Levenshtein distance.
 func RankFind(source string, targets []string) Ranks {
 	var r Ranks
-	for _, target := range find(source, targets, noop) {
-		distance := LevenshteinDistance(source, target)
-		r = append(r, Rank{source, target, distance})
+
+	for index, target := range targets {
+		if match(source, target, noop) {
+			distance := LevenshteinDistance(source, target)
+			r = append(r, Rank{source, target, distance, index})
+		}
 	}
 	return r
 }
@@ -134,9 +134,12 @@ func RankFind(source string, targets []string) Ranks {
 // RankFindFold is a case-insensitive version of RankFind.
 func RankFindFold(source string, targets []string) Ranks {
 	var r Ranks
-	for _, target := range find(source, targets, unicode.ToLower) {
-		distance := LevenshteinDistance(source, target)
-		r = append(r, Rank{source, target, distance})
+
+	for index, target := range targets {
+		if match(source, target, unicode.ToLower) {
+			distance := LevenshteinDistance(source, target)
+			r = append(r, Rank{source, target, distance, index})
+		}
 	}
 	return r
 }
@@ -150,6 +153,9 @@ type Rank struct {
 
 	// Distance is the Levenshtein distance between Source and Target.
 	Distance int
+
+	// Location of Target in original list
+	OriginalIndex int
 }
 
 type Ranks []Rank

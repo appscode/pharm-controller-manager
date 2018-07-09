@@ -1377,7 +1377,8 @@ func (c *EC2) AttachVpnGatewayRequest(input *AttachVpnGatewayInput) (req *reques
 // Attaches a virtual private gateway to a VPC. You can attach one virtual private
 // gateway to one VPC at a time.
 //
-// For more information, see AWS Managed VPN Connections (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_VPN.html)
+// For more information, see Adding a Hardware Virtual Private Gateway to Your
+// VPC (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_VPN.html)
 // in the Amazon Virtual Private Cloud User Guide.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
@@ -2611,9 +2612,9 @@ func (c *EC2) CreateCustomerGatewayRequest(input *CreateCustomerGatewayInput) (r
 // the exception of 7224, which is reserved in the us-east-1 region, and 9059,
 // which is reserved in the eu-west-1 region.
 //
-// For more information about VPN customer gateways, see AWS Managed VPN Connections
-// (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_VPN.html) in the
-// Amazon Virtual Private Cloud User Guide.
+// For more information about VPN customer gateways, see Adding a Hardware Virtual
+// Private Gateway to Your VPC (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_VPN.html)
+// in the Amazon Virtual Private Cloud User Guide.
 //
 // You cannot create more than one customer gateway with the same VPN type,
 // IP address, and BGP ASN parameter values. If you run an identical request
@@ -2644,84 +2645,6 @@ func (c *EC2) CreateCustomerGateway(input *CreateCustomerGatewayInput) (*CreateC
 // for more information on using Contexts.
 func (c *EC2) CreateCustomerGatewayWithContext(ctx aws.Context, input *CreateCustomerGatewayInput, opts ...request.Option) (*CreateCustomerGatewayOutput, error) {
 	req, out := c.CreateCustomerGatewayRequest(input)
-	req.SetContext(ctx)
-	req.ApplyOptions(opts...)
-	return out, req.Send()
-}
-
-const opCreateDefaultSubnet = "CreateDefaultSubnet"
-
-// CreateDefaultSubnetRequest generates a "aws/request.Request" representing the
-// client's request for the CreateDefaultSubnet operation. The "output" return
-// value will be populated with the request's response once the request complets
-// successfuly.
-//
-// Use "Send" method on the returned Request to send the API call to the service.
-// the "output" return value is not valid until after Send returns without error.
-//
-// See CreateDefaultSubnet for more information on using the CreateDefaultSubnet
-// API call, and error handling.
-//
-// This method is useful when you want to inject custom logic or configuration
-// into the SDK's request lifecycle. Such as custom headers, or retry logic.
-//
-//
-//    // Example sending a request using the CreateDefaultSubnetRequest method.
-//    req, resp := client.CreateDefaultSubnetRequest(params)
-//
-//    err := req.Send()
-//    if err == nil { // resp is now filled
-//        fmt.Println(resp)
-//    }
-//
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/CreateDefaultSubnet
-func (c *EC2) CreateDefaultSubnetRequest(input *CreateDefaultSubnetInput) (req *request.Request, output *CreateDefaultSubnetOutput) {
-	op := &request.Operation{
-		Name:       opCreateDefaultSubnet,
-		HTTPMethod: "POST",
-		HTTPPath:   "/",
-	}
-
-	if input == nil {
-		input = &CreateDefaultSubnetInput{}
-	}
-
-	output = &CreateDefaultSubnetOutput{}
-	req = c.newRequest(op, input, output)
-	return
-}
-
-// CreateDefaultSubnet API operation for Amazon Elastic Compute Cloud.
-//
-// Creates a default subnet with a size /20 IPv4 CIDR block in the specified
-// Availability Zone in your default VPC. You can have only one default subnet
-// per Availability Zone. For more information, see Creating a Default Subnet
-// (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/default-vpc.html#create-default-subnet)
-// in the Amazon Virtual Private Cloud User Guide.
-//
-// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
-// with awserr.Error's Code and Message methods to get detailed information about
-// the error.
-//
-// See the AWS API reference guide for Amazon Elastic Compute Cloud's
-// API operation CreateDefaultSubnet for usage and error information.
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/CreateDefaultSubnet
-func (c *EC2) CreateDefaultSubnet(input *CreateDefaultSubnetInput) (*CreateDefaultSubnetOutput, error) {
-	req, out := c.CreateDefaultSubnetRequest(input)
-	return out, req.Send()
-}
-
-// CreateDefaultSubnetWithContext is the same as CreateDefaultSubnet with the addition of
-// the ability to pass a context and additional request options.
-//
-// See CreateDefaultSubnet for details on how to use this API operation.
-//
-// The context must be non-nil and will be used for request cancellation. If
-// the context is nil a panic will occur. In the future the SDK may create
-// sub-contexts for http.Requests. See https://golang.org/pkg/context/
-// for more information on using Contexts.
-func (c *EC2) CreateDefaultSubnetWithContext(ctx aws.Context, input *CreateDefaultSubnetInput, opts ...request.Option) (*CreateDefaultSubnetOutput, error) {
-	req, out := c.CreateDefaultSubnetRequest(input)
 	req.SetContext(ctx)
 	req.ApplyOptions(opts...)
 	return out, req.Send()
@@ -4938,18 +4861,11 @@ func (c *EC2) CreateVpcEndpointRequest(input *CreateVpcEndpointInput) (req *requ
 //
 // Creates a VPC endpoint for a specified AWS service. An endpoint enables you
 // to create a private connection between your VPC and another AWS service in
-// your account. You can create a gateway endpoint or an interface endpoint.
+// your account. You can specify an endpoint policy to attach to the endpoint
+// that will control access to the service from your VPC. You can also specify
+// the VPC route tables that use the endpoint.
 //
-// A gateway endpoint serves as a target for a route in your route table for
-// traffic destined for the AWS service. You can specify the VPC route tables
-// that use the endpoint, and you can optionally specify an endpoint policy
-// to attach to the endpoint that will control access to the service from your
-// VPC.
-//
-// An interface endpoint is a network interface in your subnet with a private
-// IP address that serves as an entry point for traffic destined to the AWS
-// service. You can specify the subnets in which to create an endpoint, and
-// the security groups to associate with the network interface.
+// Use DescribeVpcEndpointServices to get a list of supported AWS services.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -5206,9 +5122,9 @@ func (c *EC2) CreateVpnConnectionRouteRequest(input *CreateVpnConnectionRouteInp
 // traffic to be routed from the virtual private gateway to the VPN customer
 // gateway.
 //
-// For more information about VPN connections, see AWS Managed VPN Connections
-// (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_VPN.html) in the
-// Amazon Virtual Private Cloud User Guide.
+// For more information about VPN connections, see Adding a Hardware Virtual
+// Private Gateway to Your VPC (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_VPN.html)
+// in the Amazon Virtual Private Cloud User Guide.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -5286,8 +5202,8 @@ func (c *EC2) CreateVpnGatewayRequest(input *CreateVpnGatewayInput) (req *reques
 // on the VPC side of your VPN connection. You can create a virtual private
 // gateway before creating the VPC itself.
 //
-// For more information about virtual private gateways, see AWS Managed VPN
-// Connections (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_VPN.html)
+// For more information about virtual private gateways, see Adding a Hardware
+// Virtual Private Gateway to Your VPC (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_VPN.html)
 // in the Amazon Virtual Private Cloud User Guide.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
@@ -7075,10 +6991,8 @@ func (c *EC2) DeleteVpcEndpointsRequest(input *DeleteVpcEndpointsInput) (req *re
 
 // DeleteVpcEndpoints API operation for Amazon Elastic Compute Cloud.
 //
-// Deletes one or more specified VPC endpoints. Deleting a gateway endpoint
-// also deletes the endpoint routes in the route tables that were associated
-// with the endpoint. Deleting an interface endpoint deletes the endpoint network
-// interfaces.
+// Deletes one or more specified VPC endpoints. Deleting the endpoint also deletes
+// the endpoint routes in the route tables that were associated with the endpoint.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -8043,9 +7957,9 @@ func (c *EC2) DescribeCustomerGatewaysRequest(input *DescribeCustomerGatewaysInp
 //
 // Describes one or more of your VPN customer gateways.
 //
-// For more information about VPN customer gateways, see AWS Managed VPN Connections
-// (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_VPN.html) in the
-// Amazon Virtual Private Cloud User Guide.
+// For more information about VPN customer gateways, see Adding a Hardware Virtual
+// Private Gateway to Your VPC (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_VPN.html)
+// in the Amazon Virtual Private Cloud User Guide.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -8271,7 +8185,7 @@ func (c *EC2) DescribeElasticGpusRequest(input *DescribeElasticGpusInput) (req *
 // DescribeElasticGpus API operation for Amazon Elastic Compute Cloud.
 //
 // Describes the Elastic GPUs associated with your instances. For more information
-// about Elastic GPUs, see Amazon EC2 Elastic GPUs (http://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/elastic-gpus.html).
+// about Elastic GPUs, see Amazon EC2 Elastic GPUs (http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-gpus.html).
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -13658,9 +13572,9 @@ func (c *EC2) DescribeVpnConnectionsRequest(input *DescribeVpnConnectionsInput) 
 //
 // Describes one or more of your VPN connections.
 //
-// For more information about VPN connections, see AWS Managed VPN Connections
-// (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_VPN.html) in the
-// Amazon Virtual Private Cloud User Guide.
+// For more information about VPN connections, see Adding a Hardware Virtual
+// Private Gateway to Your VPC (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_VPN.html)
+// in the Amazon Virtual Private Cloud User Guide.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -13736,8 +13650,8 @@ func (c *EC2) DescribeVpnGatewaysRequest(input *DescribeVpnGatewaysInput) (req *
 //
 // Describes one or more of your virtual private gateways.
 //
-// For more information about virtual private gateways, see AWS Managed VPN
-// Connections (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_VPN.html)
+// For more information about virtual private gateways, see Adding an IPsec
+// Hardware VPN to Your VPC (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_VPN.html)
 // in the Amazon Virtual Private Cloud User Guide.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
@@ -15490,10 +15404,9 @@ func (c *EC2) GetReservedInstancesExchangeQuoteRequest(input *GetReservedInstanc
 
 // GetReservedInstancesExchangeQuote API operation for Amazon Elastic Compute Cloud.
 //
-// Returns a quote and exchange information for exchanging one or more specified
-// Convertible Reserved Instances for a new Convertible Reserved Instance. If
-// the exchange cannot be performed, the reason is returned in the response.
-// Use AcceptReservedInstancesExchangeQuote to perform the exchange.
+// Returns details about the values and term of your specified Convertible Reserved
+// Instances. When a target configuration is specified, it returns information
+// about whether the exchange is valid and can be performed.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -16294,15 +16207,15 @@ func (c *EC2) ModifyImageAttributeRequest(input *ModifyImageAttributeInput) (req
 // ModifyImageAttribute API operation for Amazon Elastic Compute Cloud.
 //
 // Modifies the specified attribute of the specified AMI. You can specify only
-// one attribute at a time. You can use the Attribute parameter to specify the
-// attribute or one of the following parameters: Description, LaunchPermission,
-// or ProductCode.
+// one attribute at a time.
 //
 // AWS Marketplace product codes cannot be modified. Images with an AWS Marketplace
 // product code cannot be made public.
 //
-// To enable the SriovNetSupport enhanced networking attribute of an image,
-// enable SriovNetSupport on an instance and create an AMI from the instance.
+// The SriovNetSupport enhanced networking attribute cannot be changed using
+// this command. Instead, enable SriovNetSupport on an instance and create an
+// AMI from the instance. This will result in an image with SriovNetSupport
+// enabled.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -16627,9 +16540,9 @@ func (c *EC2) ModifyReservedInstancesRequest(input *ModifyReservedInstancesInput
 // ModifyReservedInstances API operation for Amazon Elastic Compute Cloud.
 //
 // Modifies the Availability Zone, instance count, instance type, or network
-// platform (EC2-Classic or EC2-VPC) of your Reserved Instances. The Reserved
-// Instances to be modified must be identical, except for Availability Zone,
-// network platform, and instance type.
+// platform (EC2-Classic or EC2-VPC) of your Standard Reserved Instances. The
+// Reserved Instances to be modified must be identical, except for Availability
+// Zone, network platform, and instance type.
 //
 // For more information, see Modifying Reserved Instances (http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modifying.html)
 // in the Amazon Elastic Compute Cloud User Guide.
@@ -17230,10 +17143,9 @@ func (c *EC2) ModifyVpcEndpointRequest(input *ModifyVpcEndpointInput) (req *requ
 
 // ModifyVpcEndpoint API operation for Amazon Elastic Compute Cloud.
 //
-// Modifies attributes of a specified VPC endpoint. The attributes that you
-// can modify depend on the type of VPC endpoint (interface or gateway). For
-// more information, see VPC Endpoints (http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/vpc-endpoints.html)
-// in the Amazon Virtual Private Cloud User Guide.
+// Modifies attributes of a specified VPC endpoint. You can modify the policy
+// associated with the endpoint, and you can add and remove route tables associated
+// with the endpoint.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -17351,89 +17263,6 @@ func (c *EC2) ModifyVpcPeeringConnectionOptions(input *ModifyVpcPeeringConnectio
 // for more information on using Contexts.
 func (c *EC2) ModifyVpcPeeringConnectionOptionsWithContext(ctx aws.Context, input *ModifyVpcPeeringConnectionOptionsInput, opts ...request.Option) (*ModifyVpcPeeringConnectionOptionsOutput, error) {
 	req, out := c.ModifyVpcPeeringConnectionOptionsRequest(input)
-	req.SetContext(ctx)
-	req.ApplyOptions(opts...)
-	return out, req.Send()
-}
-
-const opModifyVpcTenancy = "ModifyVpcTenancy"
-
-// ModifyVpcTenancyRequest generates a "aws/request.Request" representing the
-// client's request for the ModifyVpcTenancy operation. The "output" return
-// value will be populated with the request's response once the request complets
-// successfuly.
-//
-// Use "Send" method on the returned Request to send the API call to the service.
-// the "output" return value is not valid until after Send returns without error.
-//
-// See ModifyVpcTenancy for more information on using the ModifyVpcTenancy
-// API call, and error handling.
-//
-// This method is useful when you want to inject custom logic or configuration
-// into the SDK's request lifecycle. Such as custom headers, or retry logic.
-//
-//
-//    // Example sending a request using the ModifyVpcTenancyRequest method.
-//    req, resp := client.ModifyVpcTenancyRequest(params)
-//
-//    err := req.Send()
-//    if err == nil { // resp is now filled
-//        fmt.Println(resp)
-//    }
-//
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/ModifyVpcTenancy
-func (c *EC2) ModifyVpcTenancyRequest(input *ModifyVpcTenancyInput) (req *request.Request, output *ModifyVpcTenancyOutput) {
-	op := &request.Operation{
-		Name:       opModifyVpcTenancy,
-		HTTPMethod: "POST",
-		HTTPPath:   "/",
-	}
-
-	if input == nil {
-		input = &ModifyVpcTenancyInput{}
-	}
-
-	output = &ModifyVpcTenancyOutput{}
-	req = c.newRequest(op, input, output)
-	return
-}
-
-// ModifyVpcTenancy API operation for Amazon Elastic Compute Cloud.
-//
-// Modifies the instance tenancy attribute of the specified VPC. You can change
-// the instance tenancy attribute of a VPC to default only. You cannot change
-// the instance tenancy attribute to dedicated.
-//
-// After you modify the tenancy of the VPC, any new instances that you launch
-// into the VPC have a tenancy of default, unless you specify otherwise during
-// launch. The tenancy of any existing instances in the VPC is not affected.
-//
-// For more information about Dedicated Instances, see Dedicated Instances (http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-instance.html)
-// in the Amazon Elastic Compute Cloud User Guide.
-//
-// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
-// with awserr.Error's Code and Message methods to get detailed information about
-// the error.
-//
-// See the AWS API reference guide for Amazon Elastic Compute Cloud's
-// API operation ModifyVpcTenancy for usage and error information.
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/ModifyVpcTenancy
-func (c *EC2) ModifyVpcTenancy(input *ModifyVpcTenancyInput) (*ModifyVpcTenancyOutput, error) {
-	req, out := c.ModifyVpcTenancyRequest(input)
-	return out, req.Send()
-}
-
-// ModifyVpcTenancyWithContext is the same as ModifyVpcTenancy with the addition of
-// the ability to pass a context and additional request options.
-//
-// See ModifyVpcTenancy for details on how to use this API operation.
-//
-// The context must be non-nil and will be used for request cancellation. If
-// the context is nil a panic will occur. In the future the SDK may create
-// sub-contexts for http.Requests. See https://golang.org/pkg/context/
-// for more information on using Contexts.
-func (c *EC2) ModifyVpcTenancyWithContext(ctx aws.Context, input *ModifyVpcTenancyInput, opts ...request.Option) (*ModifyVpcTenancyOutput, error) {
-	req, out := c.ModifyVpcTenancyRequest(input)
 	req.SetContext(ctx)
 	req.ApplyOptions(opts...)
 	return out, req.Send()
@@ -20487,14 +20316,14 @@ type AcceptReservedInstancesExchangeQuoteInput struct {
 	// it is UnauthorizedOperation.
 	DryRun *bool `type:"boolean"`
 
-	// The IDs of the Convertible Reserved Instances to exchange for another Convertible
-	// Reserved Instance of the same or higher value.
+	// The IDs of the Convertible Reserved Instances to exchange for other Convertible
+	// Reserved Instances of the same or higher value.
 	//
 	// ReservedInstanceIds is a required field
 	ReservedInstanceIds []*string `locationName:"ReservedInstanceId" locationNameList:"ReservedInstanceId" type:"list" required:"true"`
 
-	// The configuration of the target Convertible Reserved Instance to exchange
-	// for your current Convertible Reserved Instances.
+	// The configurations of the Convertible Reserved Instance offerings that you
+	// are purchasing in this exchange.
 	TargetConfigurations []*TargetConfigurationRequest `locationName:"TargetConfiguration" locationNameList:"TargetConfigurationRequest" type:"list"`
 }
 
@@ -22088,7 +21917,7 @@ func (s *AttachNetworkInterfaceOutput) SetAttachmentId(v string) *AttachNetworkI
 type AttachVolumeInput struct {
 	_ struct{} `type:"structure"`
 
-	// The device name (for example, /dev/sdh or xvdh).
+	// The device name to expose to the instance (for example, /dev/sdh or xvdh).
 	//
 	// Device is a required field
 	Device *string `type:"string" required:"true"`
@@ -22310,7 +22139,8 @@ func (s *AttributeValue) SetValue(v string) *AttributeValue {
 type AuthorizeSecurityGroupEgressInput struct {
 	_ struct{} `type:"structure"`
 
-	// Not supported. Use a set of IP permissions to specify the CIDR.
+	// The CIDR IPv4 address range. We recommend that you specify the CIDR range
+	// in a set of IP permissions instead.
 	CidrIp *string `locationName:"cidrIp" type:"string"`
 
 	// Checks whether you have the required permissions for the action, without
@@ -22319,7 +22149,8 @@ type AuthorizeSecurityGroupEgressInput struct {
 	// it is UnauthorizedOperation.
 	DryRun *bool `locationName:"dryRun" type:"boolean"`
 
-	// Not supported. Use a set of IP permissions to specify the port.
+	// The start of port range for the TCP and UDP protocols, or an ICMP type number.
+	// We recommend that you specify the port range in a set of IP permissions instead.
 	FromPort *int64 `locationName:"fromPort" type:"integer"`
 
 	// The ID of the security group.
@@ -22327,23 +22158,26 @@ type AuthorizeSecurityGroupEgressInput struct {
 	// GroupId is a required field
 	GroupId *string `locationName:"groupId" type:"string" required:"true"`
 
-	// One or more sets of IP permissions. You can't specify a destination security
-	// group and a CIDR IP address range in the same set of permissions.
+	// A set of IP permissions. You can't specify a destination security group and
+	// a CIDR IP address range.
 	IpPermissions []*IpPermission `locationName:"ipPermissions" locationNameList:"item" type:"list"`
 
-	// Not supported. Use a set of IP permissions to specify the protocol name or
-	// number.
+	// The IP protocol name or number. We recommend that you specify the protocol
+	// in a set of IP permissions instead.
 	IpProtocol *string `locationName:"ipProtocol" type:"string"`
 
-	// Not supported. Use a set of IP permissions to specify a destination security
-	// group.
+	// The name of a destination security group. To authorize outbound access to
+	// a destination security group, we recommend that you use a set of IP permissions
+	// instead.
 	SourceSecurityGroupName *string `locationName:"sourceSecurityGroupName" type:"string"`
 
-	// Not supported. Use a set of IP permissions to specify a destination security
-	// group.
+	// The AWS account number for a destination security group. To authorize outbound
+	// access to a destination security group, we recommend that you use a set of
+	// IP permissions instead.
 	SourceSecurityGroupOwnerId *string `locationName:"sourceSecurityGroupOwnerId" type:"string"`
 
-	// Not supported. Use a set of IP permissions to specify the port.
+	// The end of port range for the TCP and UDP protocols, or an ICMP type number.
+	// We recommend that you specify the port range in a set of IP permissions instead.
 	ToPort *int64 `locationName:"toPort" type:"integer"`
 }
 
@@ -22468,8 +22302,8 @@ type AuthorizeSecurityGroupIngressInput struct {
 	// either the security group ID or the security group name in the request.
 	GroupName *string `type:"string"`
 
-	// One or more sets of IP permissions. Can be used to specify multiple rules
-	// in a single command.
+	// A set of IP permissions. Can be used to specify multiple rules in a single
+	// command.
 	IpPermissions []*IpPermission `locationNameList:"item" type:"list"`
 
 	// The IP protocol name (tcp, udp, icmp) or number (see Protocol Numbers (http://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml)).
@@ -22489,8 +22323,8 @@ type AuthorizeSecurityGroupIngressInput struct {
 	// be in the same VPC.
 	SourceSecurityGroupName *string `type:"string"`
 
-	// [EC2-Classic] The AWS account ID for the source security group, if the source
-	// security group is in a different account. You can't specify this parameter
+	// [EC2-Classic] The AWS account number for the source security group, if the
+	// source security group is in a different account. You can't specify this parameter
 	// in combination with the following parameters: the CIDR IP address range,
 	// the IP protocol, the start of the port range, and the end of the port range.
 	// Creates rules that grant full ICMP, UDP, and TCP access. To create a rule
@@ -22728,7 +22562,7 @@ func (s *BlobAttributeValue) SetValue(v []byte) *BlobAttributeValue {
 type BlockDeviceMapping struct {
 	_ struct{} `type:"structure"`
 
-	// The device name (for example, /dev/sdh or xvdh).
+	// The device name exposed to the instance (for example, /dev/sdh or xvdh).
 	DeviceName *string `locationName:"deviceName" type:"string"`
 
 	// Parameters used to automatically set up EBS volumes when the instance is
@@ -23817,100 +23651,6 @@ func (s *ClassicLinkInstance) SetVpcId(v string) *ClassicLinkInstance {
 	return s
 }
 
-// Describes a Classic Load Balancer.
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/ClassicLoadBalancer
-type ClassicLoadBalancer struct {
-	_ struct{} `type:"structure"`
-
-	// The name of the load balancer.
-	//
-	// Name is a required field
-	Name *string `locationName:"name" type:"string" required:"true"`
-}
-
-// String returns the string representation
-func (s ClassicLoadBalancer) String() string {
-	return awsutil.Prettify(s)
-}
-
-// GoString returns the string representation
-func (s ClassicLoadBalancer) GoString() string {
-	return s.String()
-}
-
-// Validate inspects the fields of the type to determine if they are valid.
-func (s *ClassicLoadBalancer) Validate() error {
-	invalidParams := request.ErrInvalidParams{Context: "ClassicLoadBalancer"}
-	if s.Name == nil {
-		invalidParams.Add(request.NewErrParamRequired("Name"))
-	}
-
-	if invalidParams.Len() > 0 {
-		return invalidParams
-	}
-	return nil
-}
-
-// SetName sets the Name field's value.
-func (s *ClassicLoadBalancer) SetName(v string) *ClassicLoadBalancer {
-	s.Name = &v
-	return s
-}
-
-// Describes the Classic Load Balancers to attach to a Spot fleet. Spot fleet
-// registers the running Spot instances with these Classic Load Balancers.
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/ClassicLoadBalancersConfig
-type ClassicLoadBalancersConfig struct {
-	_ struct{} `type:"structure"`
-
-	// One or more Classic Load Balancers.
-	//
-	// ClassicLoadBalancers is a required field
-	ClassicLoadBalancers []*ClassicLoadBalancer `locationName:"classicLoadBalancers" locationNameList:"item" min:"1" type:"list" required:"true"`
-}
-
-// String returns the string representation
-func (s ClassicLoadBalancersConfig) String() string {
-	return awsutil.Prettify(s)
-}
-
-// GoString returns the string representation
-func (s ClassicLoadBalancersConfig) GoString() string {
-	return s.String()
-}
-
-// Validate inspects the fields of the type to determine if they are valid.
-func (s *ClassicLoadBalancersConfig) Validate() error {
-	invalidParams := request.ErrInvalidParams{Context: "ClassicLoadBalancersConfig"}
-	if s.ClassicLoadBalancers == nil {
-		invalidParams.Add(request.NewErrParamRequired("ClassicLoadBalancers"))
-	}
-	if s.ClassicLoadBalancers != nil && len(s.ClassicLoadBalancers) < 1 {
-		invalidParams.Add(request.NewErrParamMinLen("ClassicLoadBalancers", 1))
-	}
-	if s.ClassicLoadBalancers != nil {
-		for i, v := range s.ClassicLoadBalancers {
-			if v == nil {
-				continue
-			}
-			if err := v.Validate(); err != nil {
-				invalidParams.AddNested(fmt.Sprintf("%s[%v]", "ClassicLoadBalancers", i), err.(request.ErrInvalidParams))
-			}
-		}
-	}
-
-	if invalidParams.Len() > 0 {
-		return invalidParams
-	}
-	return nil
-}
-
-// SetClassicLoadBalancers sets the ClassicLoadBalancers field's value.
-func (s *ClassicLoadBalancersConfig) SetClassicLoadBalancers(v []*ClassicLoadBalancer) *ClassicLoadBalancersConfig {
-	s.ClassicLoadBalancers = v
-	return s
-}
-
 // Describes the client-specific data.
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/ClientData
 type ClientData struct {
@@ -24694,81 +24434,6 @@ func (s CreateCustomerGatewayOutput) GoString() string {
 // SetCustomerGateway sets the CustomerGateway field's value.
 func (s *CreateCustomerGatewayOutput) SetCustomerGateway(v *CustomerGateway) *CreateCustomerGatewayOutput {
 	s.CustomerGateway = v
-	return s
-}
-
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/CreateDefaultSubnetRequest
-type CreateDefaultSubnetInput struct {
-	_ struct{} `type:"structure"`
-
-	// The Availability Zone in which to create the default subnet.
-	//
-	// AvailabilityZone is a required field
-	AvailabilityZone *string `type:"string" required:"true"`
-
-	// Checks whether you have the required permissions for the action, without
-	// actually making the request, and provides an error response. If you have
-	// the required permissions, the error response is DryRunOperation. Otherwise,
-	// it is UnauthorizedOperation.
-	DryRun *bool `type:"boolean"`
-}
-
-// String returns the string representation
-func (s CreateDefaultSubnetInput) String() string {
-	return awsutil.Prettify(s)
-}
-
-// GoString returns the string representation
-func (s CreateDefaultSubnetInput) GoString() string {
-	return s.String()
-}
-
-// Validate inspects the fields of the type to determine if they are valid.
-func (s *CreateDefaultSubnetInput) Validate() error {
-	invalidParams := request.ErrInvalidParams{Context: "CreateDefaultSubnetInput"}
-	if s.AvailabilityZone == nil {
-		invalidParams.Add(request.NewErrParamRequired("AvailabilityZone"))
-	}
-
-	if invalidParams.Len() > 0 {
-		return invalidParams
-	}
-	return nil
-}
-
-// SetAvailabilityZone sets the AvailabilityZone field's value.
-func (s *CreateDefaultSubnetInput) SetAvailabilityZone(v string) *CreateDefaultSubnetInput {
-	s.AvailabilityZone = &v
-	return s
-}
-
-// SetDryRun sets the DryRun field's value.
-func (s *CreateDefaultSubnetInput) SetDryRun(v bool) *CreateDefaultSubnetInput {
-	s.DryRun = &v
-	return s
-}
-
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/CreateDefaultSubnetResult
-type CreateDefaultSubnetOutput struct {
-	_ struct{} `type:"structure"`
-
-	// Information about the subnet.
-	Subnet *Subnet `locationName:"subnet" type:"structure"`
-}
-
-// String returns the string representation
-func (s CreateDefaultSubnetOutput) String() string {
-	return awsutil.Prettify(s)
-}
-
-// GoString returns the string representation
-func (s CreateDefaultSubnetOutput) GoString() string {
-	return s.String()
-}
-
-// SetSubnet sets the Subnet field's value.
-func (s *CreateDefaultSubnetOutput) SetSubnet(v *Subnet) *CreateDefaultSubnetOutput {
-	s.Subnet = v
 	return s
 }
 
@@ -27379,46 +27044,19 @@ type CreateVpcEndpointInput struct {
 	// it is UnauthorizedOperation.
 	DryRun *bool `type:"boolean"`
 
-	// (Gateway endpoint) A policy to attach to the endpoint that controls access
-	// to the service. The policy must be in valid JSON format. If this parameter
-	// is not specified, we attach a default policy that allows full access to the
-	// service.
+	// A policy to attach to the endpoint that controls access to the service. The
+	// policy must be in valid JSON format. If this parameter is not specified,
+	// we attach a default policy that allows full access to the service.
 	PolicyDocument *string `type:"string"`
 
-	// (Interface endpoint) Indicate whether to associate a private hosted zone
-	// with the specified VPC. The private hosted zone contains a record set for
-	// the default public DNS name for the service for the region (for example,
-	// kinesis.us-east-1.amazonaws.com) which resolves to the private IP addresses
-	// of the endpoint network interfaces in the VPC. This enables you to make requests
-	// to the default public DNS name for the service instead of the public DNS
-	// names that are automatically generated by the VPC endpoint service.
-	//
-	// To use a private hosted zone, you must set the following VPC attributes to
-	// true: enableDnsHostnames and enableDnsSupport. Use ModifyVpcAttribute to
-	// set the VPC attributes.
-	//
-	// Default: true
-	PrivateDnsEnabled *bool `type:"boolean"`
-
-	// (Gateway endpoint) One or more route table IDs.
+	// One or more route table IDs.
 	RouteTableIds []*string `locationName:"RouteTableId" locationNameList:"item" type:"list"`
-
-	// (Interface endpoint) The ID of one or more security groups to associate with
-	// the network interface.
-	SecurityGroupIds []*string `locationName:"SecurityGroupId" locationNameList:"item" type:"list"`
 
 	// The AWS service name, in the form com.amazonaws.region.service. To get a
 	// list of available services, use the DescribeVpcEndpointServices request.
 	//
 	// ServiceName is a required field
 	ServiceName *string `type:"string" required:"true"`
-
-	// (Interface endpoint) The ID of one or more subnets in which to create a network
-	// interface for the endpoint.
-	SubnetIds []*string `locationName:"SubnetId" locationNameList:"item" type:"list"`
-
-	// The type of endpoint. If not specified, the default is a gateway endpoint.
-	VpcEndpointType *string `type:"string" enum:"VpcEndpointType"`
 
 	// The ID of the VPC in which the endpoint will be used.
 	//
@@ -27470,39 +27108,15 @@ func (s *CreateVpcEndpointInput) SetPolicyDocument(v string) *CreateVpcEndpointI
 	return s
 }
 
-// SetPrivateDnsEnabled sets the PrivateDnsEnabled field's value.
-func (s *CreateVpcEndpointInput) SetPrivateDnsEnabled(v bool) *CreateVpcEndpointInput {
-	s.PrivateDnsEnabled = &v
-	return s
-}
-
 // SetRouteTableIds sets the RouteTableIds field's value.
 func (s *CreateVpcEndpointInput) SetRouteTableIds(v []*string) *CreateVpcEndpointInput {
 	s.RouteTableIds = v
 	return s
 }
 
-// SetSecurityGroupIds sets the SecurityGroupIds field's value.
-func (s *CreateVpcEndpointInput) SetSecurityGroupIds(v []*string) *CreateVpcEndpointInput {
-	s.SecurityGroupIds = v
-	return s
-}
-
 // SetServiceName sets the ServiceName field's value.
 func (s *CreateVpcEndpointInput) SetServiceName(v string) *CreateVpcEndpointInput {
 	s.ServiceName = &v
-	return s
-}
-
-// SetSubnetIds sets the SubnetIds field's value.
-func (s *CreateVpcEndpointInput) SetSubnetIds(v []*string) *CreateVpcEndpointInput {
-	s.SubnetIds = v
-	return s
-}
-
-// SetVpcEndpointType sets the VpcEndpointType field's value.
-func (s *CreateVpcEndpointInput) SetVpcEndpointType(v string) *CreateVpcEndpointInput {
-	s.VpcEndpointType = &v
 	return s
 }
 
@@ -27923,13 +27537,6 @@ func (s CreateVpnConnectionRouteOutput) GoString() string {
 type CreateVpnGatewayInput struct {
 	_ struct{} `type:"structure"`
 
-	// A private Autonomous System Number (ASN) for the Amazon side of a BGP session.
-	// If you're using a 16-bit ASN, it must be in the 64512 to 65534 range. If
-	// you're using a 32-bit ASN, it must be in the 4200000000 to 4294967294 range.
-	//
-	// Default: 64512
-	AmazonSideAsn *int64 `type:"long"`
-
 	// The Availability Zone for the virtual private gateway.
 	AvailabilityZone *string `type:"string"`
 
@@ -27966,12 +27573,6 @@ func (s *CreateVpnGatewayInput) Validate() error {
 		return invalidParams
 	}
 	return nil
-}
-
-// SetAmazonSideAsn sets the AmazonSideAsn field's value.
-func (s *CreateVpnGatewayInput) SetAmazonSideAsn(v int64) *CreateVpnGatewayInput {
-	s.AmazonSideAsn = &v
-	return s
 }
 
 // SetAvailabilityZone sets the AvailabilityZone field's value.
@@ -32121,8 +31722,8 @@ type DescribeImagesInput struct {
 	//    * block-device-mapping.delete-on-termination - A Boolean value that indicates
 	//    whether the Amazon EBS volume is deleted on instance termination.
 	//
-	//    * block-device-mapping.device-name - The device name specified in the
-	//    block device mapping (for example, /dev/sdh or xvdh).
+	//    * block-device-mapping.device-name - The device name for the EBS volume
+	//    (for example, /dev/sdh).
 	//
 	//    * block-device-mapping.snapshot-id - The ID of the snapshot used for the
 	//    EBS volume.
@@ -32166,7 +31767,7 @@ type DescribeImagesInput struct {
 	//
 	//    * ramdisk-id - The RAM disk ID.
 	//
-	//    * root-device-name - The device name of the root device volume (for example,
+	//    * root-device-name - The name of the root device volume (for example,
 	//    /dev/sda1).
 	//
 	//    * root-device-type - The type of the root device volume (ebs | instance-store).
@@ -32176,9 +31777,6 @@ type DescribeImagesInput struct {
 	//    * state-reason-code - The reason code for the state change.
 	//
 	//    * state-reason-message - The message for the state change.
-	//
-	//    * sriov-net-support - A value of simple indicates that enhanced networking
-	//    with the Intel 82599 VF interface is enabled.
 	//
 	//    * tag:key=value - The key/value combination of a tag assigned to the resource.
 	//    Specify the key of the tag in the filter name and the value of the tag
@@ -32587,7 +32185,7 @@ type DescribeInstanceAttributeOutput struct {
 	// The RAM disk ID.
 	RamdiskId *AttributeValue `locationName:"ramdisk" type:"structure"`
 
-	// The device name of the root device volume (for example, /dev/sda1).
+	// The name of the root device (for example, /dev/sda1 or /dev/xvda).
 	RootDeviceName *AttributeValue `locationName:"rootDeviceName" type:"structure"`
 
 	// Indicates whether source/destination checking is enabled. A value of true
@@ -32881,8 +32479,8 @@ type DescribeInstancesInput struct {
 	//    * block-device-mapping.delete-on-termination - A Boolean that indicates
 	//    whether the EBS volume is deleted on instance termination.
 	//
-	//    * block-device-mapping.device-name - The device name specified in the
-	//    block device mapping (for example, /dev/sdh or xvdh).
+	//    * block-device-mapping.device-name - The device name for the EBS volume
+	//    (for example, /dev/sdh or xvdh).
 	//
 	//    * block-device-mapping.status - The status for the EBS volume (attaching
 	//    | attached | detaching | detached).
@@ -33065,10 +32663,11 @@ type DescribeInstancesInput struct {
 	//    one reservation ID. If you launch ten instances using the same launch
 	//    request, you also get one reservation ID.
 	//
-	//    * root-device-name - The device name of the root device volume (for example,
-	//    /dev/sda1).
+	//    * root-device-name - The name of the root device for the instance (for
+	//    example, /dev/sda1 or /dev/xvda).
 	//
-	//    * root-device-type - The type of the root device volume (ebs | instance-store).
+	//    * root-device-type - The type of root device that the instance uses (ebs
+	//    | instance-store).
 	//
 	//    * source-dest-check - Indicates whether the instance performs source/destination
 	//    checking. A value of true means that checking is enabled, and false means
@@ -35481,63 +35080,36 @@ type DescribeSecurityGroupsInput struct {
 	//
 	//    * description - The description of the security group.
 	//
-	//    * egress.ip-permission.cidr - An IPv4 CIDR block for an outbound security
-	//    group rule.
-	//
-	//    * egress.ip-permission.from-port - For an outbound rule, the start of
-	//    port range for the TCP and UDP protocols, or an ICMP type number.
-	//
-	//    * egress.ip-permission.group-id - The ID of a security group that has
-	//    been referenced in an outbound security group rule.
-	//
-	//    * egress.ip-permission.group-name - The name of a security group that
-	//    has been referenced in an outbound security group rule.
-	//
-	//    * egress.ip-permission.ipv6-cidr - An IPv6 CIDR block for an outbound
-	//    security group rule.
-	//
 	//    * egress.ip-permission.prefix-list-id - The ID (prefix) of the AWS service
-	//    to which a security group rule allows outbound access.
-	//
-	//    * egress.ip-permission.protocol - The IP protocol for an outbound security
-	//    group rule (tcp | udp | icmp or a protocol number).
-	//
-	//    * egress.ip-permission.to-port - For an outbound rule, the end of port
-	//    range for the TCP and UDP protocols, or an ICMP code.
-	//
-	//    * egress.ip-permission.user-id - The ID of an AWS account that has been
-	//    referenced in an outbound security group rule.
+	//    to which the security group allows access.
 	//
 	//    * group-id - The ID of the security group.
 	//
 	//    * group-name - The name of the security group.
 	//
-	//    * ip-permission.cidr - An IPv4 CIDR block for an inbound security group
-	//    rule.
+	//    * ip-permission.cidr - An IPv4 CIDR range that has been granted permission
+	//    in a security group rule.
 	//
-	//    * ip-permission.from-port - For an inbound rule, the start of port range
-	//    for the TCP and UDP protocols, or an ICMP type number.
+	//    * ip-permission.from-port - The start of port range for the TCP and UDP
+	//    protocols, or an ICMP type number.
 	//
-	//    * ip-permission.group-id - The ID of a security group that has been referenced
-	//    in an inbound security group rule.
+	//    * ip-permission.group-id - The ID of a security group that has been granted
+	//    permission.
 	//
 	//    * ip-permission.group-name - The name of a security group that has been
-	//    referenced in an inbound security group rule.
+	//    granted permission.
 	//
-	//    * ip-permission.ipv6-cidr - An IPv6 CIDR block for an inbound security
-	//    group rule.
+	//    * ip-permission.ipv6-cidr - An IPv6 CIDR range that has been granted permission
+	//    in a security group rule.
 	//
-	//    * ip-permission.prefix-list-id - The ID (prefix) of the AWS service from
-	//    which a security group rule allows inbound access.
+	//    * ip-permission.protocol - The IP protocol for the permission (tcp | udp
+	//    | icmp or a protocol number).
 	//
-	//    * ip-permission.protocol - The IP protocol for an inbound security group
-	//    rule (tcp | udp | icmp or a protocol number).
+	//    * ip-permission.to-port - The end of port range for the TCP and UDP protocols,
+	//    or an ICMP code.
 	//
-	//    * ip-permission.to-port - For an inbound rule, the end of port range for
-	//    the TCP and UDP protocols, or an ICMP code.
-	//
-	//    * ip-permission.user-id - The ID of an AWS account that has been referenced
-	//    in an inbound security group rule.
+	//    * ip-permission.user-id - The ID of an AWS account that has been granted
+	//    permission.
 	//
 	//    * owner-id - The AWS account ID of the owner of the security group.
 	//
@@ -35561,14 +35133,6 @@ type DescribeSecurityGroupsInput struct {
 	//
 	// Default: Describes all your security groups.
 	GroupNames []*string `locationName:"GroupName" locationNameList:"GroupName" type:"list"`
-
-	// The maximum number of results to return in a single call. To retrieve the
-	// remaining results, make another request with the returned NextToken value.
-	// This value can be between 5 and 1000.
-	MaxResults *int64 `type:"integer"`
-
-	// The token to request the next page of results.
-	NextToken *string `type:"string"`
 }
 
 // String returns the string representation
@@ -35605,26 +35169,10 @@ func (s *DescribeSecurityGroupsInput) SetGroupNames(v []*string) *DescribeSecuri
 	return s
 }
 
-// SetMaxResults sets the MaxResults field's value.
-func (s *DescribeSecurityGroupsInput) SetMaxResults(v int64) *DescribeSecurityGroupsInput {
-	s.MaxResults = &v
-	return s
-}
-
-// SetNextToken sets the NextToken field's value.
-func (s *DescribeSecurityGroupsInput) SetNextToken(v string) *DescribeSecurityGroupsInput {
-	s.NextToken = &v
-	return s
-}
-
 // Contains the output of DescribeSecurityGroups.
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/DescribeSecurityGroupsResult
 type DescribeSecurityGroupsOutput struct {
 	_ struct{} `type:"structure"`
-
-	// The token to use to retrieve the next page of results. This value is null
-	// when there are no more results to return.
-	NextToken *string `locationName:"nextToken" type:"string"`
 
 	// Information about one or more security groups.
 	SecurityGroups []*SecurityGroup `locationName:"securityGroupInfo" locationNameList:"item" type:"list"`
@@ -35638,12 +35186,6 @@ func (s DescribeSecurityGroupsOutput) String() string {
 // GoString returns the string representation
 func (s DescribeSecurityGroupsOutput) GoString() string {
 	return s.String()
-}
-
-// SetNextToken sets the NextToken field's value.
-func (s *DescribeSecurityGroupsOutput) SetNextToken(v string) *DescribeSecurityGroupsOutput {
-	s.NextToken = &v
-	return s
 }
 
 // SetSecurityGroups sets the SecurityGroups field's value.
@@ -36394,20 +35936,20 @@ type DescribeSpotInstanceRequestsInput struct {
 	//    * launch-group - The Spot instance launch group.
 	//
 	//    * launch.block-device-mapping.delete-on-termination - Indicates whether
-	//    the EBS volume is deleted on instance termination.
+	//    the Amazon EBS volume is deleted on instance termination.
 	//
-	//    * launch.block-device-mapping.device-name - The device name for the volume
-	//    in the block device mapping (for example, /dev/sdh or xvdh).
+	//    * launch.block-device-mapping.device-name - The device name for the Amazon
+	//    EBS volume (for example, /dev/sdh).
 	//
-	//    * launch.block-device-mapping.snapshot-id - The ID of the snapshot for
-	//    the EBS volume.
+	//    * launch.block-device-mapping.snapshot-id - The ID of the snapshot used
+	//    for the Amazon EBS volume.
 	//
-	//    * launch.block-device-mapping.volume-size - The size of the EBS volume,
-	//    in GiB.
+	//    * launch.block-device-mapping.volume-size - The size of the Amazon EBS
+	//    volume, in GiB.
 	//
-	//    * launch.block-device-mapping.volume-type - The type of EBS volume: gp2
-	//    for General Purpose SSD, io1 for Provisioned IOPS SSD, st1 for Throughput
-	//    Optimized HDD, sc1for Cold HDD, or standard for Magnetic.
+	//    * launch.block-device-mapping.volume-type - The type of the Amazon EBS
+	//    volume: gp2 for General Purpose SSD, io1 for Provisioned IOPS SSD, st1
+	//    for Throughput Optimized HDD, sc1for Cold HDD, or standard for Magnetic.
 	//
 	//    * launch.group-id - The security group for the instance.
 	//
@@ -37299,7 +36841,7 @@ type DescribeVolumesInput struct {
 	//    * attachment.delete-on-termination - Whether the volume is deleted on
 	//    instance termination.
 	//
-	//    * attachment.device - The device name specified in the block device mapping
+	//    * attachment.device - The device name that is exposed to the instance
 	//    (for example, /dev/sda1).
 	//
 	//    * attachment.instance-id - The ID of the instance the volume is attached
@@ -37851,11 +37393,6 @@ type DescribeVpcEndpointServicesInput struct {
 	// it is UnauthorizedOperation.
 	DryRun *bool `type:"boolean"`
 
-	// One or more filters.
-	//
-	//    * service-name: The name of the service.
-	Filters []*Filter `locationName:"Filter" locationNameList:"Filter" type:"list"`
-
 	// The maximum number of items to return for this request. The request returns
 	// a token that you can specify in a subsequent call to get the next set of
 	// results.
@@ -37866,9 +37403,6 @@ type DescribeVpcEndpointServicesInput struct {
 	// The token for the next set of items to return. (You received this token from
 	// a prior call.)
 	NextToken *string `type:"string"`
-
-	// One or more service names.
-	ServiceNames []*string `locationName:"ServiceName" locationNameList:"item" type:"list"`
 }
 
 // String returns the string representation
@@ -37887,12 +37421,6 @@ func (s *DescribeVpcEndpointServicesInput) SetDryRun(v bool) *DescribeVpcEndpoin
 	return s
 }
 
-// SetFilters sets the Filters field's value.
-func (s *DescribeVpcEndpointServicesInput) SetFilters(v []*Filter) *DescribeVpcEndpointServicesInput {
-	s.Filters = v
-	return s
-}
-
 // SetMaxResults sets the MaxResults field's value.
 func (s *DescribeVpcEndpointServicesInput) SetMaxResults(v int64) *DescribeVpcEndpointServicesInput {
 	s.MaxResults = &v
@@ -37905,12 +37433,6 @@ func (s *DescribeVpcEndpointServicesInput) SetNextToken(v string) *DescribeVpcEn
 	return s
 }
 
-// SetServiceNames sets the ServiceNames field's value.
-func (s *DescribeVpcEndpointServicesInput) SetServiceNames(v []*string) *DescribeVpcEndpointServicesInput {
-	s.ServiceNames = v
-	return s
-}
-
 // Contains the output of DescribeVpcEndpointServices.
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/DescribeVpcEndpointServicesResult
 type DescribeVpcEndpointServicesOutput struct {
@@ -37919,9 +37441,6 @@ type DescribeVpcEndpointServicesOutput struct {
 	// The token to use when requesting the next set of items. If there are no additional
 	// items to return, the string is empty.
 	NextToken *string `locationName:"nextToken" type:"string"`
-
-	// Information about the service.
-	ServiceDetails []*ServiceDetail `locationName:"serviceDetailSet" locationNameList:"item" type:"list"`
 
 	// A list of supported AWS services.
 	ServiceNames []*string `locationName:"serviceNameSet" locationNameList:"item" type:"list"`
@@ -37940,12 +37459,6 @@ func (s DescribeVpcEndpointServicesOutput) GoString() string {
 // SetNextToken sets the NextToken field's value.
 func (s *DescribeVpcEndpointServicesOutput) SetNextToken(v string) *DescribeVpcEndpointServicesOutput {
 	s.NextToken = &v
-	return s
-}
-
-// SetServiceDetails sets the ServiceDetails field's value.
-func (s *DescribeVpcEndpointServicesOutput) SetServiceDetails(v []*ServiceDetail) *DescribeVpcEndpointServicesOutput {
-	s.ServiceDetails = v
 	return s
 }
 
@@ -38430,9 +37943,6 @@ type DescribeVpnGatewaysInput struct {
 	DryRun *bool `locationName:"dryRun" type:"boolean"`
 
 	// One or more filters.
-	//
-	//    * amazon-side-asn - The Autonomous System Number (ASN) for the Amazon
-	//    side of the gateway.
 	//
 	//    * attachment.state - The current state of the attachment between the gateway
 	//    and the VPC (attaching | attached | detaching | detached).
@@ -39797,40 +39307,6 @@ func (s *DiskImageVolumeDescription) SetSize(v int64) *DiskImageVolumeDescriptio
 	return s
 }
 
-// Describes a DNS entry.
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/DnsEntry
-type DnsEntry struct {
-	_ struct{} `type:"structure"`
-
-	// The DNS name.
-	DnsName *string `locationName:"dnsName" type:"string"`
-
-	// The ID of the private hosted zone.
-	HostedZoneId *string `locationName:"hostedZoneId" type:"string"`
-}
-
-// String returns the string representation
-func (s DnsEntry) String() string {
-	return awsutil.Prettify(s)
-}
-
-// GoString returns the string representation
-func (s DnsEntry) GoString() string {
-	return s.String()
-}
-
-// SetDnsName sets the DnsName field's value.
-func (s *DnsEntry) SetDnsName(v string) *DnsEntry {
-	s.DnsName = &v
-	return s
-}
-
-// SetHostedZoneId sets the HostedZoneId field's value.
-func (s *DnsEntry) SetHostedZoneId(v string) *DnsEntry {
-	s.HostedZoneId = &v
-	return s
-}
-
 // Describes a block device for an EBS volume.
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/EbsBlockDevice
 type EbsBlockDevice struct {
@@ -39839,10 +39315,8 @@ type EbsBlockDevice struct {
 	// Indicates whether the EBS volume is deleted on instance termination.
 	DeleteOnTermination *bool `locationName:"deleteOnTermination" type:"boolean"`
 
-	// Indicates whether the EBS volume is encrypted. Encrypted volumes can only
-	// be attached to instances that support Amazon EBS encryption. If you are creating
-	// a volume from a snapshot, you can't specify an encryption value. This is
-	// because only blank volumes can be encrypted on creation.
+	// Indicates whether the EBS volume is encrypted. Encrypted Amazon EBS volumes
+	// may only be attached to instances that support Amazon EBS encryption.
 	Encrypted *bool `locationName:"encrypted" type:"boolean"`
 
 	// The number of I/O operations per second (IOPS) that the volume supports.
@@ -40508,7 +39982,7 @@ type EventInformation struct {
 
 	// The event.
 	//
-	// The following are the error events:
+	// The following are the error events.
 	//
 	//    * iamFleetRoleInvalid - The Spot fleet did not have the required permissions
 	//    either to launch or terminate an instance.
@@ -40523,7 +39997,7 @@ type EventInformation struct {
 	//    * spotInstanceCountLimitExceeded - You've reached the limit on the number
 	//    of Spot instances that you can launch.
 	//
-	// The following are the fleetRequestChange events:
+	// The following are the fleetRequestChange events.
 	//
 	//    * active - The Spot fleet has been validated and Amazon EC2 is attempting
 	//    to maintain the target number of running Spot instances.
@@ -40553,21 +40027,11 @@ type EventInformation struct {
 	//    * submitted - The Spot fleet request is being evaluated and Amazon EC2
 	//    is preparing to launch the target number of Spot instances.
 	//
-	// The following are the instanceChange events:
+	// The following are the instanceChange events.
 	//
 	//    * launched - A bid was fulfilled and a new instance was launched.
 	//
 	//    * terminated - An instance was terminated by the user.
-	//
-	// The following are the Information events:
-	//
-	//    * launchSpecUnusable - The bid price of a launch specification is not
-	//    valid because it is below the market price or the market price is above
-	//    the On-Demand price.
-	//
-	//    * fleetProgressHalted - The bid price of every launch specification is
-	//    not valid. A launch specification might become valid if the market price
-	//    changes.
 	EventSubType *string `locationName:"eventSubType" type:"string"`
 
 	// The ID of the instance. This information is available only for instanceChange
@@ -41577,7 +41041,7 @@ type GetReservedInstancesExchangeQuoteInput struct {
 	// ReservedInstanceIds is a required field
 	ReservedInstanceIds []*string `locationName:"ReservedInstanceId" locationNameList:"ReservedInstanceId" type:"list" required:"true"`
 
-	// The configuration of the target Convertible Reserved Instance to exchange
+	// The configuration requirements of the Convertible Reserved Instances to exchange
 	// for your current Convertible Reserved Instances.
 	TargetConfigurations []*TargetConfigurationRequest `locationName:"TargetConfiguration" locationNameList:"TargetConfigurationRequest" type:"list"`
 }
@@ -41776,14 +41240,12 @@ type HistoryRecord struct {
 
 	// The event type.
 	//
-	//    * error - An error with the Spot fleet request.
+	//    * error - Indicates an error with the Spot fleet request.
 	//
-	//    * fleetRequestChange - A change in the status or configuration of the
-	//    Spot fleet request.
+	//    * fleetRequestChange - Indicates a change in the status or configuration
+	//    of the Spot fleet request.
 	//
-	//    * instanceChange - An instance was launched or terminated.
-	//
-	//    * Information - An informational event.
+	//    * instanceChange - Indicates that an instance was launched or terminated.
 	//
 	// EventType is a required field
 	EventType *string `locationName:"eventType" type:"string" required:"true" enum:"EventType"`
@@ -42494,7 +41956,7 @@ type Image struct {
 	// images.
 	RamdiskId *string `locationName:"ramdiskId" type:"string"`
 
-	// The device name of the root device volume (for example, /dev/sda1).
+	// The device name of the root device (for example, /dev/sda1 or /dev/xvda).
 	RootDeviceName *string `locationName:"rootDeviceName" type:"string"`
 
 	// The type of root device used by the AMI. The AMI can use an EBS volume or
@@ -44032,7 +43494,7 @@ type Instance struct {
 	// The RAM disk associated with this instance, if applicable.
 	RamdiskId *string `locationName:"ramdiskId" type:"string"`
 
-	// The device name of the root device volume (for example, /dev/sda1).
+	// The root device name (for example, /dev/sda1 or /dev/xvda).
 	RootDeviceName *string `locationName:"rootDeviceName" type:"string"`
 
 	// The root device type used by the AMI. The AMI can use an EBS volume or an
@@ -44328,7 +43790,7 @@ func (s *Instance) SetVpcId(v string) *Instance {
 type InstanceBlockDeviceMapping struct {
 	_ struct{} `type:"structure"`
 
-	// The device name (for example, /dev/sdh or xvdh).
+	// The device name exposed to the instance (for example, /dev/sdh or xvdh).
 	DeviceName *string `locationName:"deviceName" type:"string"`
 
 	// Parameters used to automatically set up EBS volumes when the instance is
@@ -44363,7 +43825,7 @@ func (s *InstanceBlockDeviceMapping) SetEbs(v *EbsInstanceBlockDevice) *Instance
 type InstanceBlockDeviceMappingSpecification struct {
 	_ struct{} `type:"structure"`
 
-	// The device name (for example, /dev/sdh or xvdh).
+	// The device name exposed to the instance (for example, /dev/sdh or xvdh).
 	DeviceName *string `locationName:"deviceName" type:"string"`
 
 	// Parameters used to automatically set up EBS volumes when the instance is
@@ -45436,7 +44898,7 @@ func (s *InternetGatewayAttachment) SetVpcId(v string) *InternetGatewayAttachmen
 	return s
 }
 
-// Describes a set of permissions for a security group rule.
+// Describes a security group rule.
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/IpPermission
 type IpPermission struct {
 	_ struct{} `type:"structure"`
@@ -45535,7 +44997,7 @@ type IpRange struct {
 	_ struct{} `type:"structure"`
 
 	// The IPv4 CIDR range. You can either specify a CIDR range or a source security
-	// group, not both. To specify a single IPv4 address, use the /32 prefix length.
+	// group, not both. To specify a single IPv4 address, use the /32 prefix.
 	CidrIp *string `locationName:"cidrIp" type:"string"`
 
 	// A description for the security group rule that references this IPv4 address
@@ -45599,7 +45061,7 @@ type Ipv6Range struct {
 	_ struct{} `type:"structure"`
 
 	// The IPv6 CIDR range. You can either specify a CIDR range or a source security
-	// group, not both. To specify a single IPv6 address, use the /128 prefix length.
+	// group, not both. To specify a single IPv6 address, use the /128 prefix.
 	CidrIpv6 *string `locationName:"cidrIpv6" type:"string"`
 
 	// A description for the security group rule that references this IPv6 address
@@ -45747,6 +45209,9 @@ type LaunchSpecification struct {
 	AddressingType *string `locationName:"addressingType" type:"string"`
 
 	// One or more block device mapping entries.
+	//
+	// Although you can specify encrypted EBS volumes in this block device mapping
+	// for your Spot Instances, these volumes are not encrypted.
 	BlockDeviceMappings []*BlockDeviceMapping `locationName:"blockDeviceMapping" locationNameList:"item" type:"list"`
 
 	// Indicates whether the instance is optimized for EBS I/O. This optimization
@@ -45897,61 +45362,6 @@ func (s *LaunchSpecification) SetSubnetId(v string) *LaunchSpecification {
 // SetUserData sets the UserData field's value.
 func (s *LaunchSpecification) SetUserData(v string) *LaunchSpecification {
 	s.UserData = &v
-	return s
-}
-
-// Describes the Classic Load Balancers and target groups to attach to a Spot
-// fleet request.
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/LoadBalancersConfig
-type LoadBalancersConfig struct {
-	_ struct{} `type:"structure"`
-
-	// The Classic Load Balancers.
-	ClassicLoadBalancersConfig *ClassicLoadBalancersConfig `locationName:"classicLoadBalancersConfig" type:"structure"`
-
-	// The target groups.
-	TargetGroupsConfig *TargetGroupsConfig `locationName:"targetGroupsConfig" type:"structure"`
-}
-
-// String returns the string representation
-func (s LoadBalancersConfig) String() string {
-	return awsutil.Prettify(s)
-}
-
-// GoString returns the string representation
-func (s LoadBalancersConfig) GoString() string {
-	return s.String()
-}
-
-// Validate inspects the fields of the type to determine if they are valid.
-func (s *LoadBalancersConfig) Validate() error {
-	invalidParams := request.ErrInvalidParams{Context: "LoadBalancersConfig"}
-	if s.ClassicLoadBalancersConfig != nil {
-		if err := s.ClassicLoadBalancersConfig.Validate(); err != nil {
-			invalidParams.AddNested("ClassicLoadBalancersConfig", err.(request.ErrInvalidParams))
-		}
-	}
-	if s.TargetGroupsConfig != nil {
-		if err := s.TargetGroupsConfig.Validate(); err != nil {
-			invalidParams.AddNested("TargetGroupsConfig", err.(request.ErrInvalidParams))
-		}
-	}
-
-	if invalidParams.Len() > 0 {
-		return invalidParams
-	}
-	return nil
-}
-
-// SetClassicLoadBalancersConfig sets the ClassicLoadBalancersConfig field's value.
-func (s *LoadBalancersConfig) SetClassicLoadBalancersConfig(v *ClassicLoadBalancersConfig) *LoadBalancersConfig {
-	s.ClassicLoadBalancersConfig = v
-	return s
-}
-
-// SetTargetGroupsConfig sets the TargetGroupsConfig field's value.
-func (s *LoadBalancersConfig) SetTargetGroupsConfig(v *TargetGroupsConfig) *LoadBalancersConfig {
-	s.TargetGroupsConfig = v
 	return s
 }
 
@@ -46456,11 +45866,10 @@ func (s ModifyIdentityIdFormatOutput) GoString() string {
 type ModifyImageAttributeInput struct {
 	_ struct{} `type:"structure"`
 
-	// The name of the attribute to modify. The valid values are description, launchPermission,
-	// and productCodes.
+	// The name of the attribute to modify.
 	Attribute *string `type:"string"`
 
-	// A new description for the AMI.
+	// A description for the AMI.
 	Description *AttributeValue `type:"structure"`
 
 	// Checks whether you have the required permissions for the action, without
@@ -46474,27 +45883,26 @@ type ModifyImageAttributeInput struct {
 	// ImageId is a required field
 	ImageId *string `type:"string" required:"true"`
 
-	// A new launch permission for the AMI.
+	// A launch permission modification.
 	LaunchPermission *LaunchPermissionModifications `type:"structure"`
 
-	// The operation type. This parameter can be used only when the Attribute parameter
-	// is launchPermission.
+	// The operation type.
 	OperationType *string `type:"string" enum:"OperationType"`
 
-	// One or more DevPay product codes. After you add a product code to an AMI,
-	// it can't be removed.
+	// One or more product codes. After you add a product code to an AMI, it can't
+	// be removed. This is only valid when modifying the productCodes attribute.
 	ProductCodes []*string `locationName:"ProductCode" locationNameList:"ProductCode" type:"list"`
 
-	// One or more user groups. This parameter can be used only when the Attribute
-	// parameter is launchPermission.
+	// One or more user groups. This is only valid when modifying the launchPermission
+	// attribute.
 	UserGroups []*string `locationName:"UserGroup" locationNameList:"UserGroup" type:"list"`
 
-	// One or more AWS account IDs. This parameter can be used only when the Attribute
-	// parameter is launchPermission.
+	// One or more AWS account IDs. This is only valid when modifying the launchPermission
+	// attribute.
 	UserIds []*string `locationName:"UserId" locationNameList:"UserId" type:"list"`
 
-	// The value of the attribute being modified. This parameter can be used only
-	// when the Attribute parameter is description or productCodes.
+	// The value of the attribute being modified. This is only valid when modifying
+	// the description attribute.
 	Value *string `type:"string"`
 }
 
@@ -47684,15 +47092,8 @@ func (s ModifyVpcAttributeOutput) GoString() string {
 type ModifyVpcEndpointInput struct {
 	_ struct{} `type:"structure"`
 
-	// (Gateway endpoint) One or more route tables IDs to associate with the endpoint.
+	// One or more route tables IDs to associate with the endpoint.
 	AddRouteTableIds []*string `locationName:"AddRouteTableId" locationNameList:"item" type:"list"`
-
-	// (Interface endpoint) One or more security group IDs to associate with the
-	// network interface.
-	AddSecurityGroupIds []*string `locationName:"AddSecurityGroupId" locationNameList:"item" type:"list"`
-
-	// (Interface endpoint) One or more subnet IDs in which to serve the endpoint.
-	AddSubnetIds []*string `locationName:"AddSubnetId" locationNameList:"item" type:"list"`
 
 	// Checks whether you have the required permissions for the action, without
 	// actually making the request, and provides an error response. If you have
@@ -47700,26 +47101,15 @@ type ModifyVpcEndpointInput struct {
 	// it is UnauthorizedOperation.
 	DryRun *bool `type:"boolean"`
 
-	// (Gateway endpoint) A policy document to attach to the endpoint. The policy
-	// must be in valid JSON format.
+	// A policy document to attach to the endpoint. The policy must be in valid
+	// JSON format.
 	PolicyDocument *string `type:"string"`
 
-	// (Interface endpoint) Indicate whether a private hosted zone is associated
-	// with the VPC.
-	PrivateDnsEnabled *bool `type:"boolean"`
-
-	// (Gateway endpoint) One or more route table IDs to disassociate from the endpoint.
+	// One or more route table IDs to disassociate from the endpoint.
 	RemoveRouteTableIds []*string `locationName:"RemoveRouteTableId" locationNameList:"item" type:"list"`
 
-	// (Interface endpoint) One or more security group IDs to disassociate from
-	// the network interface.
-	RemoveSecurityGroupIds []*string `locationName:"RemoveSecurityGroupId" locationNameList:"item" type:"list"`
-
-	// (Interface endpoint) One or more subnets IDs in which to remove the endpoint.
-	RemoveSubnetIds []*string `locationName:"RemoveSubnetId" locationNameList:"item" type:"list"`
-
-	// (Gateway endpoint) Specify true to reset the policy document to the default
-	// policy. The default policy allows full access to the service.
+	// Specify true to reset the policy document to the default policy. The default
+	// policy allows access to the service.
 	ResetPolicy *bool `type:"boolean"`
 
 	// The ID of the endpoint.
@@ -47757,18 +47147,6 @@ func (s *ModifyVpcEndpointInput) SetAddRouteTableIds(v []*string) *ModifyVpcEndp
 	return s
 }
 
-// SetAddSecurityGroupIds sets the AddSecurityGroupIds field's value.
-func (s *ModifyVpcEndpointInput) SetAddSecurityGroupIds(v []*string) *ModifyVpcEndpointInput {
-	s.AddSecurityGroupIds = v
-	return s
-}
-
-// SetAddSubnetIds sets the AddSubnetIds field's value.
-func (s *ModifyVpcEndpointInput) SetAddSubnetIds(v []*string) *ModifyVpcEndpointInput {
-	s.AddSubnetIds = v
-	return s
-}
-
 // SetDryRun sets the DryRun field's value.
 func (s *ModifyVpcEndpointInput) SetDryRun(v bool) *ModifyVpcEndpointInput {
 	s.DryRun = &v
@@ -47781,27 +47159,9 @@ func (s *ModifyVpcEndpointInput) SetPolicyDocument(v string) *ModifyVpcEndpointI
 	return s
 }
 
-// SetPrivateDnsEnabled sets the PrivateDnsEnabled field's value.
-func (s *ModifyVpcEndpointInput) SetPrivateDnsEnabled(v bool) *ModifyVpcEndpointInput {
-	s.PrivateDnsEnabled = &v
-	return s
-}
-
 // SetRemoveRouteTableIds sets the RemoveRouteTableIds field's value.
 func (s *ModifyVpcEndpointInput) SetRemoveRouteTableIds(v []*string) *ModifyVpcEndpointInput {
 	s.RemoveRouteTableIds = v
-	return s
-}
-
-// SetRemoveSecurityGroupIds sets the RemoveSecurityGroupIds field's value.
-func (s *ModifyVpcEndpointInput) SetRemoveSecurityGroupIds(v []*string) *ModifyVpcEndpointInput {
-	s.RemoveSecurityGroupIds = v
-	return s
-}
-
-// SetRemoveSubnetIds sets the RemoveSubnetIds field's value.
-func (s *ModifyVpcEndpointInput) SetRemoveSubnetIds(v []*string) *ModifyVpcEndpointInput {
-	s.RemoveSubnetIds = v
 	return s
 }
 
@@ -47817,6 +47177,7 @@ func (s *ModifyVpcEndpointInput) SetVpcEndpointId(v string) *ModifyVpcEndpointIn
 	return s
 }
 
+// Contains the output of ModifyVpcEndpoint.
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/ModifyVpcEndpointResult
 type ModifyVpcEndpointOutput struct {
 	_ struct{} `type:"structure"`
@@ -47940,97 +47301,6 @@ func (s *ModifyVpcPeeringConnectionOptionsOutput) SetAccepterPeeringConnectionOp
 // SetRequesterPeeringConnectionOptions sets the RequesterPeeringConnectionOptions field's value.
 func (s *ModifyVpcPeeringConnectionOptionsOutput) SetRequesterPeeringConnectionOptions(v *PeeringConnectionOptions) *ModifyVpcPeeringConnectionOptionsOutput {
 	s.RequesterPeeringConnectionOptions = v
-	return s
-}
-
-// Contains the parameters for ModifyVpcTenancy.
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/ModifyVpcTenancyRequest
-type ModifyVpcTenancyInput struct {
-	_ struct{} `type:"structure"`
-
-	// Checks whether you have the required permissions for the operation, without
-	// actually making the request, and provides an error response. If you have
-	// the required permissions, the error response is DryRunOperation. Otherwise,
-	// it is UnauthorizedOperation.
-	DryRun *bool `type:"boolean"`
-
-	// The instance tenancy attribute for the VPC.
-	//
-	// InstanceTenancy is a required field
-	InstanceTenancy *string `type:"string" required:"true" enum:"VpcTenancy"`
-
-	// The ID of the VPC.
-	//
-	// VpcId is a required field
-	VpcId *string `type:"string" required:"true"`
-}
-
-// String returns the string representation
-func (s ModifyVpcTenancyInput) String() string {
-	return awsutil.Prettify(s)
-}
-
-// GoString returns the string representation
-func (s ModifyVpcTenancyInput) GoString() string {
-	return s.String()
-}
-
-// Validate inspects the fields of the type to determine if they are valid.
-func (s *ModifyVpcTenancyInput) Validate() error {
-	invalidParams := request.ErrInvalidParams{Context: "ModifyVpcTenancyInput"}
-	if s.InstanceTenancy == nil {
-		invalidParams.Add(request.NewErrParamRequired("InstanceTenancy"))
-	}
-	if s.VpcId == nil {
-		invalidParams.Add(request.NewErrParamRequired("VpcId"))
-	}
-
-	if invalidParams.Len() > 0 {
-		return invalidParams
-	}
-	return nil
-}
-
-// SetDryRun sets the DryRun field's value.
-func (s *ModifyVpcTenancyInput) SetDryRun(v bool) *ModifyVpcTenancyInput {
-	s.DryRun = &v
-	return s
-}
-
-// SetInstanceTenancy sets the InstanceTenancy field's value.
-func (s *ModifyVpcTenancyInput) SetInstanceTenancy(v string) *ModifyVpcTenancyInput {
-	s.InstanceTenancy = &v
-	return s
-}
-
-// SetVpcId sets the VpcId field's value.
-func (s *ModifyVpcTenancyInput) SetVpcId(v string) *ModifyVpcTenancyInput {
-	s.VpcId = &v
-	return s
-}
-
-// Contains the output of ModifyVpcTenancy.
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/ModifyVpcTenancyResult
-type ModifyVpcTenancyOutput struct {
-	_ struct{} `type:"structure"`
-
-	// Returns true if the request succeeds; otherwise, returns an error.
-	ReturnValue *bool `locationName:"return" type:"boolean"`
-}
-
-// String returns the string representation
-func (s ModifyVpcTenancyOutput) String() string {
-	return awsutil.Prettify(s)
-}
-
-// GoString returns the string representation
-func (s ModifyVpcTenancyOutput) GoString() string {
-	return s.String()
-}
-
-// SetReturnValue sets the ReturnValue field's value.
-func (s *ModifyVpcTenancyOutput) SetReturnValue(v bool) *ModifyVpcTenancyOutput {
-	s.ReturnValue = &v
 	return s
 }
 
@@ -50644,7 +49914,7 @@ type RegisterImageInput struct {
 	// The ID of the RAM disk.
 	RamdiskId *string `locationName:"ramdiskId" type:"string"`
 
-	// The device name of the root device volume (for example, /dev/sda1).
+	// The name of the root device (for example, /dev/sda1, or /dev/xvda).
 	RootDeviceName *string `locationName:"rootDeviceName" type:"string"`
 
 	// Set to simple to enable enhanced networking with the Intel 82599 Virtual
@@ -52028,10 +51298,10 @@ type RequestSpotLaunchSpecification struct {
 	// Deprecated.
 	AddressingType *string `locationName:"addressingType" type:"string"`
 
-	// One or more block device mapping entries. You can't specify both a snapshot
-	// ID and an encryption value. This is because only blank volumes can be encrypted
-	// on creation. If a snapshot is the basis for a volume, it is not blank and
-	// its encryption status is used for the volume encryption status.
+	// One or more block device mapping entries.
+	//
+	// Although you can specify encrypted EBS volumes in this block device mapping
+	// for your Spot Instances, these volumes are not encrypted.
 	BlockDeviceMappings []*BlockDeviceMapping `locationName:"blockDeviceMapping" locationNameList:"item" type:"list"`
 
 	// Indicates whether the instance is optimized for EBS I/O. This optimization
@@ -53565,7 +52835,8 @@ func (s *RestoreAddressToClassicOutput) SetStatus(v string) *RestoreAddressToCla
 type RevokeSecurityGroupEgressInput struct {
 	_ struct{} `type:"structure"`
 
-	// Not supported. Use a set of IP permissions to specify the CIDR.
+	// The CIDR IP address range. We recommend that you specify the CIDR range in
+	// a set of IP permissions instead.
 	CidrIp *string `locationName:"cidrIp" type:"string"`
 
 	// Checks whether you have the required permissions for the action, without
@@ -53574,7 +52845,8 @@ type RevokeSecurityGroupEgressInput struct {
 	// it is UnauthorizedOperation.
 	DryRun *bool `locationName:"dryRun" type:"boolean"`
 
-	// Not supported. Use a set of IP permissions to specify the port.
+	// The start of port range for the TCP and UDP protocols, or an ICMP type number.
+	// We recommend that you specify the port range in a set of IP permissions instead.
 	FromPort *int64 `locationName:"fromPort" type:"integer"`
 
 	// The ID of the security group.
@@ -53582,23 +52854,26 @@ type RevokeSecurityGroupEgressInput struct {
 	// GroupId is a required field
 	GroupId *string `locationName:"groupId" type:"string" required:"true"`
 
-	// One or more sets of IP permissions. You can't specify a destination security
-	// group and a CIDR IP address range in the same set of permissions.
+	// A set of IP permissions. You can't specify a destination security group and
+	// a CIDR IP address range.
 	IpPermissions []*IpPermission `locationName:"ipPermissions" locationNameList:"item" type:"list"`
 
-	// Not supported. Use a set of IP permissions to specify the protocol name or
-	// number.
+	// The IP protocol name or number. We recommend that you specify the protocol
+	// in a set of IP permissions instead.
 	IpProtocol *string `locationName:"ipProtocol" type:"string"`
 
-	// Not supported. Use a set of IP permissions to specify a destination security
-	// group.
+	// The name of a destination security group. To revoke outbound access to a
+	// destination security group, we recommend that you use a set of IP permissions
+	// instead.
 	SourceSecurityGroupName *string `locationName:"sourceSecurityGroupName" type:"string"`
 
-	// Not supported. Use a set of IP permissions to specify a destination security
-	// group.
+	// The AWS account number for a destination security group. To revoke outbound
+	// access to a destination security group, we recommend that you use a set of
+	// IP permissions instead.
 	SourceSecurityGroupOwnerId *string `locationName:"sourceSecurityGroupOwnerId" type:"string"`
 
-	// Not supported. Use a set of IP permissions to specify the port.
+	// The end of port range for the TCP and UDP protocols, or an ICMP type number.
+	// We recommend that you specify the port range in a set of IP permissions instead.
 	ToPort *int64 `locationName:"toPort" type:"integer"`
 }
 
@@ -53713,17 +52988,15 @@ type RevokeSecurityGroupIngressInput struct {
 	// For the ICMP type number, use -1 to specify all ICMP types.
 	FromPort *int64 `type:"integer"`
 
-	// The ID of the security group. You must specify either the security group
-	// ID or the security group name in the request. For security groups in a nondefault
-	// VPC, you must specify the security group ID.
+	// The ID of the security group. Required for a security group in a nondefault
+	// VPC.
 	GroupId *string `type:"string"`
 
-	// [EC2-Classic, default VPC] The name of the security group. You must specify
-	// either the security group ID or the security group name in the request.
+	// [EC2-Classic, default VPC] The name of the security group.
 	GroupName *string `type:"string"`
 
-	// One or more sets of IP permissions. You can't specify a source security group
-	// and a CIDR IP address range in the same set of permissions.
+	// A set of IP permissions. You can't specify a source security group and a
+	// CIDR IP address range.
 	IpPermissions []*IpPermission `locationNameList:"item" type:"list"`
 
 	// The IP protocol name (tcp, udp, icmp) or number (see Protocol Numbers (http://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml)).
@@ -54099,10 +53372,13 @@ type RunInstancesInput struct {
 	// Reserved.
 	AdditionalInfo *string `locationName:"additionalInfo" type:"string"`
 
-	// One or more block device mapping entries. You can't specify both a snapshot
-	// ID and an encryption value. This is because only blank volumes can be encrypted
-	// on creation. If a snapshot is the basis for a volume, it is not blank and
-	// its encryption status is used for the volume encryption status.
+	// The block device mapping.
+	//
+	// Supplying both a snapshot ID and an encryption value as arguments for block-device
+	// mapping results in an error. This is because only blank volumes can be encrypted
+	// on start, and these are not created from a snapshot. If a snapshot is the
+	// basis for the volume, it contains data by definition and its encryption status
+	// cannot be changed using this action.
 	BlockDeviceMappings []*BlockDeviceMapping `locationName:"BlockDeviceMapping" locationNameList:"BlockDeviceMapping" type:"list"`
 
 	// Unique, case-sensitive identifier you provide to ensure the idempotency of
@@ -54257,9 +53533,9 @@ type RunInstancesInput struct {
 	// The user data to make available to the instance. For more information, see
 	// Running Commands on Your Linux Instance at Launch (http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html)
 	// (Linux) and Adding User Data (http://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-instance-metadata.html#instancedata-add-user-data)
-	// (Windows). If you are using a command line tool, base64-encoding is performed
-	// for you, and you can load the text from a file. Otherwise, you must provide
-	// base64-encoded text.
+	// (Windows). If you are using an AWS SDK or command line tool, base64-encoding
+	// is performed for you, and you can load the text from a file. Otherwise, you
+	// must provide base64-encoded text.
 	UserData *string `type:"string"`
 }
 
@@ -55130,7 +54406,7 @@ func (s *ScheduledInstanceRecurrenceRequest) SetOccurrenceUnit(v string) *Schedu
 type ScheduledInstancesBlockDeviceMapping struct {
 	_ struct{} `type:"structure"`
 
-	// The device name (for example, /dev/sdh or xvdh).
+	// The device name exposed to the instance (for example, /dev/sdh or xvdh).
 	DeviceName *string `type:"string"`
 
 	// Parameters used to set up EBS volumes automatically when the instance is
@@ -55143,7 +54419,7 @@ type ScheduledInstancesBlockDeviceMapping struct {
 
 	// The virtual device name (ephemeralN). Instance store volumes are numbered
 	// starting from 0. An instance type with two available instance store volumes
-	// can specify mappings for ephemeral0 and ephemeral1. The number of available
+	// can specify mappings for ephemeral0 and ephemeral1.The number of available
 	// instance store volumes depends on the instance type. After you connect to
 	// the instance, you must mount the volume.
 	//
@@ -55814,40 +55090,6 @@ func (s *SecurityGroup) SetVpcId(v string) *SecurityGroup {
 	return s
 }
 
-// Describes a security group.
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/SecurityGroupIdentifier
-type SecurityGroupIdentifier struct {
-	_ struct{} `type:"structure"`
-
-	// The ID of the security group.
-	GroupId *string `locationName:"groupId" type:"string"`
-
-	// The name of the security group.
-	GroupName *string `locationName:"groupName" type:"string"`
-}
-
-// String returns the string representation
-func (s SecurityGroupIdentifier) String() string {
-	return awsutil.Prettify(s)
-}
-
-// GoString returns the string representation
-func (s SecurityGroupIdentifier) GoString() string {
-	return s.String()
-}
-
-// SetGroupId sets the GroupId field's value.
-func (s *SecurityGroupIdentifier) SetGroupId(v string) *SecurityGroupIdentifier {
-	s.GroupId = &v
-	return s
-}
-
-// SetGroupName sets the GroupName field's value.
-func (s *SecurityGroupIdentifier) SetGroupName(v string) *SecurityGroupIdentifier {
-	s.GroupName = &v
-	return s
-}
-
 // Describes a VPC with a security group that references your security group.
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/SecurityGroupReference
 type SecurityGroupReference struct {
@@ -55892,120 +55134,6 @@ func (s *SecurityGroupReference) SetReferencingVpcId(v string) *SecurityGroupRef
 // SetVpcPeeringConnectionId sets the VpcPeeringConnectionId field's value.
 func (s *SecurityGroupReference) SetVpcPeeringConnectionId(v string) *SecurityGroupReference {
 	s.VpcPeeringConnectionId = &v
-	return s
-}
-
-// Describes a service.
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/ServiceDetail
-type ServiceDetail struct {
-	_ struct{} `type:"structure"`
-
-	// Indicates whether VPC endpoint connection requests to the service must be
-	// accepted by the service owner.
-	AcceptanceRequired *bool `locationName:"acceptanceRequired" type:"boolean"`
-
-	// The Availability Zones in which the service is available.
-	AvailabilityZones []*string `locationName:"availabilityZoneSet" locationNameList:"item" type:"list"`
-
-	// The DNS names for the service.
-	BaseEndpointDnsNames []*string `locationName:"baseEndpointDnsNameSet" locationNameList:"item" type:"list"`
-
-	// The AWS account ID of the service owner.
-	Owner *string `locationName:"owner" type:"string"`
-
-	// The private DNS name for the service.
-	PrivateDnsName *string `locationName:"privateDnsName" type:"string"`
-
-	// The Amazon Resource Name (ARN) of the service.
-	ServiceName *string `locationName:"serviceName" type:"string"`
-
-	// The type of service.
-	ServiceType []*ServiceTypeDetail `locationName:"serviceType" locationNameList:"item" type:"list"`
-
-	// Indicates whether the service supports endpoint policies.
-	VpcEndpointPolicySupported *bool `locationName:"vpcEndpointPolicySupported" type:"boolean"`
-}
-
-// String returns the string representation
-func (s ServiceDetail) String() string {
-	return awsutil.Prettify(s)
-}
-
-// GoString returns the string representation
-func (s ServiceDetail) GoString() string {
-	return s.String()
-}
-
-// SetAcceptanceRequired sets the AcceptanceRequired field's value.
-func (s *ServiceDetail) SetAcceptanceRequired(v bool) *ServiceDetail {
-	s.AcceptanceRequired = &v
-	return s
-}
-
-// SetAvailabilityZones sets the AvailabilityZones field's value.
-func (s *ServiceDetail) SetAvailabilityZones(v []*string) *ServiceDetail {
-	s.AvailabilityZones = v
-	return s
-}
-
-// SetBaseEndpointDnsNames sets the BaseEndpointDnsNames field's value.
-func (s *ServiceDetail) SetBaseEndpointDnsNames(v []*string) *ServiceDetail {
-	s.BaseEndpointDnsNames = v
-	return s
-}
-
-// SetOwner sets the Owner field's value.
-func (s *ServiceDetail) SetOwner(v string) *ServiceDetail {
-	s.Owner = &v
-	return s
-}
-
-// SetPrivateDnsName sets the PrivateDnsName field's value.
-func (s *ServiceDetail) SetPrivateDnsName(v string) *ServiceDetail {
-	s.PrivateDnsName = &v
-	return s
-}
-
-// SetServiceName sets the ServiceName field's value.
-func (s *ServiceDetail) SetServiceName(v string) *ServiceDetail {
-	s.ServiceName = &v
-	return s
-}
-
-// SetServiceType sets the ServiceType field's value.
-func (s *ServiceDetail) SetServiceType(v []*ServiceTypeDetail) *ServiceDetail {
-	s.ServiceType = v
-	return s
-}
-
-// SetVpcEndpointPolicySupported sets the VpcEndpointPolicySupported field's value.
-func (s *ServiceDetail) SetVpcEndpointPolicySupported(v bool) *ServiceDetail {
-	s.VpcEndpointPolicySupported = &v
-	return s
-}
-
-// Describes the type of service for a VPC endpoint.
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/ServiceTypeDetail
-type ServiceTypeDetail struct {
-	_ struct{} `type:"structure"`
-
-	// The type of service.
-	ServiceType *string `locationName:"serviceType" type:"string" enum:"ServiceType"`
-}
-
-// String returns the string representation
-func (s ServiceTypeDetail) String() string {
-	return awsutil.Prettify(s)
-}
-
-// GoString returns the string representation
-func (s ServiceTypeDetail) GoString() string {
-	return s.String()
-}
-
-// SetServiceType sets the ServiceType field's value.
-func (s *ServiceTypeDetail) SetServiceType(v string) *ServiceTypeDetail {
-	s.ServiceType = &v
 	return s
 }
 
@@ -56585,10 +55713,7 @@ type SpotFleetLaunchSpecification struct {
 	// Deprecated.
 	AddressingType *string `locationName:"addressingType" type:"string"`
 
-	// One or more block device mapping entries. You can't specify both a snapshot
-	// ID and an encryption value. This is because only blank volumes can be encrypted
-	// on creation. If a snapshot is the basis for a volume, it is not blank and
-	// its encryption status is used for the volume encryption status.
+	// One or more block device mapping entries.
 	BlockDeviceMappings []*BlockDeviceMapping `locationName:"blockDeviceMapping" locationNameList:"item" type:"list"`
 
 	// Indicates whether the instances are optimized for EBS I/O. This optimization
@@ -56937,15 +56062,6 @@ type SpotFleetRequestConfigData struct {
 	// LaunchSpecifications is a required field
 	LaunchSpecifications []*SpotFleetLaunchSpecification `locationName:"launchSpecifications" locationNameList:"item" min:"1" type:"list" required:"true"`
 
-	// One or more Classic Load Balancers and target groups to attach to the Spot
-	// fleet request. Spot fleet registers the running Spot instances with the specified
-	// Classic Load Balancers and target groups.
-	//
-	// With Network Load Balancers, Spot fleet cannot register instances that have
-	// the following instance types: C1, CC1, CC2, CG1, CG2, CR1, CS1, G1, G2, HI1,
-	// HS1, M1, M2, M3, and T1.
-	LoadBalancersConfig *LoadBalancersConfig `locationName:"loadBalancersConfig" type:"structure"`
-
 	// Indicates whether Spot fleet should replace unhealthy instances.
 	ReplaceUnhealthyInstances *bool `locationName:"replaceUnhealthyInstances" type:"boolean"`
 
@@ -57023,11 +56139,6 @@ func (s *SpotFleetRequestConfigData) Validate() error {
 			}
 		}
 	}
-	if s.LoadBalancersConfig != nil {
-		if err := s.LoadBalancersConfig.Validate(); err != nil {
-			invalidParams.AddNested("LoadBalancersConfig", err.(request.ErrInvalidParams))
-		}
-	}
 
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -57074,12 +56185,6 @@ func (s *SpotFleetRequestConfigData) SetInstanceInterruptionBehavior(v string) *
 // SetLaunchSpecifications sets the LaunchSpecifications field's value.
 func (s *SpotFleetRequestConfigData) SetLaunchSpecifications(v []*SpotFleetLaunchSpecification) *SpotFleetRequestConfigData {
 	s.LaunchSpecifications = v
-	return s
-}
-
-// SetLoadBalancersConfig sets the LoadBalancersConfig field's value.
-func (s *SpotFleetRequestConfigData) SetLoadBalancersConfig(v *LoadBalancersConfig) *SpotFleetRequestConfigData {
-	s.LoadBalancersConfig = v
 	return s
 }
 
@@ -58400,100 +57505,6 @@ func (s *TargetConfigurationRequest) SetInstanceCount(v int64) *TargetConfigurat
 // SetOfferingId sets the OfferingId field's value.
 func (s *TargetConfigurationRequest) SetOfferingId(v string) *TargetConfigurationRequest {
 	s.OfferingId = &v
-	return s
-}
-
-// Describes a load balancer target group.
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/TargetGroup
-type TargetGroup struct {
-	_ struct{} `type:"structure"`
-
-	// The Amazon Resource Name (ARN) of the target group.
-	//
-	// Arn is a required field
-	Arn *string `locationName:"arn" type:"string" required:"true"`
-}
-
-// String returns the string representation
-func (s TargetGroup) String() string {
-	return awsutil.Prettify(s)
-}
-
-// GoString returns the string representation
-func (s TargetGroup) GoString() string {
-	return s.String()
-}
-
-// Validate inspects the fields of the type to determine if they are valid.
-func (s *TargetGroup) Validate() error {
-	invalidParams := request.ErrInvalidParams{Context: "TargetGroup"}
-	if s.Arn == nil {
-		invalidParams.Add(request.NewErrParamRequired("Arn"))
-	}
-
-	if invalidParams.Len() > 0 {
-		return invalidParams
-	}
-	return nil
-}
-
-// SetArn sets the Arn field's value.
-func (s *TargetGroup) SetArn(v string) *TargetGroup {
-	s.Arn = &v
-	return s
-}
-
-// Describes the target groups to attach to a Spot fleet. Spot fleet registers
-// the running Spot instances with these target groups.
-// Please also see https://docs.aws.amazon.com/goto/WebAPI/ec2-2016-11-15/TargetGroupsConfig
-type TargetGroupsConfig struct {
-	_ struct{} `type:"structure"`
-
-	// One or more target groups.
-	//
-	// TargetGroups is a required field
-	TargetGroups []*TargetGroup `locationName:"targetGroups" locationNameList:"item" min:"1" type:"list" required:"true"`
-}
-
-// String returns the string representation
-func (s TargetGroupsConfig) String() string {
-	return awsutil.Prettify(s)
-}
-
-// GoString returns the string representation
-func (s TargetGroupsConfig) GoString() string {
-	return s.String()
-}
-
-// Validate inspects the fields of the type to determine if they are valid.
-func (s *TargetGroupsConfig) Validate() error {
-	invalidParams := request.ErrInvalidParams{Context: "TargetGroupsConfig"}
-	if s.TargetGroups == nil {
-		invalidParams.Add(request.NewErrParamRequired("TargetGroups"))
-	}
-	if s.TargetGroups != nil && len(s.TargetGroups) < 1 {
-		invalidParams.Add(request.NewErrParamMinLen("TargetGroups", 1))
-	}
-	if s.TargetGroups != nil {
-		for i, v := range s.TargetGroups {
-			if v == nil {
-				continue
-			}
-			if err := v.Validate(); err != nil {
-				invalidParams.AddNested(fmt.Sprintf("%s[%v]", "TargetGroups", i), err.(request.ErrInvalidParams))
-			}
-		}
-	}
-
-	if invalidParams.Len() > 0 {
-		return invalidParams
-	}
-	return nil
-}
-
-// SetTargetGroups sets the TargetGroups field's value.
-func (s *TargetGroupsConfig) SetTargetGroups(v []*TargetGroup) *TargetGroupsConfig {
-	s.TargetGroups = v
 	return s
 }
 
@@ -60242,24 +59253,10 @@ type VpcEndpoint struct {
 	// The date and time the VPC endpoint was created.
 	CreationTimestamp *time.Time `locationName:"creationTimestamp" type:"timestamp" timestampFormat:"iso8601"`
 
-	// (Interface endpoint) The DNS entries for the endpoint.
-	DnsEntries []*DnsEntry `locationName:"dnsEntrySet" locationNameList:"item" type:"list"`
-
-	// (Interface endpoint) Information about the security groups associated with
-	// the network interface.
-	Groups []*SecurityGroupIdentifier `locationName:"groupSet" locationNameList:"item" type:"list"`
-
-	// (Interface endpoint) One or more network interfaces for the endpoint.
-	NetworkInterfaceIds []*string `locationName:"networkInterfaceIdSet" locationNameList:"item" type:"list"`
-
-	// The policy document associated with the endpoint, if applicable.
+	// The policy document associated with the endpoint.
 	PolicyDocument *string `locationName:"policyDocument" type:"string"`
 
-	// (Interface endpoint) Indicates whether the VPC is associated with a private
-	// hosted zone.
-	PrivateDnsEnabled *bool `locationName:"privateDnsEnabled" type:"boolean"`
-
-	// (Gateway endpoint) One or more route tables associated with the endpoint.
+	// One or more route tables associated with the endpoint.
 	RouteTableIds []*string `locationName:"routeTableIdSet" locationNameList:"item" type:"list"`
 
 	// The name of the AWS service to which the endpoint is associated.
@@ -60268,14 +59265,8 @@ type VpcEndpoint struct {
 	// The state of the VPC endpoint.
 	State *string `locationName:"state" type:"string" enum:"State"`
 
-	// (Interface endpoint) One or more subnets in which the endpoint is located.
-	SubnetIds []*string `locationName:"subnetIdSet" locationNameList:"item" type:"list"`
-
 	// The ID of the VPC endpoint.
 	VpcEndpointId *string `locationName:"vpcEndpointId" type:"string"`
-
-	// The type of endpoint.
-	VpcEndpointType *string `locationName:"vpcEndpointType" type:"string" enum:"VpcEndpointType"`
 
 	// The ID of the VPC to which the endpoint is associated.
 	VpcId *string `locationName:"vpcId" type:"string"`
@@ -60297,33 +59288,9 @@ func (s *VpcEndpoint) SetCreationTimestamp(v time.Time) *VpcEndpoint {
 	return s
 }
 
-// SetDnsEntries sets the DnsEntries field's value.
-func (s *VpcEndpoint) SetDnsEntries(v []*DnsEntry) *VpcEndpoint {
-	s.DnsEntries = v
-	return s
-}
-
-// SetGroups sets the Groups field's value.
-func (s *VpcEndpoint) SetGroups(v []*SecurityGroupIdentifier) *VpcEndpoint {
-	s.Groups = v
-	return s
-}
-
-// SetNetworkInterfaceIds sets the NetworkInterfaceIds field's value.
-func (s *VpcEndpoint) SetNetworkInterfaceIds(v []*string) *VpcEndpoint {
-	s.NetworkInterfaceIds = v
-	return s
-}
-
 // SetPolicyDocument sets the PolicyDocument field's value.
 func (s *VpcEndpoint) SetPolicyDocument(v string) *VpcEndpoint {
 	s.PolicyDocument = &v
-	return s
-}
-
-// SetPrivateDnsEnabled sets the PrivateDnsEnabled field's value.
-func (s *VpcEndpoint) SetPrivateDnsEnabled(v bool) *VpcEndpoint {
-	s.PrivateDnsEnabled = &v
 	return s
 }
 
@@ -60345,21 +59312,9 @@ func (s *VpcEndpoint) SetState(v string) *VpcEndpoint {
 	return s
 }
 
-// SetSubnetIds sets the SubnetIds field's value.
-func (s *VpcEndpoint) SetSubnetIds(v []*string) *VpcEndpoint {
-	s.SubnetIds = v
-	return s
-}
-
 // SetVpcEndpointId sets the VpcEndpointId field's value.
 func (s *VpcEndpoint) SetVpcEndpointId(v string) *VpcEndpoint {
 	s.VpcEndpointId = &v
-	return s
-}
-
-// SetVpcEndpointType sets the VpcEndpointType field's value.
-func (s *VpcEndpoint) SetVpcEndpointType(v string) *VpcEndpoint {
-	s.VpcEndpointType = &v
 	return s
 }
 
@@ -60825,9 +59780,6 @@ func (s *VpnConnectionOptionsSpecification) SetTunnelOptions(v []*VpnTunnelOptio
 type VpnGateway struct {
 	_ struct{} `type:"structure"`
 
-	// The private Autonomous System Number (ASN) for the Amazon side of a BGP session.
-	AmazonSideAsn *int64 `locationName:"amazonSideAsn" type:"long"`
-
 	// The Availability Zone where the virtual private gateway was created, if applicable.
 	// This field may be empty or not returned.
 	AvailabilityZone *string `locationName:"availabilityZone" type:"string"`
@@ -60856,12 +59808,6 @@ func (s VpnGateway) String() string {
 // GoString returns the string representation
 func (s VpnGateway) GoString() string {
 	return s.String()
-}
-
-// SetAmazonSideAsn sets the AmazonSideAsn field's value.
-func (s *VpnGateway) SetAmazonSideAsn(v int64) *VpnGateway {
-	s.AmazonSideAsn = &v
-	return s
 }
 
 // SetAvailabilityZone sets the AvailabilityZone field's value.
@@ -61654,21 +60600,6 @@ const (
 	// InstanceTypeX132xlarge is a InstanceType enum value
 	InstanceTypeX132xlarge = "x1.32xlarge"
 
-	// InstanceTypeX1eXlarge is a InstanceType enum value
-	InstanceTypeX1eXlarge = "x1e.xlarge"
-
-	// InstanceTypeX1e2xlarge is a InstanceType enum value
-	InstanceTypeX1e2xlarge = "x1e.2xlarge"
-
-	// InstanceTypeX1e4xlarge is a InstanceType enum value
-	InstanceTypeX1e4xlarge = "x1e.4xlarge"
-
-	// InstanceTypeX1e8xlarge is a InstanceType enum value
-	InstanceTypeX1e8xlarge = "x1e.8xlarge"
-
-	// InstanceTypeX1e16xlarge is a InstanceType enum value
-	InstanceTypeX1e16xlarge = "x1e.16xlarge"
-
 	// InstanceTypeX1e32xlarge is a InstanceType enum value
 	InstanceTypeX1e32xlarge = "x1e.32xlarge"
 
@@ -61744,24 +60675,6 @@ const (
 	// InstanceTypeC48xlarge is a InstanceType enum value
 	InstanceTypeC48xlarge = "c4.8xlarge"
 
-	// InstanceTypeC5Large is a InstanceType enum value
-	InstanceTypeC5Large = "c5.large"
-
-	// InstanceTypeC5Xlarge is a InstanceType enum value
-	InstanceTypeC5Xlarge = "c5.xlarge"
-
-	// InstanceTypeC52xlarge is a InstanceType enum value
-	InstanceTypeC52xlarge = "c5.2xlarge"
-
-	// InstanceTypeC54xlarge is a InstanceType enum value
-	InstanceTypeC54xlarge = "c5.4xlarge"
-
-	// InstanceTypeC59xlarge is a InstanceType enum value
-	InstanceTypeC59xlarge = "c5.9xlarge"
-
-	// InstanceTypeC518xlarge is a InstanceType enum value
-	InstanceTypeC518xlarge = "c5.18xlarge"
-
 	// InstanceTypeCc14xlarge is a InstanceType enum value
 	InstanceTypeCc14xlarge = "cc1.4xlarge"
 
@@ -61794,15 +60707,6 @@ const (
 
 	// InstanceTypeP216xlarge is a InstanceType enum value
 	InstanceTypeP216xlarge = "p2.16xlarge"
-
-	// InstanceTypeP32xlarge is a InstanceType enum value
-	InstanceTypeP32xlarge = "p3.2xlarge"
-
-	// InstanceTypeP38xlarge is a InstanceType enum value
-	InstanceTypeP38xlarge = "p3.8xlarge"
-
-	// InstanceTypeP316xlarge is a InstanceType enum value
-	InstanceTypeP316xlarge = "p3.16xlarge"
 
 	// InstanceTypeD2Xlarge is a InstanceType enum value
 	InstanceTypeD2Xlarge = "d2.xlarge"
@@ -62207,14 +61111,6 @@ const (
 )
 
 const (
-	// ServiceTypeInterface is a ServiceType enum value
-	ServiceTypeInterface = "Interface"
-
-	// ServiceTypeGateway is a ServiceType enum value
-	ServiceTypeGateway = "Gateway"
-)
-
-const (
 	// ShutdownBehaviorStop is a ShutdownBehavior enum value
 	ShutdownBehaviorStop = "stop"
 
@@ -62267,9 +61163,6 @@ const (
 )
 
 const (
-	// StatePendingAcceptance is a State enum value
-	StatePendingAcceptance = "PendingAcceptance"
-
 	// StatePending is a State enum value
 	StatePending = "Pending"
 
@@ -62281,15 +61174,6 @@ const (
 
 	// StateDeleted is a State enum value
 	StateDeleted = "Deleted"
-
-	// StateRejected is a State enum value
-	StateRejected = "Rejected"
-
-	// StateFailed is a State enum value
-	StateFailed = "Failed"
-
-	// StateExpired is a State enum value
-	StateExpired = "Expired"
 )
 
 const (
@@ -62526,14 +61410,6 @@ const (
 )
 
 const (
-	// VpcEndpointTypeInterface is a VpcEndpointType enum value
-	VpcEndpointTypeInterface = "Interface"
-
-	// VpcEndpointTypeGateway is a VpcEndpointType enum value
-	VpcEndpointTypeGateway = "Gateway"
-)
-
-const (
 	// VpcPeeringConnectionStateReasonCodeInitiatingRequest is a VpcPeeringConnectionStateReasonCode enum value
 	VpcPeeringConnectionStateReasonCodeInitiatingRequest = "initiating-request"
 
@@ -62568,11 +61444,6 @@ const (
 
 	// VpcStateAvailable is a VpcState enum value
 	VpcStateAvailable = "available"
-)
-
-const (
-	// VpcTenancyDefault is a VpcTenancy enum value
-	VpcTenancyDefault = "default"
 )
 
 const (

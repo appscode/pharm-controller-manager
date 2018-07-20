@@ -110,6 +110,10 @@ func (i *instances) InstanceExistsByProviderID(_ context.Context, providerID str
 	return false, nil
 }
 
+func (i *instances) InstanceShutdownByProviderID(ctx context.Context, providerID string) (bool, error) {
+	return false, cloudprovider.NotImplemented
+}
+
 func instanceByName(client *lightsail.Lightsail, nodeName types.NodeName) (*lightsail.Instance, error) {
 	host, err := client.GetInstance(&lightsail.GetInstanceInput{
 		InstanceName: StringP(string(nodeName)),

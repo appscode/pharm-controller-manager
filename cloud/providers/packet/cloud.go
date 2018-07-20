@@ -47,7 +47,7 @@ func newCloud(config io.Reader) (*Cloud, error) {
 		return nil, err
 	}
 
-	packetClient := packngo.NewClient("", packet.ApiKey, nil)
+	packetClient := packngo.NewClientWithAuth("", packet.ApiKey, nil)
 
 	return &Cloud{
 		client:        packetClient,

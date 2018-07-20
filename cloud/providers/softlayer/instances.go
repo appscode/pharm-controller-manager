@@ -104,6 +104,10 @@ func (i *instances) InstanceTypeByProviderID(_ context.Context, providerID strin
 	return guestInstanceType(vGuest)
 }
 
+func (i *instances) InstanceShutdownByProviderID(ctx context.Context, providerID string) (bool, error) {
+	return false, cloudprovider.NotImplemented
+}
+
 func guestInstanceType(vGuest datatypes.Virtual_Guest) (string, error) {
 	cpu := *vGuest.StartCpus
 	ram := (*vGuest.MaxMemory) / 1024

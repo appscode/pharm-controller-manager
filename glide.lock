@@ -1,5 +1,5 @@
 hash: 1596fe36c7a85d7807409c98c0fbbbd3719c29b9ea72bcb6e30ace5549e964bd
-updated: 2018-07-08T22:01:20.644697774-07:00
+updated: 2018-07-19T21:26:37.245276845-07:00
 imports:
 - name: bitbucket.org/ww/goautoneg
   version: 75cd24fc2f2c2a2088577d12123ddee5f54e0675
@@ -23,7 +23,7 @@ imports:
 - name: github.com/appscode/jsonpatch
   version: 1359b374de83fa14fd58ab10aa8ea4935f84d249
 - name: github.com/appscode/kutil
-  version: ade0469e223909a181ae7a020024aa7adeb3dde6
+  version: d3937b4296055e551cd85c7d3fff52449a2f80a0
   subpackages:
   - meta
   - tools/analytics
@@ -252,7 +252,7 @@ imports:
 - name: github.com/evanphx/json-patch
   version: 94e38aa1586e8a6c8a75770bddf5ff84c48a106b
 - name: github.com/ghodss/yaml
-  version: 73d445a93680fa1a78ae23a5839bad48f32ba1ee
+  version: 0ca9ea5df5451ffdf184b4428c902747c2c11cd7
 - name: github.com/go-ini/ini
   version: 300e940a926eb277d3901b20bdfcc54928ad3642
 - name: github.com/go-openapi/jsonpointer
@@ -387,7 +387,7 @@ imports:
 - name: github.com/mitchellh/mapstructure
   version: 53818660ed4955e899c0bcafa97299a388bd7c8e
 - name: github.com/moby/moby
-  version: 905811f366f28c1712626817f5fb086bd4072a78
+  version: 683738900eec52f86b834234eeef054c4e135031
   subpackages:
   - pkg/term
 - name: github.com/modern-go/concurrent
@@ -408,7 +408,7 @@ imports:
   - specs-go
   - specs-go/v1
 - name: github.com/packethost/packngo
-  version: 95039464827381cb3f66f5dfb1b5ad3e18cf052b
+  version: b627120f2da509ca7ff76faf2bbdf6794d873616
 - name: github.com/pborman/uuid
   version: ca53cad383cad2479bbba7f7a1a05797ec1386e4
 - name: github.com/peterbourgon/diskv
@@ -467,7 +467,7 @@ imports:
 - name: github.com/sirupsen/logrus
   version: 89742aefa4b206dcf400792f3bd35b542998eb3b
 - name: github.com/softlayer/softlayer-go
-  version: 3aaf70665e74e5c84687386e575e1130bc42af20
+  version: 693aaae36a81140fc5abfb56032c90e7cdc8cbd4
   subpackages:
   - config
   - datatypes

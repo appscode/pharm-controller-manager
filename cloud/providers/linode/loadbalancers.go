@@ -75,11 +75,24 @@ func newLoadbalancers(client *linodego.Client, zone string) cloudprovider.LoadBa
 	return &loadbalancers{client: client, zone: zone}
 }
 
+// GetLoadBalancerName returns the name of the load balancer. Implementations must treat the
+// *v1.Service parameter as read-only and not modify it.
+func (l *loadbalancers) GetLoadBalancerName(ctx context.Context, clusterName string, service *v1.Service) string {
+	//GCE requires that the name of a load balancer starts with a lower case letter.
+	ret := "a" + string(service.UID)
+	ret = strings.Replace(ret, "-", "", -1)
+	//AWS requires that the name of a load balancer is shorter than 32 bytes.
+	if len(ret) > 32 {
+		ret = ret[:32]
+	}
+	return ret
+}
+
 // GetLoadBalancer returns the *v1.LoadBalancerStatus of service.
 //
 // GetLoadBalancer will not modify service.
-func (l *loadbalancers) GetLoadBalancer(_ context.Context, clusterName string, service *v1.Service) (*v1.LoadBalancerStatus, bool, error) {
-	lbName := cloudprovider.GetLoadBalancerName(service)
+func (l *loadbalancers) GetLoadBalancer(ctx context.Context, clusterName string, service *v1.Service) (*v1.LoadBalancerStatus, bool, error) {
+	lbName := l.GetLoadBalancerName(ctx, clusterName, service)
 	lb, err := l.lbByName(l.client, lbName)
 	if err != nil {
 		if err == lbNotFound {
@@ -115,7 +128,7 @@ func (l *loadbalancers) EnsureLoadBalancer(ctx context.Context, clusterName stri
 	}
 
 	if !exists {
-		ip, err := l.buildLoadBalancerRequest(service, nodes)
+		ip, err := l.buildLoadBalancerRequest(ctx, clusterName, service, nodes)
 		if err != nil {
 			return nil, err
 		}
@@ -147,8 +160,8 @@ func (l *loadbalancers) EnsureLoadBalancer(ctx context.Context, clusterName stri
 // the droplets in nodes.
 //
 // UpdateLoadBalancer will not modify service or nodes.
-func (l *loadbalancers) UpdateLoadBalancer(_ context.Context, clusterName string, service *v1.Service, nodes []*v1.Node) error {
-	lbName := cloudprovider.GetLoadBalancerName(service)
+func (l *loadbalancers) UpdateLoadBalancer(ctx context.Context, clusterName string, service *v1.Service, nodes []*v1.Node) error {
+	lbName := l.GetLoadBalancerName(ctx, clusterName, service)
 	lb, err := l.lbByName(l.client, lbName)
 	if err != nil {
 		return err
@@ -263,7 +276,7 @@ func (l *loadbalancers) EnsureLoadBalancerDeleted(ctx context.Context, clusterNa
 	if !exists {
 		return nil
 	}
-	lbName := cloudprovider.GetLoadBalancerName(service)
+	lbName := l.GetLoadBalancerName(ctx, clusterName, service)
 	lb, err := l.lbByName(l.client, lbName)
 	if err != nil {
 		return err
@@ -290,12 +303,12 @@ func (l *loadbalancers) lbByName(client *linodego.Client, name string) (*linodeg
 	return nil, lbNotFound
 }
 
-func (l *loadbalancers) createNoadBalancer(service *v1.Service) (int, error) {
+func (l *loadbalancers) createNoadBalancer(ctx context.Context, clusterName string, service *v1.Service) (int, error) {
 	did, err := strconv.Atoi(l.zone)
 	if err != nil {
 		return -1, err
 	}
-	lbName := cloudprovider.GetLoadBalancerName(service)
+	lbName := l.GetLoadBalancerName(ctx, clusterName, service)
 
 	resp, err := l.client.NodeBalancer.Create(did, lbName, nil)
 	if err != nil {
@@ -424,8 +437,8 @@ func mergeMaps(first, second map[string]string) map[string]string {
 
 // buildLoadBalancerRequest returns a *godo.LoadBalancerRequest to balance
 // requests for service across nodes.
-func (l *loadbalancers) buildLoadBalancerRequest(service *v1.Service, nodes []*v1.Node) (string, error) {
-	lb, err := l.createNoadBalancer(service)
+func (l *loadbalancers) buildLoadBalancerRequest(ctx context.Context, clusterName string, service *v1.Service, nodes []*v1.Node) (string, error) {
+	lb, err := l.createNoadBalancer(ctx, clusterName, service)
 	if err != nil {
 		return "", err
 	}

@@ -1,6 +1,7 @@
 package linode
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"reflect"
@@ -540,7 +541,7 @@ func Test_createNoadBalancer(t *testing.T) {
 			}
 			fakeClient := newFakeLBClient(fakeNB, nil, nil, nil)
 			lb := &loadbalancers{fakeClient, "1"}
-			id, err := lb.createNoadBalancer(test.service)
+			id, err := lb.createNoadBalancer(context.Background(), "k1", test.service)
 			if id != test.nbId {
 				t.Error("unexpected nodeID")
 				t.Logf("expected: %v", test.nbId)
@@ -722,7 +723,7 @@ func Test_buildLoadBalancerRequest(t *testing.T) {
 			}
 			fakeClient := newFakeLBClient(fakeNB, nil, fakeNBC, fakeN)
 			lb := &loadbalancers{fakeClient, "1"}
-			id, err := lb.buildLoadBalancerRequest(test.service, test.nodes)
+			id, err := lb.buildLoadBalancerRequest(context.Background(), "k1", test.service, test.nodes)
 			if id != test.address {
 				t.Error("unexpected nodeID")
 				t.Logf("expected: %v", test.address)
@@ -851,7 +852,7 @@ func Test_EnsureLoadBalancerDeleted(t *testing.T) {
 
 			fakeClient := newFakeLBClient(fakeNB, nil, nil, nil)
 			lb := &loadbalancers{fakeClient, "1"}
-			err := lb.EnsureLoadBalancerDeleted(test.clusterName, test.service)
+			err := lb.EnsureLoadBalancerDeleted(context.Background(), test.clusterName, test.service)
 
 			if !reflect.DeepEqual(err, test.err) {
 				t.Error("unexpected error")
@@ -1091,7 +1092,7 @@ func Test_EnsureLoadBalancer(t *testing.T) {
 
 			fakeClient := newFakeLBClient(fakeNB, nil, fakeNBC, fakeN)
 			lb := &loadbalancers{fakeClient, "1"}
-			lbStatus, err := lb.EnsureLoadBalancer(test.clusterName, test.service, test.nodes)
+			lbStatus, err := lb.EnsureLoadBalancer(context.Background(), test.clusterName, test.service, test.nodes)
 			if lbStatus.Ingress[0].IP != test.nbIP {
 				t.Error("unexpected error")
 				t.Logf("expected: %v", test.nbIP)
@@ -1213,7 +1214,7 @@ func Test_GetLoadBalancer(t *testing.T) {
 
 			fakeClient := newFakeLBClient(fakeNB, nil, nil, nil)
 			lb := &loadbalancers{fakeClient, "1"}
-			_, found, err := lb.GetLoadBalancer(test.clusterName, test.service)
+			_, found, err := lb.GetLoadBalancer(context.Background(), test.clusterName, test.service)
 			if found != test.found {
 				t.Error("unexpected error")
 				t.Logf("expected: %v", test.found)

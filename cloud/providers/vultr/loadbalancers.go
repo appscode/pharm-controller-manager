@@ -18,6 +18,12 @@ func newLoadbalancers(client *gv.Client) cloudprovider.LoadBalancer {
 	return &loadbalancers{client: client}
 }
 
+// GetLoadBalancerName returns the name of the load balancer. Implementations must treat the
+// *v1.Service parameter as read-only and not modify it.
+func (l *loadbalancers) GetLoadBalancerName(ctx context.Context, clusterName string, service *v1.Service) string {
+	return ""
+}
+
 // GetLoadBalancer returns the *v1.LoadBalancerStatus of service.
 //
 // GetLoadBalancer will not modify service.

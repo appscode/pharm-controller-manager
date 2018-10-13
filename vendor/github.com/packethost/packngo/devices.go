@@ -20,6 +20,7 @@ type DeviceService interface {
 	PowerOn(string) (*Response, error)
 	Lock(string) (*Response, error)
 	Unlock(string) (*Response, error)
+	ListEvents(string, *ListOptions) ([]Event, *Response, error)
 }
 
 type devicesRoot struct {
@@ -45,7 +46,7 @@ type Device struct {
 	Plan                *Plan                  `json:"plan,omitempty"`
 	Facility            *Facility              `json:"facility,omitempty"`
 	Project             *Project               `json:"project,omitempty"`
-	ProvisionEvents     []*ProvisionEvent      `json:"provisioning_events,omitempty"`
+	ProvisionEvents     []*Event               `json:"provisioning_events,omitempty"`
 	ProvisionPer        float32                `json:"provisioning_percentage,omitempty"`
 	UserData            string                 `json:"userdata,omitempty"`
 	RootPassword        string                 `json:"root_password,omitempty"`
@@ -59,40 +60,30 @@ type Device struct {
 	CustomData          map[string]interface{} `json:"customdata,omitempty"`
 }
 
-type ProvisionEvent struct {
-	ID            string     `json:"id"`
-	Body          string     `json:"body"`
-	CreatedAt     *Timestamp `json:"created_at,omitempty"`
-	Href          string     `json:"href"`
-	Interpolated  string     `json:"interpolated"`
-	Relationships []Href     `json:"relationships"`
-	State         string     `json:"state"`
-	Type          string     `json:"type"`
-}
-
 func (d Device) String() string {
 	return Stringify(d)
 }
 
 // DeviceCreateRequest type used to create a Packet device
 type DeviceCreateRequest struct {
-	Hostname              string     `json:"hostname"`
-	Plan                  string     `json:"plan"`
-	Facility              string     `json:"facility"`
-	OS                    string     `json:"operating_system"`
-	BillingCycle          string     `json:"billing_cycle"`
-	ProjectID             string     `json:"project_id"`
-	UserData              string     `json:"userdata"`
-	Storage               string     `json:"storage,omitempty"`
-	Tags                  []string   `json:"tags"`
-	IPXEScriptURL         string     `json:"ipxe_script_url,omitempty"`
-	PublicIPv4SubnetSize  int        `json:"public_ipv4_subnet_size,omitempty"`
-	AlwaysPXE             bool       `json:"always_pxe,omitempty"`
-	HardwareReservationID string     `json:"hardware_reservation_id,omitempty"`
-	SpotInstance          bool       `json:"spot_instance,omitempty"`
-	SpotPriceMax          float64    `json:"spot_price_max,omitempty,string"`
-	TerminationTime       *Timestamp `json:"termination_time,omitempty"`
-	CustomData            string     `json:"customdata,omitempty"`
+	Hostname              string            `json:"hostname"`
+	Plan                  string            `json:"plan"`
+	Facility              []string          `json:"facility"`
+	OS                    string            `json:"operating_system"`
+	BillingCycle          string            `json:"billing_cycle"`
+	ProjectID             string            `json:"project_id"`
+	UserData              string            `json:"userdata"`
+	Storage               string            `json:"storage,omitempty"`
+	Tags                  []string          `json:"tags"`
+	IPXEScriptURL         string            `json:"ipxe_script_url,omitempty"`
+	PublicIPv4SubnetSize  int               `json:"public_ipv4_subnet_size,omitempty"`
+	AlwaysPXE             bool              `json:"always_pxe,omitempty"`
+	HardwareReservationID string            `json:"hardware_reservation_id,omitempty"`
+	SpotInstance          bool              `json:"spot_instance,omitempty"`
+	SpotPriceMax          float64           `json:"spot_price_max,omitempty,string"`
+	TerminationTime       *Timestamp        `json:"termination_time,omitempty"`
+	CustomData            string            `json:"customdata,omitempty"`
+	Features              map[string]string `json:"features,omitempty"`
 }
 
 // DeviceUpdateRequest type used to update a Packet device
@@ -254,4 +245,11 @@ func (s *DeviceServiceOp) Unlock(deviceID string) (*Response, error) {
 	action := lockType{Locked: false}
 
 	return s.client.DoRequest("PATCH", path, action, nil)
+}
+
+// ListEvents returns list of device events
+func (s *DeviceServiceOp) ListEvents(deviceID string, listOpt *ListOptions) ([]Event, *Response, error) {
+	path := fmt.Sprintf("%s/%s%s", deviceBasePath, deviceID, eventBasePath)
+
+	return list(s.client, path, listOpt)
 }

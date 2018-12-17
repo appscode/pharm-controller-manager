@@ -2,7 +2,6 @@ package vultr
 
 import (
 	"context"
-	"strings"
 
 	gv "github.com/JamesClonk/vultr/lib"
 	"github.com/pharmer/cloud-controller-manager/cloud"

@@ -1,5 +1,5 @@
-hash: b03db1c756cd0187c62aef7517b3d83081a849adc54694f381834800f1809cda
-updated: 2018-12-17T18:02:22.293985177+06:00
+hash: 32ba114b521eb9fece720583f98eaa7965b36fa4b62855a2776817e0bc75e273
+updated: 2018-12-17T19:02:20.696489313+06:00
 imports:
 - name: bitbucket.org/ww/goautoneg
   version: 75cd24fc2f2c2a2088577d12123ddee5f54e0675
@@ -993,7 +993,7 @@ imports:
   subpackages:
   - config/v1alpha1
 - name: k8s.io/kube-openapi
-  version: 0cf8f7e6ed1d2e3d47d02e3b6e559369af24d803
+  version: c59034cc13d587f5ef4e85ca0ade0c1866ae8e1d
   subpackages:
   - pkg/builder
   - pkg/common

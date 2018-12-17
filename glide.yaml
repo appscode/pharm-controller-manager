@@ -15,6 +15,7 @@ import:
 - package: github.com/spf13/pflag
   version: v1.0.3
 - package: golang.org/x/oauth2
+  version: a6bd8cefa1811bd24b86f8902872e4e8225f74c4
 - package: k8s.io/apiserver
   repo: https://github.com/kmodules/apiserver.git
   vcs: git
@@ -33,6 +34,8 @@ import:
   version: v10.0.0
 - package: k8s.io/kubernetes
   version: v1.13.0
+- package: k8s.io/klog
+  version: 8139d8cb77af419532b33dfa7dd09fbc5f1d344f
 - package: k8s.io/cloud-provider
   version: kubernetes-1.13.0
 - package: github.com/appscode/kutil
@@ -58,4 +61,4 @@ import:
 - package: github.com/davecgh/go-spew
   version: v1.1.1
 - package: k8s.io/kube-openapi
-  version: 0cf8f7e6ed1d2e3d47d02e3b6e559369af24d803
+  version: c59034cc13d587f5ef4e85ca0ade0c1866ae8e1d

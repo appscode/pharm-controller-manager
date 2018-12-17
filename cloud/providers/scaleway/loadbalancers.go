@@ -2,7 +2,6 @@ package scaleway
 
 import (
 	"context"
-	"strings"
 
 	"github.com/pharmer/cloud-controller-manager/cloud"
 	scw "github.com/scaleway/scaleway-cli/pkg/api"

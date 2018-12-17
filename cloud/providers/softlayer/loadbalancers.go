@@ -2,11 +2,12 @@ package softlayer
 
 import (
 	"context"
+	"strings"
 
 	"github.com/pharmer/cloud-controller-manager/cloud"
 	"github.com/softlayer/softlayer-go/services"
-	"k8s.io/api/core/v1"
-	"k8s.io/kubernetes/pkg/cloudprovider"
+	v1 "k8s.io/api/core/v1"
+	cloudprovider "k8s.io/cloud-provider"
 )
 
 type loadbalancers struct {
@@ -19,6 +20,19 @@ func newLoadbalancers(virtualServiceClient services.Virtual_Guest,
 	accountServiceClient services.Account) cloudprovider.LoadBalancer {
 	return &loadbalancers{virtualServiceClient: virtualServiceClient,
 		accountServiceClient: accountServiceClient}
+}
+
+// GetLoadBalancerName returns the name of the load balancer. Implementations must treat the
+// *v1.Service parameter as read-only and not modify it.
+func (l *loadbalancers) GetLoadBalancerName(ctx context.Context, clusterName string, service *v1.Service) string {
+	//GCE requires that the name of a load balancer starts with a lower case letter.
+	ret := "a" + string(service.UID)
+	ret = strings.Replace(ret, "-", "", -1)
+	//AWS requires that the name of a load balancer is shorter than 32 bytes.
+	if len(ret) > 32 {
+		ret = ret[:32]
+	}
+	return ret
 }
 
 // GetLoadBalancer returns the *v1.LoadBalancerStatus of service.

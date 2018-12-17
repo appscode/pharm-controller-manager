@@ -14,8 +14,7 @@ import (
 	"k8s.io/kubernetes/cmd/cloud-controller-manager/app"
 	"k8s.io/kubernetes/cmd/cloud-controller-manager/app/options"
 	_ "k8s.io/kubernetes/pkg/client/metrics/prometheus" // for client metric registration
-
-	_ "k8s.io/kubernetes/pkg/version/prometheus" // for version metric registration
+	_ "k8s.io/kubernetes/pkg/version/prometheus"        // for version metric registration
 )
 
 func init() {
@@ -43,12 +42,16 @@ func NewCmdUp() *cobra.Command {
 				os.Exit(1)
 			}
 
-			if err := app.Run(c.Complete()); err != nil {
+			if err := app.Run(c.Complete(), wait.NeverStop); err != nil {
 				fmt.Fprintf(os.Stderr, "%v\n", err)
 				os.Exit(1)
 			}
 		},
 	}
-	s.AddFlags(cmd.Flags())
+
+	for _, f := range s.Flags().FlagSets {
+		cmd.Flags().AddFlagSet(f)
+	}
+
 	return cmd
 }

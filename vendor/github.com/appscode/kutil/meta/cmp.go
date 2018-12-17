@@ -2,7 +2,7 @@ package meta
 
 import (
 	"github.com/google/go-cmp/cmp"
-	"github.com/json-iterator/go"
+	jsoniter "github.com/json-iterator/go"
 	jsondiff "github.com/yudai/gojsondiff"
 	"github.com/yudai/gojsondiff/formatter"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -32,6 +32,33 @@ func Diff(x, y interface{}) string {
 
 func Equal(x, y interface{}) bool {
 	return cmp.Equal(x, y, cmpOptions...)
+}
+
+const LastAppliedConfigAnnotation = "kubectl.kubernetes.io/last-applied-configuration"
+
+// EqualAnnotation checks equality of annotations skipping `kubectl.kubernetes.io/last-applied-configuration` key
+func EqualAnnotation(x, y map[string]string) bool {
+	xLen := len(x)
+	if _, found := x[LastAppliedConfigAnnotation]; found {
+		xLen--
+	}
+	yLen := len(y)
+	if _, found := y[LastAppliedConfigAnnotation]; found {
+		yLen--
+	}
+	if xLen != yLen {
+		return false
+	}
+
+	for k, v := range x {
+		if k == LastAppliedConfigAnnotation {
+			continue
+		}
+		if y[k] != v {
+			return false
+		}
+	}
+	return true
 }
 
 func JsonDiff(old, new interface{}) (string, error) {

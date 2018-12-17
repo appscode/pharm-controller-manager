@@ -10,8 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/lightsail"
 	"github.com/ghodss/yaml"
-	"k8s.io/kubernetes/pkg/cloudprovider"
-	"k8s.io/kubernetes/pkg/controller"
+	cloudprovider "k8s.io/cloud-provider"
 )
 
 const (
@@ -71,7 +70,7 @@ func newCloud(config io.Reader) (cloudprovider.Interface, error) {
 	}, nil
 }
 
-func (c *Cloud) Initialize(clientBuilder controller.ControllerClientBuilder) {
+func (c *Cloud) Initialize(clientBuilder cloudprovider.ControllerClientBuilder, stop <-chan struct{}) {
 }
 
 func (c *Cloud) LoadBalancer() (cloudprovider.LoadBalancer, bool) {

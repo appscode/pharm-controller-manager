@@ -7,8 +7,7 @@ import (
 
 	"github.com/ghodss/yaml"
 	scw "github.com/scaleway/scaleway-cli/pkg/api"
-	"k8s.io/kubernetes/pkg/cloudprovider"
-	"k8s.io/kubernetes/pkg/controller"
+	cloudprovider "k8s.io/cloud-provider"
 )
 
 const (
@@ -60,7 +59,7 @@ func newCloud(config io.Reader) (*Cloud, error) {
 	}, nil
 }
 
-func (c *Cloud) Initialize(clientBuilder controller.ControllerClientBuilder) {
+func (c *Cloud) Initialize(clientBuilder cloudprovider.ControllerClientBuilder, stop <-chan struct{}) {
 }
 
 func (c *Cloud) LoadBalancer() (cloudprovider.LoadBalancer, bool) {

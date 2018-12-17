@@ -20,6 +20,8 @@ type DeviceService interface {
 	PowerOn(string) (*Response, error)
 	Lock(string) (*Response, error)
 	Unlock(string) (*Response, error)
+	ListBGPSessions(deviceID string, listOpt *ListOptions) ([]BGPSession, *Response, error)
+	ListEvents(string, *ListOptions) ([]Event, *Response, error)
 }
 
 type devicesRoot struct {
@@ -45,7 +47,7 @@ type Device struct {
 	Plan                *Plan                  `json:"plan,omitempty"`
 	Facility            *Facility              `json:"facility,omitempty"`
 	Project             *Project               `json:"project,omitempty"`
-	ProvisionEvents     []*ProvisionEvent      `json:"provisioning_events,omitempty"`
+	ProvisionEvents     []*Event               `json:"provisioning_events,omitempty"`
 	ProvisionPer        float32                `json:"provisioning_percentage,omitempty"`
 	UserData            string                 `json:"userdata,omitempty"`
 	RootPassword        string                 `json:"root_password,omitempty"`
@@ -57,17 +59,7 @@ type Device struct {
 	TerminationTime     *Timestamp             `json:"termination_time,omitempty"`
 	NetworkPorts        []Port                 `json:"network_ports,omitempty"`
 	CustomData          map[string]interface{} `json:"customdata,omitempty"`
-}
-
-type ProvisionEvent struct {
-	ID            string     `json:"id"`
-	Body          string     `json:"body"`
-	CreatedAt     *Timestamp `json:"created_at,omitempty"`
-	Href          string     `json:"href"`
-	Interpolated  string     `json:"interpolated"`
-	Relationships []Href     `json:"relationships"`
-	State         string     `json:"state"`
-	Type          string     `json:"type"`
+	SSHKeys             []SSHKey               `json:"ssh_keys,omitempty"`
 }
 
 func (d Device) String() string {
@@ -78,7 +70,7 @@ func (d Device) String() string {
 type DeviceCreateRequest struct {
 	Hostname              string     `json:"hostname"`
 	Plan                  string     `json:"plan"`
-	Facility              string     `json:"facility"`
+	Facility              []string   `json:"facility"`
 	OS                    string     `json:"operating_system"`
 	BillingCycle          string     `json:"billing_cycle"`
 	ProjectID             string     `json:"project_id"`
@@ -93,6 +85,17 @@ type DeviceCreateRequest struct {
 	SpotPriceMax          float64    `json:"spot_price_max,omitempty,string"`
 	TerminationTime       *Timestamp `json:"termination_time,omitempty"`
 	CustomData            string     `json:"customdata,omitempty"`
+	// UserSSHKeys is a list of user UUIDs - essentialy a list of
+	// collaborators. The users must be a collaborator in the same project
+	// where the device is created. The user's SSH keys then go to the
+	// device.
+	UserSSHKeys []string `json:"user_ssh_keys,omitempty"`
+	// Project SSHKeys is a list of SSHKeys resource UUIDs. If this param
+	// is supplied, only the listed SSHKeys will go to the device.
+	// Any other Project SSHKeys and any User SSHKeys will not be present
+	// in the device.
+	ProjectSSHKeys []string          `json:"project_ssh_keys,omitempty"`
+	Features       map[string]string `json:"features,omitempty"`
 }
 
 // DeviceUpdateRequest type used to update a Packet device
@@ -254,4 +257,40 @@ func (s *DeviceServiceOp) Unlock(deviceID string) (*Response, error) {
 	action := lockType{Locked: false}
 
 	return s.client.DoRequest("PATCH", path, action, nil)
+}
+
+// ListBGPSessions returns all BGP Sessions associated with the device
+func (s *DeviceServiceOp) ListBGPSessions(deviceID string, listOpt *ListOptions) (bgpSessions []BGPSession, resp *Response, err error) {
+	var params string
+	if listOpt != nil {
+		params = listOpt.createURL()
+	}
+	path := fmt.Sprintf("%s/%s%s?%s", deviceBasePath, deviceID, bgpSessionBasePath, params)
+
+	for {
+		subset := new(bgpSessionsRoot)
+
+		resp, err = s.client.DoRequest("GET", path, nil, subset)
+		if err != nil {
+			return nil, resp, err
+		}
+
+		bgpSessions = append(bgpSessions, subset.Sessions...)
+
+		if subset.Meta.Next != nil && (listOpt == nil || listOpt.Page == 0) {
+			path = subset.Meta.Next.Href
+			if params != "" {
+				path = fmt.Sprintf("%s&%s", path, params)
+			}
+			continue
+		}
+		return
+	}
+}
+
+// ListEvents returns list of device events
+func (s *DeviceServiceOp) ListEvents(deviceID string, listOpt *ListOptions) ([]Event, *Response, error) {
+	path := fmt.Sprintf("%s/%s%s", deviceBasePath, deviceID, eventBasePath)
+
+	return list(s.client, path, listOpt)
 }

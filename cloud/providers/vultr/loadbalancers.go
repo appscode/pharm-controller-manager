@@ -2,11 +2,12 @@ package vultr
 
 import (
 	"context"
+	"strings"
 
 	gv "github.com/JamesClonk/vultr/lib"
 	"github.com/pharmer/cloud-controller-manager/cloud"
-	"k8s.io/api/core/v1"
-	"k8s.io/kubernetes/pkg/cloudprovider"
+	v1 "k8s.io/api/core/v1"
+	cloudprovider "k8s.io/cloud-provider"
 )
 
 type loadbalancers struct {

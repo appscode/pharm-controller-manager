@@ -8,9 +8,9 @@ import (
 	"github.com/pharmer/cloud-controller-manager/cloud"
 	"github.com/pkg/errors"
 	scw "github.com/scaleway/scaleway-cli/pkg/api"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/kubernetes/pkg/cloudprovider"
+	cloudprovider "k8s.io/cloud-provider"
 )
 
 type instances struct {

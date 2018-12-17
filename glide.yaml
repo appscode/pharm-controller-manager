@@ -10,8 +10,6 @@ import:
   version: 1.1.5
 - package: github.com/pkg/errors
   version: v0.8.0
-- package: github.com/pkg/errors
-  version: v0.8.0
 - package: github.com/spf13/cobra
   version: v0.0.3
 - package: github.com/spf13/pflag
@@ -20,29 +18,31 @@ import:
 - package: k8s.io/apiserver
   repo: https://github.com/kmodules/apiserver.git
   vcs: git
-  version: ac-1.12.0
+  version: ac-1.13.0
 - package: k8s.io/api
-  version: kubernetes-1.12.0
+  version: kubernetes-1.13.0
+- package: k8s.io/api
+  version: kubernetes-1.13.0
 - package: k8s.io/apimachinery
   repo: https://github.com/kmodules/apimachinery.git
   vcs: git
-  version: ac-1.12.0
+  version: ac-1.13.0
+- package: k8s.io/apiextensions-apiserver
+  version: kubernetes-1.13.0
 - package: k8s.io/client-go
-  version: v9.0.0
+  version: v10.0.0
 - package: k8s.io/kubernetes
-  version: v1.12.0
+  version: v1.13.0
+- package: k8s.io/cloud-provider
+  version: kubernetes-1.13.0
 - package: github.com/appscode/kutil
-  version: release-9.0
-- package: github.com/taoh/linodego
-  repo: https://github.com/appscode/linodego.git
-  vcs: git
-  version: master
+  version: k-1.13.0
 - package: github.com/scaleway/scaleway-cli
   version: v1.17
 - package: github.com/moul/gotty-client
   version: c1b82f1af3ebb2febba268415cb1c90686078f80
 - package: github.com/gorilla/websocket
-  version: 1f512fc3f05332ba7117626cdfb4e07474e58e60
+  version: 4201258b820c74ac8e6922fc9e6b52f71fe46f8d
 - package: github.com/cpuguy83/go-md2man
   version: v1.0.8
 - package: golang.org/x/text

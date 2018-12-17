@@ -8,8 +8,7 @@ import (
 	"github.com/ghodss/yaml"
 	"github.com/softlayer/softlayer-go/services"
 	"github.com/softlayer/softlayer-go/session"
-	"k8s.io/kubernetes/pkg/cloudprovider"
-	"k8s.io/kubernetes/pkg/controller"
+	cloudprovider "k8s.io/cloud-provider"
 )
 
 const (
@@ -65,7 +64,7 @@ func newCloud(config io.Reader) (*Cloud, error) {
 		loadbalancers: newLoadbalancers(virtualServiceClient, accountServiceClient),
 	}, nil
 }
-func (c *Cloud) Initialize(clientBuilder controller.ControllerClientBuilder) {
+func (c *Cloud) Initialize(clientBuilder cloudprovider.ControllerClientBuilder, stop <-chan struct{}) {
 }
 
 func (c *Cloud) LoadBalancer() (cloudprovider.LoadBalancer, bool) {

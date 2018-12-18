@@ -1,5 +1,5 @@
-hash: 32ba114b521eb9fece720583f98eaa7965b36fa4b62855a2776817e0bc75e273
-updated: 2018-12-17T19:02:20.696489313+06:00
+hash: 30c944a5327232c77e0278f2aae79a24e21be556c6b40ca1a4a3fe9c31299791
+updated: 2018-12-18T14:26:20.939995103+06:00
 imports:
 - name: bitbucket.org/ww/goautoneg
   version: 75cd24fc2f2c2a2088577d12123ddee5f54e0675
@@ -351,7 +351,7 @@ imports:
 - name: github.com/mitchellh/mapstructure
   version: 53818660ed4955e899c0bcafa97299a388bd7c8e
 - name: github.com/moby/moby
-  version: efba5f856506e3334c59fd94ff6f549f266136fc
+  version: 8422e6f6fa04eb8ee805a98067ee490a86ce3b98
   subpackages:
   - pkg/term
 - name: github.com/modern-go/concurrent
@@ -732,7 +732,7 @@ imports:
   - third_party/forked/golang/json
   - third_party/forked/golang/reflect
 - name: k8s.io/apiserver
-  version: 6c1ba135b0c6f83c9917c0c5e962682757566a07
+  version: 0e2fcb6b0f3b36fed3886562fdfb5a0e4babc384
   repo: https://github.com/kmodules/apiserver.git
   vcs: git
   subpackages:

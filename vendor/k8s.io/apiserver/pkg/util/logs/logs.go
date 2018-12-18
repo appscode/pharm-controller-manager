@@ -33,7 +33,7 @@ var logFlushFreq = pflag.Duration(logFlushFreqFlagName, 5*time.Second, "Maximum 
 
 // TODO(thockin): This is temporary until we agree on log dirs and put those into each cmd.
 func init() {
-	klog.InitFlags(flag.CommandLine)
+	//klog.InitFlags(flag.CommandLine)
 	flag.Set("logtostderr", "true")
 }
 

@@ -19,7 +19,7 @@ import:
 - package: k8s.io/apiserver
   repo: https://github.com/kmodules/apiserver.git
   vcs: git
-  version: ac-1.13.0
+  version: ac-1.13.0-log
 - package: k8s.io/api
   version: kubernetes-1.13.0
 - package: k8s.io/api

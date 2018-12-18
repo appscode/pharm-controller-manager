@@ -8,7 +8,7 @@ import (
 
 	gv "github.com/JamesClonk/vultr/lib"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/kubernetes/pkg/cloudprovider"
+	cloudprovider "k8s.io/cloud-provider"
 )
 
 const (

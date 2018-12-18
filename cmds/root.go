@@ -7,7 +7,7 @@ import (
 
 	v "github.com/appscode/go/version"
 	"github.com/appscode/kutil/tools/analytics"
-	"github.com/jpillora/go-ogle-analytics"
+	ga "github.com/jpillora/go-ogle-analytics"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	_ "k8s.io/kubernetes/pkg/cloudprovider/providers"

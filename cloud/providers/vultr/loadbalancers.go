@@ -4,9 +4,9 @@ import (
 	"context"
 
 	gv "github.com/JamesClonk/vultr/lib"
-	"github.com/pharmer/cloud-controller-manager/cloud"
 	v1 "k8s.io/api/core/v1"
 	cloudprovider "k8s.io/cloud-provider"
+	"pharmer.dev/cloud-controller-manager/cloud"
 )
 
 type loadbalancers struct {

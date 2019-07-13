@@ -1,9 +1,9 @@
 package providers
 
 import (
-	_ "github.com/pharmer/cloud-controller-manager/cloud/providers/lightsail"
-	_ "github.com/pharmer/cloud-controller-manager/cloud/providers/packet"
-	_ "github.com/pharmer/cloud-controller-manager/cloud/providers/scaleway"
-	_ "github.com/pharmer/cloud-controller-manager/cloud/providers/softlayer"
-	_ "github.com/pharmer/cloud-controller-manager/cloud/providers/vultr"
+	_ "pharmer.dev/cloud-controller-manager/cloud/providers/lightsail"
+	_ "pharmer.dev/cloud-controller-manager/cloud/providers/packet"
+	_ "pharmer.dev/cloud-controller-manager/cloud/providers/scaleway"
+	_ "pharmer.dev/cloud-controller-manager/cloud/providers/softlayer"
+	_ "pharmer.dev/cloud-controller-manager/cloud/providers/vultr"
 )

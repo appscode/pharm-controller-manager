@@ -2,7 +2,7 @@
 set -eou pipefail
 
 GOPATH=$(go env GOPATH)
-REPO_ROOT="$GOPATH/src/github.com/pharmer/cloud-controller-manager"
+REPO_ROOT="$GOPATH/src/pharmer.dev/cloud-controller-manager"
 
 pushd $REPO_ROOT
 

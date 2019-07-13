@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/appscode/go/log"
-	_ "github.com/pharmer/cloud-controller-manager/cloud/providers"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/apiserver/pkg/server/healthz"
@@ -15,6 +14,7 @@ import (
 	"k8s.io/kubernetes/cmd/cloud-controller-manager/app/options"
 	_ "k8s.io/kubernetes/pkg/client/metrics/prometheus" // for client metric registration
 	_ "k8s.io/kubernetes/pkg/version/prometheus"        // for version metric registration
+	_ "pharmer.dev/cloud-controller-manager/cloud/providers"
 )
 
 func init() {

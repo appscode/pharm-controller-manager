@@ -3,10 +3,10 @@ package scaleway
 import (
 	"context"
 
-	"github.com/pharmer/cloud-controller-manager/cloud"
 	scw "github.com/scaleway/scaleway-cli/pkg/api"
 	"k8s.io/apimachinery/pkg/types"
 	cloudprovider "k8s.io/cloud-provider"
+	"pharmer.dev/cloud-controller-manager/cloud"
 )
 
 type zones struct {

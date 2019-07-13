@@ -8,27 +8,27 @@ GOPATH=$(go env GOPATH)
 SRC=$GOPATH/src
 BIN=$GOPATH/bin
 ROOT=$GOPATH
-REPO_ROOT=$GOPATH/src/github.com/pharmer/cloud-controller-manager
+REPO_ROOT=$GOPATH/src/pharmer.dev/cloud-controller-manager
 
 source "$REPO_ROOT/hack/libbuild/common/pharmer_image.sh"
 
 APPSCODE_ENV=${APPSCODE_ENV:-dev}
 IMG=cloud-controller-manager
 
-DIST=$GOPATH/src/github.com/pharmer/cloud-controller-manager/dist
+DIST=$GOPATH/src/pharmer.dev/cloud-controller-manager/dist
 mkdir -p $DIST
 if [ -f "$DIST/.tag" ]; then
   export $(cat $DIST/.tag | xargs)
 fi
 
 clean() {
-  pushd $GOPATH/src/github.com/pharmer/cloud-controller-manager/hack/docker
+  pushd $GOPATH/src/pharmer.dev/cloud-controller-manager/hack/docker
   rm cloud-controller-manager Dockerfile
   popd
 }
 
 build_binary() {
-  pushd $GOPATH/src/github.com/pharmer/cloud-controller-manager
+  pushd $GOPATH/src/pharmer.dev/cloud-controller-manager
   ./hack/builddeps.sh
   ./hack/make.py build
   detect_tag $DIST/.tag
@@ -36,7 +36,7 @@ build_binary() {
 }
 
 build_docker() {
-  pushd $GOPATH/src/github.com/pharmer/cloud-controller-manager/hack/docker
+  pushd $GOPATH/src/pharmer.dev/cloud-controller-manager/hack/docker
   cp $DIST/cloud-controller-manager/cloud-controller-manager-alpine-amd64 cloud-controller-manager
   chmod 755 cloud-controller-manager
 

@@ -7,11 +7,11 @@ import (
 
 	. "github.com/appscode/go/types"
 	"github.com/aws/aws-sdk-go/service/lightsail"
-	"github.com/pharmer/cloud-controller-manager/cloud"
 	"github.com/pkg/errors"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	cloudprovider "k8s.io/cloud-provider"
+	"pharmer.dev/cloud-controller-manager/cloud"
 )
 
 type instances struct {

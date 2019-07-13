@@ -1,4 +1,4 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/pharmer/cloud-controller-manager)](https://goreportcard.com/report/github.com/pharmer/cloud-controller-manager)
+[![Go Report Card](https://goreportcard.com/badge/pharmer.dev/cloud-controller-manager)](https://goreportcard.com/report/pharmer.dev/cloud-controller-manager)
 [![Build Status](https://travis-ci.org/pharmer/cloud-controller-manager.svg?branch=master)](https://travis-ci.org/pharmer/cloud-controller-manager)
 [![codecov](https://codecov.io/gh/pharmer/cloud-controller-manager/branch/master/graph/badge.svg)](https://codecov.io/gh/pharmer/cloud-controller-manager)
 [![Docker Pulls](https://img.shields.io/docker/pulls/pharmer/cloud-controller-manager.svg)](https://hub.docker.com/r/pharmer/cloud-controller-manager/)

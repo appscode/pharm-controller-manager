@@ -3,10 +3,10 @@ package softlayer
 import (
 	"context"
 
-	"github.com/pharmer/cloud-controller-manager/cloud"
 	"github.com/softlayer/softlayer-go/services"
 	v1 "k8s.io/api/core/v1"
 	cloudprovider "k8s.io/cloud-provider"
+	"pharmer.dev/cloud-controller-manager/cloud"
 )
 
 type loadbalancers struct {

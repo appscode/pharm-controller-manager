@@ -6,14 +6,14 @@ import (
 	"os"
 
 	"github.com/appscode/go/runtime"
-	"github.com/pharmer/cloud-controller-manager/cmds"
 	"github.com/spf13/cobra/doc"
+	"pharmer.dev/cloud-controller-manager/cmds"
 )
 
 // ref: https://github.com/spf13/cobra/blob/master/doc/md_docs.md
 func main() {
 	rootCmd := cmds.NewRootCmd("")
-	dir := runtime.GOPath() + "/src/github.com/pharmer/cloud-controller-manager/docs/reference"
+	dir := runtime.GOPath() + "/src/pharmer.dev/cloud-controller-manager/docs/reference"
 	fmt.Printf("Generating cli markdown tree in: %v\n", dir)
 	err := os.RemoveAll(dir)
 	if err != nil {
